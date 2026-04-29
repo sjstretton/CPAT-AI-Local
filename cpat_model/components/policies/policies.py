@@ -356,7 +356,7 @@ class Policies:
                 )
             )
         else:
-            p_cov_s.loc[:, scenario_type] = 0
+            p_cov_s.loc[:, scenario_type] = False
 
         return p_cov_s.rename(columns={scenario_type: str(year)})
 
@@ -392,7 +392,7 @@ class Policies:
                 )
             )
         else:
-            p_cov_f.loc[:, scenario_type] = 0
+            p_cov_f.loc[:, scenario_type] = False
 
         return p_cov_f.rename(columns={scenario_type: str(year)})
 

@@ -67,8 +67,10 @@ class Phaseouts:
             1 + decrease_each_year * (self.__years[mask] - energy_sector_reform['ffs_start_prod'])
         )
         # for years > than ffs_start_prod:
-        phaseout_producer.values[0, mask] = np.maximum(values, neagative_share)
-
+        #phaseout_producer = phaseout_producer.copy()
+        #phaseout_producer.values[0, mask] = np.maximum(values, neagative_share)
+        phaseout_producer = phaseout_producer.copy()
+        phaseout_producer.iloc[0, mask] = np.maximum(values, neagative_share)
         return phaseout_producer
 
 
@@ -104,7 +106,10 @@ class Phaseouts:
             1 + decrease_each_year * (self.__years[mask] - energy_sector_reform['ffs_start_cons'])
         )
         # for years > than ffs_start_cons:
-        phaseout_consumer.values[0, mask] = np.maximum(values, neagative_share)
+
+        phaseout_consumer = phaseout_consumer.copy()
+        phaseout_consumer.iloc[0, mask] = np.maximum(values, neagative_share)
+        #phaseout_consumer.values[0, mask] = np.maximum(values, neagative_share)
 
         return phaseout_consumer
 
@@ -149,6 +154,7 @@ class Phaseouts:
             1 + decrease_each_year * (self.__years[mask] - energy_sector_reform['pc_start'])
         )
         # for years > than pc_start:
-        phaseout_subsidy_tax.values[0, mask] = np.maximum(values, neagative_share)
-
+        #phaseout_subsidy_tax.values[0, mask] = np.maximum(values, neagative_share)
+        phaseout_subsidy_tax = phaseout_subsidy_tax.copy()
+        phaseout_subsidy_tax.iloc[0, mask] = np.maximum(values, neagative_share)
         return phaseout_subsidy_tax

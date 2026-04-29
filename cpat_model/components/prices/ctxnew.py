@@ -70,7 +70,7 @@ class CTXNew:
                     p_based_policies_cov_s_f
                     * ef_tco2_per_volume_unit
                 ).fillna(0.0).mul(cp_trajectory.loc[:, [str(year)]], level=c.COUNTRY_CODE)
-            ctxnew = p_based_policies_cov_s_f.copy()
+            ctxnew = p_based_policies_cov_s_f.copy().astype(float)
             ctxnew.loc[:, :] = 0.0
             return ctxnew
 
