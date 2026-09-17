@@ -49,7 +49,7 @@ class Power:
         self.generation = PowGeneration(self.investment.effective_capacity)
 
 
-    def calcualte_power_year(
+    def calculate_power_year(
             self,
             year: int,
             input_data: 'InputData',

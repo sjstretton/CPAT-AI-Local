@@ -13,18 +13,18 @@ Activate it:
 conda activate cpat_sisepuede
 ```
 
-Install development dependencies (optional, for developers):
+Install the project requirements:
 ```
-pip install -r dev-requirements.txt
+pip install -r requirements.txt
 ```
 
-To update an existing environment, after modifying `environment.yml:
+To update an existing environment after modifying `environment.yml`:
 ```
 conda env update -f environment.yml --prune
 ```
-And for development dependencies:
+To update the pip requirements:
 ```
-pip install -r dev-requirements.txt --upgrade
+pip install -r requirements.txt --upgrade
 ```
 
 
@@ -41,7 +41,7 @@ Folders located in the root directory:
 Files contained in the root folder are:
 - `run_model.py` - entry point for running the model
 - `config.py` - used to define scenarios for `run_model.py` and contain `DATA_PATH` for the input data. The keys in `CONFIG` define the scenario names, and the values define the `DashboardInputs` that overwrite the default inputs for each scenario. Also holds `DATA_PATH` for the input data.
-- `dev-requirements.txt` - listing all the dependencies required in development, only `pytest` at the moment.
+- `requirements.txt` - listing all Python dependencies, including `pytest` for tests.
 
 Data input files are not placed in the github repository. All of them are stored in a shared folder named `Mitigation Project Data Files` <br />
 `README.txt` file, located in `Mitigation Project Data Files`, contains instructions on where the files should be added within the project.
@@ -128,7 +128,7 @@ python -m pytest cpat_testing
 
 ## Power model - example of a component structure
 The Power model logic is located in `cpat_model/components/power` folder. `../power.py` file holds the main class `Power` with instances of Power model components as attributes.
-`__init__` creates instances of all components and calculates all values that can be determined before iterating over `simulation_years`. `calcualte_power_year` updates power atributes year by year in a loop over `simulation_years` located in `run_model.py`
+`__init__` creates instances of all components and calculates all values that can be determined before iterating over `simulation_years`. `calculate_power_year` updates power attributes year by year in a loop over `simulation_years` located in `run_model.py`
 Please see docstrings and comments in `../power.py`, `../data.py`, `../variable_cost.py`, `../demand.py`, `../investment.py` and `../generation.py` for more information about the Power components.
 
 ## Notes
