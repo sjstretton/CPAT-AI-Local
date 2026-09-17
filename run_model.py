@@ -81,7 +81,7 @@ def run_model():
                 year, di.d['scenario_type'], policies, efs_co2,
                 dom_prices, phaseouts
             )
-            power.calcualte_power_year(
+            power.calculate_power_year(
                 year, input_data,
                 gdp.d_gdp_at_const_prices, elasticities, di.d,
                 energy_prices, policies.p_cov_s, int_prices.uranium_fuel_cost
@@ -98,4 +98,5 @@ def run_model():
         # Example on how to save output variables
         # power.generation.g.to_csv(f'power_generation_{scenario_name}.csv')
 
-run_model()
+if __name__ == '__main__':
+    run_model()
