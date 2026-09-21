@@ -1193,7 +1193,11 @@ wb.active = 0
 # without this pass Excel can't resolve LAMBDA/LET/XLOOKUP/HSTACK/SCAN/
 # MAKEARRAY in cell formulas OR in the LAMBDA-valued defined names, and
 # "repairs" the file by stripping the named ranges (-> #NAME? errors on
-# every custom function, e.g. ELAST).
+# every custom function, e.g. ELAST). Separately, every LAMBDA/LET
+# parameter/variable name -- both in its declaration and every reference
+# to it in the body -- must ALSO be written with an _xlpm. prefix (this is
+# what was still missing: Excel silently discards any formula/defined name
+# using LAMBDA or LET without it).
 # ---------------------------------------------------------------------------
 XLFN_PLAIN = {"LAMBDA", "LET", "XLOOKUP"}
 XLFN_XLWS = {"HSTACK", "SCAN", "MAKEARRAY"}
@@ -1211,18 +1215,96 @@ def add_xlfn_prefixes(formula):
     return _XLFN_RE.sub(_xlfn_repl, formula)
 
 
+def _split_top_level_args(s):
+    """Split a formula argument-list string on top-level commas, respecting
+    parens and double-quoted string literals (with "" as the escaped quote)."""
+    args, depth, in_str, cur, i = [], 0, False, [], 0
+    while i < len(s):
+        c = s[i]
+        if in_str:
+            cur.append(c)
+            if c == '"':
+                if i + 1 < len(s) and s[i + 1] == '"':
+                    cur.append(s[i + 1])
+                    i += 1
+                else:
+                    in_str = False
+        elif c == '"':
+            in_str = True
+            cur.append(c)
+        elif c == "(":
+            depth += 1
+            cur.append(c)
+        elif c == ")":
+            depth -= 1
+            cur.append(c)
+        elif c == "," and depth == 0:
+            args.append("".join(cur))
+            cur = []
+        else:
+            cur.append(c)
+        i += 1
+    args.append("".join(cur))
+    return args
+
+
+def _find_matching_paren(s, open_idx):
+    depth, in_str, i = 0, False, open_idx
+    while i < len(s):
+        c = s[i]
+        if in_str:
+            if c == '"':
+                if i + 1 < len(s) and s[i + 1] == '"':
+                    i += 1
+                else:
+                    in_str = False
+        elif c == '"':
+            in_str = True
+        elif c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    raise ValueError(f"unbalanced parens in: {s!r}")
+
+
+def _collect_param_names(formula):
+    names = set()
+    for m in re.finditer(r"\b(LAMBDA|LET)\(", formula):
+        open_idx = m.end() - 1
+        close_idx = _find_matching_paren(formula, open_idx)
+        args = [a.strip() for a in _split_top_level_args(formula[open_idx + 1:close_idx])]
+        names.update(args[:-1] if m.group(1) == "LAMBDA" else args[0:-1:2])
+    return names
+
+
+def add_xlpm_prefixes(formula):
+    names = _collect_param_names(formula)
+    if not names:
+        return formula
+    pattern = re.compile(r"\b(" + "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True)) + r")\b")
+    # only touch non-string-literal segments, so a param name that happens
+    # to match inside a quoted string (item code, label, ...) is untouched
+    parts = re.split(r'("(?:[^"]|"")*")', formula)
+    for i in range(0, len(parts), 2):
+        parts[i] = pattern.sub(lambda m: f"_xlpm.{m.group(1)}", parts[i])
+    return "".join(parts)
+
+
 n_names = n_cells = 0
 for dn in wb.defined_names.values():
     if dn.attr_text and dn.attr_text.startswith("="):
-        dn.attr_text = "=" + add_xlfn_prefixes(dn.attr_text[1:])
+        dn.attr_text = "=" + add_xlfn_prefixes(add_xlpm_prefixes(dn.attr_text[1:]))
         n_names += 1
 for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
     for row in wb[sheet_name].iter_rows():
         for cell in row:
             if isinstance(cell.value, str) and cell.value.startswith("="):
-                cell.value = "=" + add_xlfn_prefixes(cell.value[1:])
+                cell.value = "=" + add_xlfn_prefixes(add_xlpm_prefixes(cell.value[1:]))
                 n_cells += 1
-print(f"Applied _xlfn prefixes: {n_names} defined names, {n_cells} cell formulas.")
+print(f"Applied _xlfn/_xlpm prefixes: {n_names} defined names, {n_cells} cell formulas.")
 
 wb.save(OUT)
 print("Saved", OUT)
