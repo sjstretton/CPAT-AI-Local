@@ -26,6 +26,11 @@ from cpat_model.components.prices.domestic_prices import load_prices_dom
 
 from cpat_model.components.power.data import load_mpp, load_ic, load_lcoe_tmp
 
+from cpat_model.components.distribution.data import (
+    load_io_gtap, load_hh_survey, load_hh_elast, load_aspire, load_who_cooking,
+    load_gdp_ratios, load_gtap_cpat_sector_crosswalk
+)
+
 class InputData:
     """
     TODO
@@ -72,6 +77,15 @@ class InputData:
     ic: pd.DataFrame
     ic_base_year: pd.DataFrame
     lcoe_tmp: pd.DataFrame
+
+    # Distribution
+    distn_io_gtap: pd.DataFrame
+    distn_hh_survey: pd.DataFrame
+    distn_hh_elast: pd.DataFrame
+    distn_aspire: pd.DataFrame
+    distn_who_cooking: pd.DataFrame
+    distn_gdp_ratios: pd.DataFrame
+    distn_gtap_cpat_crosswalk: pd.DataFrame
 
     def __init__(
             self,
@@ -141,3 +155,12 @@ class InputData:
         self.mpp = load_mpp(selected_countries)
         self.ic, self.ic_base_year = load_ic(selected_countries, simulation_years)
         self.lcoe_tmp = load_lcoe_tmp(selected_countries, simulation_years)
+
+        # Distribution
+        self.distn_io_gtap = load_io_gtap(selected_countries)
+        self.distn_hh_survey = load_hh_survey(selected_countries)
+        self.distn_hh_elast = load_hh_elast(selected_countries)
+        self.distn_aspire = load_aspire(selected_countries)
+        self.distn_who_cooking = load_who_cooking(selected_countries)
+        self.distn_gdp_ratios = load_gdp_ratios(selected_countries)
+        self.distn_gtap_cpat_crosswalk = load_gtap_cpat_sector_crosswalk()
