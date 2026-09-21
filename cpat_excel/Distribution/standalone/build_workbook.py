@@ -30,7 +30,6 @@ Run: python3 build_workbook.py
 """
 import pickle
 import os
-import re
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -1187,124 +1186,118 @@ wb._sheets = (
 wb.active = 0
 
 # ---------------------------------------------------------------------------
-# Excel stores "future functions" (introduced after the OOXML spec froze)
-# under an _xlfn./_xlfn._xlws. prefix in the file format, even though the
-# UI shows them unprefixed. openpyxl writes formula text verbatim, so
-# without this pass Excel can't resolve LAMBDA/LET/XLOOKUP/HSTACK/SCAN/
-# MAKEARRAY in cell formulas OR in the LAMBDA-valued defined names, and
-# "repairs" the file by stripping the named ranges (-> #NAME? errors on
-# every custom function, e.g. ELAST). Separately, every LAMBDA/LET
-# parameter/variable name -- both in its declaration and every reference
-# to it in the body -- must ALSO be written with an _xlpm. prefix (this is
-# what was still missing: Excel silently discards any formula/defined name
-# using LAMBDA or LET without it).
+# Capture every formula cell's clean formula text for the VBA rebuild script
+# (see generate_vba() below), then blank the cells and drop all defined
+# names so the shipped .xlsx opens without a repair prompt -- see
+# RebuildDistributionModule.bas / this folder's README for why.
 # ---------------------------------------------------------------------------
-XLFN_PLAIN = {"LAMBDA", "LET", "XLOOKUP"}
-XLFN_XLWS = {"HSTACK", "SCAN", "MAKEARRAY"}
-_XLFN_RE = re.compile(
-    r'(?<!_xlfn\.)(?<!_xlws\.)\b(' + "|".join(XLFN_PLAIN | XLFN_XLWS) + r')\('
-)
-
-
-def _xlfn_repl(m):
-    name = m.group(1)
-    return f"_xlfn._xlws.{name}(" if name in XLFN_XLWS else f"_xlfn.{name}("
-
-
-def add_xlfn_prefixes(formula):
-    return _XLFN_RE.sub(_xlfn_repl, formula)
-
-
-def _split_top_level_args(s):
-    """Split a formula argument-list string on top-level commas, respecting
-    parens and double-quoted string literals (with "" as the escaped quote)."""
-    args, depth, in_str, cur, i = [], 0, False, [], 0
-    while i < len(s):
-        c = s[i]
-        if in_str:
-            cur.append(c)
-            if c == '"':
-                if i + 1 < len(s) and s[i + 1] == '"':
-                    cur.append(s[i + 1])
-                    i += 1
-                else:
-                    in_str = False
-        elif c == '"':
-            in_str = True
-            cur.append(c)
-        elif c == "(":
-            depth += 1
-            cur.append(c)
-        elif c == ")":
-            depth -= 1
-            cur.append(c)
-        elif c == "," and depth == 0:
-            args.append("".join(cur))
-            cur = []
-        else:
-            cur.append(c)
-        i += 1
-    args.append("".join(cur))
-    return args
-
-
-def _find_matching_paren(s, open_idx):
-    depth, in_str, i = 0, False, open_idx
-    while i < len(s):
-        c = s[i]
-        if in_str:
-            if c == '"':
-                if i + 1 < len(s) and s[i + 1] == '"':
-                    i += 1
-                else:
-                    in_str = False
-        elif c == '"':
-            in_str = True
-        elif c == "(":
-            depth += 1
-        elif c == ")":
-            depth -= 1
-            if depth == 0:
-                return i
-        i += 1
-    raise ValueError(f"unbalanced parens in: {s!r}")
-
-
-def _collect_param_names(formula):
-    names = set()
-    for m in re.finditer(r"\b(LAMBDA|LET)\(", formula):
-        open_idx = m.end() - 1
-        close_idx = _find_matching_paren(formula, open_idx)
-        args = [a.strip() for a in _split_top_level_args(formula[open_idx + 1:close_idx])]
-        names.update(args[:-1] if m.group(1) == "LAMBDA" else args[0:-1:2])
-    return names
-
-
-def add_xlpm_prefixes(formula):
-    names = _collect_param_names(formula)
-    if not names:
-        return formula
-    pattern = re.compile(r"\b(" + "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True)) + r")\b")
-    # only touch non-string-literal segments, so a param name that happens
-    # to match inside a quoted string (item code, label, ...) is untouched
-    parts = re.split(r'("(?:[^"]|"")*")', formula)
-    for i in range(0, len(parts), 2):
-        parts[i] = pattern.sub(lambda m: f"_xlpm.{m.group(1)}", parts[i])
-    return "".join(parts)
-
-
-n_names = n_cells = 0
-for dn in wb.defined_names.values():
-    if dn.attr_text and dn.attr_text.startswith("="):
-        dn.attr_text = "=" + add_xlfn_prefixes(add_xlpm_prefixes(dn.attr_text[1:]))
-        n_names += 1
+FORMULA_LOG = []  # (sheet_name, coordinate, clean_formula_without_leading_=)
 for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
     for row in wb[sheet_name].iter_rows():
         for cell in row:
             if isinstance(cell.value, str) and cell.value.startswith("="):
-                cell.value = "=" + add_xlfn_prefixes(add_xlpm_prefixes(cell.value[1:]))
-                n_cells += 1
-print(f"Applied _xlfn/_xlpm prefixes: {n_names} defined names, {n_cells} cell formulas.")
+                FORMULA_LOG.append((sheet_name, cell.coordinate, cell.value[1:]))
+print(f"Captured {len(FORMULA_LOG)} formula cells and {len(NAMED_RANGES)} named ranges for the VBA rebuild.")
+
+
+def vba_string_literal(text, max_chunk=180):
+    """VBA string literal for `text`, doubling embedded quotes and chunking
+    into '"a" & "b" & ...' pieces so no single quoted run gets unwieldy."""
+    escaped = text.replace('"', '""')
+    chunks = [escaped[i:i + max_chunk] for i in range(0, len(escaped), max_chunk)] or [""]
+    return " & ".join(f'"{c}"' for c in chunks)
+
+
+def generate_vba():
+    lines = []
+    lines.append('Attribute VB_Name = "RebuildDistributionModule"')
+    lines.append("' Rebuilds the named LAMBDA functions and all Distribution_Outputs /")
+    lines.append("' Distribution_Inputs formulas via Excel's own object model, so Excel")
+    lines.append("' itself performs the internal _xlfn/_xlpm encoding instead of relying")
+    lines.append("' on formula text written directly into the .xlsx XML.")
+    lines.append("' Usage: Alt+F11 -> Insert -> Module -> paste this file -> F5 (or run")
+    lines.append("' RebuildDistributionModule from the macro list). Run once after opening")
+    lines.append("' the workbook; safe to re-run.")
+    lines.append("Option Explicit")
+    lines.append("")
+    lines.append("Sub RebuildDistributionModule()")
+    lines.append("    Application.ScreenUpdating = False")
+    lines.append("    Application.Calculation = xlCalculationManual")
+    lines.append("    AddDistributionNames")
+
+    # --- names (both plain ranges and LAMBDA-valued) ---
+    lines.append("End Sub")
+    lines.append("")
+    lines.append("Sub AddDistributionNames()")
+    lines.append("    Dim wb As Workbook: Set wb = ThisWorkbook")
+    lines.append("    On Error Resume Next")
+    for name, ref in NAMED_RANGES.items():
+        formula = ref if ref.startswith("=") else "=" + ref
+        lines.append(f"    wb.Names.Add Name:=\"{name}\", RefersTo:={vba_string_literal(formula)}")
+    lines.append("    On Error GoTo 0")
+    lines.append("End Sub")
+    lines.append("")
+
+    # --- formulas, chunked into ~120-statement Subs to stay well under the
+    #     ~64K-character-per-procedure VBA limit ---
+    CHUNK = 120
+    part_names = []
+    for i in range(0, len(FORMULA_LOG), CHUNK):
+        part = i // CHUNK + 1
+        part_name = f"WriteFormulas_Part{part}"
+        part_names.append(part_name)
+        lines.append(f"Sub {part_name}()")
+        lines.append("    Dim ws As Worksheet")
+        cur_sheet = None
+        for sheet_name, coord, formula in FORMULA_LOG[i:i + CHUNK]:
+            if sheet_name != cur_sheet:
+                lines.append(f"    Set ws = ThisWorkbook.Worksheets(\"{sheet_name}\")")
+                cur_sheet = sheet_name
+            full_formula = "=" + formula
+            lines.append(f"    ws.Range(\"{coord}\").Formula2 = {vba_string_literal(full_formula)}")
+        lines.append("End Sub")
+        lines.append("")
+
+    # --- master sub, appended after AddDistributionNames call list ---
+    master_idx = lines.index("Sub RebuildDistributionModule()")
+    insert_idx = lines.index("    AddDistributionNames") + 1
+    for pn in part_names:
+        lines.insert(insert_idx, f"    {pn}")
+        insert_idx += 1
+    # re-find end and add calc/finish lines
+    end_idx = lines.index("End Sub")
+    lines.insert(end_idx, "    Application.Calculation = xlCalculationAutomatic")
+    lines.insert(end_idx + 1, "    Application.ScreenUpdating = True")
+    lines.insert(end_idx + 2, '    MsgBox "Distribution module rebuilt: " & Names.Count & _' )
+    lines.insert(end_idx + 3, '        " names, ' + str(len(FORMULA_LOG)) + ' formulas.", vbInformation')
+
+    return "\n".join(lines) + "\n"
+
+
+vba_path = os.path.join(HERE, "RebuildDistributionModule.bas")
+with open(vba_path, "w", newline="\r\n") as f:
+    f.write(generate_vba())
+print(f"Wrote {vba_path}")
+
+# ---------------------------------------------------------------------------
+# Ship a CLEAN-opening .xlsx: no LAMBDA-valued (or other future-function)
+# defined names, no formulas referencing them -- only these were ever the
+# source of the "file needs repair" prompt. All row/column labels, section
+# structure, styling and the data tabs are untouched; run the .bas macro
+# above after opening to populate the LAMBDA names and every formula cell.
+# Cells that would have held a formula are left blank with a short note so
+# it's obvious the macro still needs to run.
+# ---------------------------------------------------------------------------
+for dn_name in list(wb.defined_names.keys()):
+    del wb.defined_names[dn_name]
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+    for row in wb[sheet_name].iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                cell.value = None
+style_cell(ws_r, 2, 2, 'Run RebuildDistributionModule.bas (Alt+F11 -> Insert -> Module -> paste -> F5) '
+                       "to populate the LAMBDA names and every formula cell -- they are intentionally "
+                       "left blank in this file so it opens without a repair prompt.", ITALIC_FONT)
 
 wb.save(OUT)
 print("Saved", OUT)
