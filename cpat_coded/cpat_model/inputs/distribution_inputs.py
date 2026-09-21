@@ -51,6 +51,21 @@ class DistributionInputsDict(TypedDict):
     labor_tax_exempt_bottom_deciles: int # 'Targeted Exemption' method
     labor_tax_cut_coefficient: float # 'Proportional Compensation' method
 
+    # Targeted transfer design (rules-based synthetic transfer -- Dashboard
+    # 'Revenue recycling -> Transfers -> of which'; see recycling.py
+    # targeted_transfer_shares, which this configures). Not used when
+    # targeted transfers are instead sourced from an ASPIRE program's own
+    # incidence (that path isn't wired in yet, see data.load_aspire).
+    transfer_targeted_percentile: float # e.g. 0.4 = bottom 40% of the population targeted
+    transfer_coverage_rate: float # % of the targeted population that receives a transfer
+    transfer_leakage_rate: float # % of the untargeted population that also receives one
+
+    # Public investment incidence (§4.4): which HHSurvey infrastructure-
+    # access index to weight by (see recycling.py public_investment_shares).
+    # One of 'all_acs_share', 'ely_acs_share', 'wtr_acs_share',
+    # 'sani_acs_share', 'ICT_acs_share', 'transp_pub_acs_share'.
+    public_investment_access_type: str
+
 
 class DistributionInputs:
     """
@@ -85,6 +100,12 @@ class DistributionInputs:
             'labor_tax_reduction_method': 'Proportional Compensation',
             'labor_tax_exempt_bottom_deciles': 0,
             'labor_tax_cut_coefficient': 0.0,
+
+            'transfer_targeted_percentile': 1.0,
+            'transfer_coverage_rate': 1.0,
+            'transfer_leakage_rate': 0.0,
+
+            'public_investment_access_type': 'all_acs_share',
         }
 
         if config_input:

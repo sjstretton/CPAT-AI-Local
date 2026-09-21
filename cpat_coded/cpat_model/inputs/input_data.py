@@ -28,7 +28,7 @@ from cpat_model.components.power.data import load_mpp, load_ic, load_lcoe_tmp
 
 from cpat_model.components.distribution.data import (
     load_io_gtap, load_hh_survey, load_hh_elast, load_aspire, load_who_cooking,
-    load_gdp_ratios, load_gtap_cpat_sector_crosswalk
+    load_gdp_ratios, load_gtap_cpat_sector_crosswalk, load_countries_to_gtap10
 )
 
 class InputData:
@@ -86,6 +86,7 @@ class InputData:
     distn_who_cooking: pd.DataFrame
     distn_gdp_ratios: pd.DataFrame
     distn_gtap_cpat_crosswalk: pd.DataFrame
+    distn_countries_to_gtap10: pd.DataFrame
 
     def __init__(
             self,
@@ -164,3 +165,4 @@ class InputData:
         self.distn_who_cooking = load_who_cooking(selected_countries)
         self.distn_gdp_ratios = load_gdp_ratios(selected_countries)
         self.distn_gtap_cpat_crosswalk = load_gtap_cpat_sector_crosswalk()
+        self.distn_countries_to_gtap10 = load_countries_to_gtap10(selected_countries)
