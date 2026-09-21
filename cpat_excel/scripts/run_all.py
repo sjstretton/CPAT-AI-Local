@@ -36,7 +36,7 @@ def main():
 
     print("########## REVERSE: tabular_regenerated -> bymodule_regenerated ##########")
     for m in modules:
-        bymodule_from_tabular.regenerate_module(m, common.DIR_TABULAR_REGEN)
+        bymodule_from_tabular.regenerate_module(m, "data_tabular_regenerated")
 
 
 if __name__ == "__main__":

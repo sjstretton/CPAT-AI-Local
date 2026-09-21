@@ -43,11 +43,11 @@ def build_composite_grid(table_specs, tabular_tables):
     return grid
 
 
-def regenerate_module(module_name, tabular_dir):
+def regenerate_module(module_name, tabular_tier="data_tabular_regenerated"):
     spec = common.MODULES[module_name]
-    print(f"=== {module_name} (from {os.path.basename(tabular_dir)}) ===")
+    print(f"=== {module_name} (from {tabular_tier}) ===")
 
-    tabular_path = f"{tabular_dir}/{spec['output_name']}"
+    tabular_path = f"{common.module_dir(module_name, tabular_tier)}/{spec['output_name']}"
     tabular_tables = common.read_tables_xlsx(tabular_path)
 
     grids = {}
@@ -64,14 +64,14 @@ def regenerate_module(module_name, tabular_dir):
     for sheet_name, table_specs in spec["composite_sheets"].items():
         grids[sheet_name] = build_composite_grid(table_specs, tabular_tables)
 
-    out_path = f"{common.DIR_BYMODULE_REGEN}/{spec['output_name']}"
+    out_path = f"{common.module_dir(module_name, 'data_bymodule_regenerated')}/{spec['output_name']}"
     common.write_raw_grids_xlsx(out_path, grids)
     print(f"Wrote {out_path}")
     for name, g in grids.items():
         ncols = max((len(r) for r in g), default=0)
         print(f"  {name}: {len(g)} rows x {ncols} cols")
 
-    original_path = f"{common.DIR_BYMODULE}/{spec['output_name']}"
+    original_path = f"{common.module_dir(module_name, 'data_bymodule')}/{spec['output_name']}"
     if os.path.exists(original_path):
         original_grids_wb = common.read_tables_xlsx(original_path)
         print(f"Comparing simple sheets against {original_path}:")
@@ -93,13 +93,13 @@ def main():
     args = sys.argv[1:]
     from_original = "--from-original" in args
     args = [a for a in args if a != "--from-original"]
-    tabular_dir = common.DIR_TABULAR if from_original else common.DIR_TABULAR_REGEN
+    tabular_tier = "data_tabular" if from_original else "data_tabular_regenerated"
 
     modules = args or list(common.MODULES.keys())
     for m in modules:
         if m not in common.MODULES:
             raise SystemExit(f"Unknown module '{m}'. Known modules: {list(common.MODULES)}")
-        regenerate_module(m, tabular_dir)
+        regenerate_module(m, tabular_tier)
 
 
 if __name__ == "__main__":

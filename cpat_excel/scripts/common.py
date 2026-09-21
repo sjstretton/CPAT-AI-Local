@@ -2,6 +2,11 @@
 Shared paths, table layout specs, and I/O helpers for the cpat_excel data
 pipeline.
 
+Every module gets its own subfolder under cpat_excel/ (e.g. Distribution/),
+holding all five tiers below. Only original/ (the source .xlsb, shared by
+every module) and scripts/ (this pipeline code, likewise shared) sit outside
+a module folder.
+
 Forward direction (lossy, each stage simplifies the previous one):
     original (.xlsb) -> data_bymodule -> data_tabular -> data_standardized
 
@@ -26,11 +31,22 @@ SOURCE_XLSB = os.path.join(
     CPAT_EXCEL_DIR, "original", "CPAT 1.0pre_456_NoPropData.xlsb"
 )
 
-DIR_BYMODULE = os.path.join(CPAT_EXCEL_DIR, "data_bymodule")
-DIR_TABULAR = os.path.join(CPAT_EXCEL_DIR, "data_tabular")
-DIR_STANDARDIZED = os.path.join(CPAT_EXCEL_DIR, "data_standardized")
-DIR_TABULAR_REGEN = os.path.join(CPAT_EXCEL_DIR, "data_tabular_regenerated")
-DIR_BYMODULE_REGEN = os.path.join(CPAT_EXCEL_DIR, "data_bymodule_regenerated")
+TIERS = (
+    "data_bymodule",
+    "data_tabular",
+    "data_standardized",
+    "data_tabular_regenerated",
+    "data_bymodule_regenerated",
+)
+
+
+def module_dir(module_name, tier):
+    """Path to a module's folder for a given pipeline tier, e.g.
+    module_dir('Distribution', 'data_tabular') ->
+    cpat_excel/Distribution/data_tabular
+    """
+    assert tier in TIERS, f"unknown tier '{tier}', expected one of {TIERS}"
+    return os.path.join(CPAT_EXCEL_DIR, module_name, tier)
 
 BASE_FONT = Font(name="Arial", size=10)
 HEADER_FONT = Font(name="Arial", size=10, bold=True)

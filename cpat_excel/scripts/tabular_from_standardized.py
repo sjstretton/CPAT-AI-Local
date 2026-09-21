@@ -21,7 +21,7 @@ def regenerate_module(module_name):
     spec = common.MODULES[module_name]
     print(f"=== {module_name} ===")
 
-    standard_path = f"{common.DIR_STANDARDIZED}/{spec['output_name']}"
+    standard_path = f"{common.module_dir(module_name, 'data_standardized')}/{spec['output_name']}"
     standard_tables = common.read_tables_xlsx(standard_path)
 
     tabular_tables = {}
@@ -35,13 +35,13 @@ def regenerate_module(module_name):
         )
         tabular_tables[name] = (out_header, out_data)
 
-    out_path = f"{common.DIR_TABULAR_REGEN}/{spec['output_name']}"
+    out_path = f"{common.module_dir(module_name, 'data_tabular_regenerated')}/{spec['output_name']}"
     common.write_tables_xlsx(out_path, tabular_tables)
     print(f"Wrote {out_path}")
     for name, (h, d) in tabular_tables.items():
         print(f"  {name}: {len(d)} rows x {len(h)} cols")
 
-    original_path = f"{common.DIR_TABULAR}/{spec['output_name']}"
+    original_path = f"{common.module_dir(module_name, 'data_tabular')}/{spec['output_name']}"
     if os.path.exists(original_path):
         original_tables = common.read_tables_xlsx(original_path)
         print(f"Comparing against {original_path}:")

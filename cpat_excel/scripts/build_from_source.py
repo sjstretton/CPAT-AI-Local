@@ -45,7 +45,7 @@ def build_module(module_name):
         print(f"  {name}: {len(g)} rows x {ncols} cols")
 
     # --- Stage 1: data_bymodule -------------------------------------------------
-    bymodule_path = f"{common.DIR_BYMODULE}/{spec['output_name']}"
+    bymodule_path = f"{common.module_dir(module_name, 'data_bymodule')}/{spec['output_name']}"
     common.write_raw_grids_xlsx(bymodule_path, grids)
     print(f"Wrote {bymodule_path}")
 
@@ -69,7 +69,7 @@ def build_module(module_name):
                 header, data = common.dedupe_rows(header, data)
             tabular_tables[t["table"]] = (header, data)
 
-    tabular_path = f"{common.DIR_TABULAR}/{spec['output_name']}"
+    tabular_path = f"{common.module_dir(module_name, 'data_tabular')}/{spec['output_name']}"
     common.write_tables_xlsx(tabular_path, tabular_tables)
     print(f"Wrote {tabular_path}")
     for name, (h, d) in tabular_tables.items():
@@ -94,7 +94,7 @@ def build_module(module_name):
                     row[yi] = int(row[yi])
         standard_tables[name] = (out_header, out_data)
 
-    standard_path = f"{common.DIR_STANDARDIZED}/{spec['output_name']}"
+    standard_path = f"{common.module_dir(module_name, 'data_standardized')}/{spec['output_name']}"
     common.write_tables_xlsx(standard_path, standard_tables)
     print(f"Wrote {standard_path}")
     for name, (h, d) in standard_tables.items():
