@@ -210,3 +210,61 @@ KTOE_TO_MWY = KTOE_TO_GWH * GWH_TO_MWY
 KWH_TO_GJ = 3.6 / 1e3 # same as 3600 / 1000000
 BARREL_TO_GJ = 6.12
 KTOE_TO_GJ = 41868
+
+### Distribution module
+# See distribution/docs/CPAT_Distribution_Module_Pseudocode.docx for the full spec.
+# Direct household fuels: coal/nga/gso/die/lpg/ker/electricity reuse the existing
+# fuel codes above (COA, NGA, GSO, DIE, LPG, KER, ELE). The Distribution sheet's
+# 'oil' direct fuel is the same thing as OOP ('Other oil products') above -- no
+# separate constant needed, use c.OOP.
+# Traditional (non-fossil) cooking fuels, new to this module:
+CHA = 'cha' # Charcoal
+ETH = 'eth' # Ethanol
+FWD = 'fwd' # Firewood
+COOKING_BIOMASS_FUELS = [CHA, ETH, FWD]
+
+DISTN_DIRECT_FUELS = [COA, NGA, OOP, GSO, DIE, KER, LPG, ELE] + COOKING_BIOMASS_FUELS
+
+# Indirect (non-fuel) household consumption categories.
+# NOTE: the Excel model's code for 'Health services' is also literally 'hea',
+# same string as the unrelated HEA ('heat') constant above. They live in
+# different index dimensions (heat is a fuel-side aggregation; health services
+# is a Distribution consumption category) so the shared string is harmless in
+# the data, but keep the Python names distinct to avoid confusion.
+APP = 'app' # Appliances
+CHE = 'che' # Chemicals
+CLO = 'clo' # Clothing
+COM = 'com' # Communications
+EDU = 'edu' # Education
+FOOD_CONS = 'food' # Food (consumption category; distinct from the FOO sector code 'foo')
+HEALTH_SRV = 'hea' # Health services -- see NOTE above re: collision with HEA ('heat')
+HOU = 'hou' # Housing
+OTH = 'oth' # Other
+PAP = 'pap' # Paper
+PHA = 'pha' # Pharmaceuticals
+RET = 'ret' # Recreation / tourism
+TEQ = 'teq' # Transportation equipment
+TPU = 'tpu' # Public transportation
+
+DISTN_INDIRECT_CATEGORIES = [
+    APP, CHE, CLO, COM, EDU, FOOD_CONS, HEALTH_SRV, HOU, OTH, PAP, PHA, RET, TEQ, TPU
+]
+
+# Decile / sample / statistic dimensions (household budget survey cells)
+DECILE_CODE = 'Decile' # column name; values 1..10, poorest -> wealthiest
+DECILES = list(range(1, 11))
+
+SAMPLE_CODE = 'Sample' # column name
+SAMPLE_OVERALL = 'overall'
+SAMPLE_URBAN = 'urban'
+SAMPLE_RURAL = 'rural'
+SAMPLES = [SAMPLE_OVERALL, SAMPLE_URBAN, SAMPLE_RURAL]
+
+STATISTIC_CODE = 'Statistic' # column name
+STAT_MEAN = 'mean'
+STAT_MEDIAN = 'median'
+STAT_P25 = 'p25'
+STAT_P75 = 'p75'
+STATISTICS = [STAT_MEAN, STAT_MEDIAN, STAT_P25, STAT_P75]
+
+GTAP_SECTOR_CODE = 'GtapSectorCode' # column name, GTAP10 sector (distinct from CPAT SectorCode)
