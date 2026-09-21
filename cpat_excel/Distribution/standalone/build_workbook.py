@@ -30,6 +30,7 @@ Run: python3 build_workbook.py
 """
 import pickle
 import os
+import re
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -85,8 +86,16 @@ def write_table(ws, top_row, top_col, header, data, table_name, style="TableStyl
     Excel Table (ListObject) so formulas elsewhere can use structured
     references like TableName[Column]."""
     ncols = len(header)
+    seen = {}
+    dedup_header = []
+    for h in header:
+        h = str(h)
+        n = seen.get(h, 0)
+        seen[h] = n + 1
+        dedup_header.append(h if n == 0 else f"{h}_{n + 1}")
+    header = dedup_header
     for c, h in enumerate(header):
-        style_cell(ws, top_row, top_col + c, str(h), BOLD_FONT, fill=SUBSECTION_FILL, border=True)
+        style_cell(ws, top_row, top_col + c, h, BOLD_FONT, fill=SUBSECTION_FILL, border=True)
     for r, row in enumerate(data, start=top_row + 1):
         for c, v in enumerate(row):
             style_cell(ws, r, top_col + c, v, BASE_FONT, border=True)
@@ -1176,6 +1185,44 @@ wb._sheets = (
     + [wb[n] for n in ["HHSurvey", "HH_Elast", "ASPIRE", "WHOCooking", "GDPRatios", "IO_GTAP", "Price_Changes", "Mapping"]]
 )
 wb.active = 0
+
+# ---------------------------------------------------------------------------
+# Excel stores "future functions" (introduced after the OOXML spec froze)
+# under an _xlfn./_xlfn._xlws. prefix in the file format, even though the
+# UI shows them unprefixed. openpyxl writes formula text verbatim, so
+# without this pass Excel can't resolve LAMBDA/LET/XLOOKUP/HSTACK/SCAN/
+# MAKEARRAY in cell formulas OR in the LAMBDA-valued defined names, and
+# "repairs" the file by stripping the named ranges (-> #NAME? errors on
+# every custom function, e.g. ELAST).
+# ---------------------------------------------------------------------------
+XLFN_PLAIN = {"LAMBDA", "LET", "XLOOKUP"}
+XLFN_XLWS = {"HSTACK", "SCAN", "MAKEARRAY"}
+_XLFN_RE = re.compile(
+    r'(?<!_xlfn\.)(?<!_xlws\.)\b(' + "|".join(XLFN_PLAIN | XLFN_XLWS) + r')\('
+)
+
+
+def _xlfn_repl(m):
+    name = m.group(1)
+    return f"_xlfn._xlws.{name}(" if name in XLFN_XLWS else f"_xlfn.{name}("
+
+
+def add_xlfn_prefixes(formula):
+    return _XLFN_RE.sub(_xlfn_repl, formula)
+
+
+n_names = n_cells = 0
+for dn in wb.defined_names.values():
+    if dn.attr_text and dn.attr_text.startswith("="):
+        dn.attr_text = "=" + add_xlfn_prefixes(dn.attr_text[1:])
+        n_names += 1
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+    for row in wb[sheet_name].iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                cell.value = "=" + add_xlfn_prefixes(cell.value[1:])
+                n_cells += 1
+print(f"Applied _xlfn prefixes: {n_names} defined names, {n_cells} cell formulas.")
 
 wb.save(OUT)
 print("Saved", OUT)
