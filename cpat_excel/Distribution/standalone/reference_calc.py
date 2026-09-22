@@ -5,13 +5,24 @@ validate the Excel LAMBDA formula design against the source workbook's own
 cached values *before* encoding the logic as (harder-to-debug) Excel formula
 strings. Not shipped in the workbook itself.
 """
+import os
 import pickle
 
-HERE = "/home/user/CPAT-AI-Local/cpat_excel/Distribution/standalone"
-with open(f"{HERE}/egypt_data.pkl", "rb") as f:
+HERE = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(HERE, "egypt_data.pkl"), "rb") as f:
     DATA = pickle.load(f)
-with open("/tmp/claude-0/-home-user-CPAT-AI-Local/117e96f5-0306-5814-b5e4-f0cac77f3abb/scratchpad/dist_grid.pkl", "rb") as f:
-    GRID = pickle.load(f)
+
+# GRID (the full pyxlsb dump of the source "Distribution" sheet) is only
+# needed for the __main__ comparison block below, and only exists in the
+# session scratchpad it was extracted into -- not checked into the repo (it's
+# ~1MB of raw source-sheet cells, not needed to run the calculations
+# themselves, e.g. from build_workbook.py's Tests-sheet generation). Load it
+# lazily/optionally so `import reference_calc` works without it.
+_GRID_PATH = "/tmp/claude-0/-home-user-CPAT-AI-Local/117e96f5-0306-5814-b5e4-f0cac77f3abb/scratchpad/dist_grid.pkl"
+GRID = None
+if os.path.exists(_GRID_PATH):
+    with open(_GRID_PATH, "rb") as f:
+        GRID = pickle.load(f)
 
 hh_header, hh_rows = DATA["hhsurvey"]
 el_header, el_rows = DATA["hh_elast"]
@@ -229,7 +240,9 @@ def post_cp_incl(decile, sample):
 
 
 def gini(shares):
-    """shares: list of 10 (non-cumulative) decile shares, poorest->richest."""
+    """shares: list of 10 (non-cumulative) decile shares, poorest->richest.
+    Flat 1/10th interval widths -- NOT what the shipped Excel formula uses
+    (see gini_weighted below); kept for reference/generic use only."""
     cum = []
     running = 0.0
     for s in shares:
@@ -241,6 +254,47 @@ def gini(shares):
         area += 0.1 * (prev + c) / 2
         prev = c
     return 1 - 2 * area
+
+
+def _decile_shares(value_func):
+    """value_func(decile, sample) -> level; returns the 10 (non-cumulative)
+    shares of the Overall-sample total, poorest->richest decile."""
+    vals = [value_func(d, "Overall") for d in range(1, 11)]
+    total = sum(vals)
+    return [v / total for v in vals]
+
+
+def gini_weighted(shares):
+    """shares: list of 10 (non-cumulative) decile shares, poorest->richest.
+    Matches the shipped Excel C.IX formula exactly: Lorenz-curve trapezoid
+    interval widths are each decile's actual (survey-weighted) population
+    share of ADJ_POP, not a flat 1/10th."""
+    pop = [adj_pop(d, "Overall") for d in range(1, 11)]
+    total_pop = sum(pop)
+    pop_w = [p / total_pop for p in pop]
+    cum = []
+    running = 0.0
+    for s in shares:
+        running += s
+        cum.append(running)
+    area = 0.0
+    prev = 0.0
+    for w, c in zip(pop_w, cum):
+        area += w * (prev + c) / 2
+        prev = c
+    return 1 - 2 * area
+
+
+def gini_baseline():
+    return gini_weighted(_decile_shares(adj_cons_tot))
+
+
+def gini_post_cp_excl():
+    return gini_weighted(_decile_shares(post_cp_excl))
+
+
+def gini_post_cp_incl():
+    return gini_weighted(_decile_shares(post_cp_incl))
 
 
 TAXED_FUELS = ["coa", "ely", "nga", "oil", "gso", "die", "ker", "lpg"]

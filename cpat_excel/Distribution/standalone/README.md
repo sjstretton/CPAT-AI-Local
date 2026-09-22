@@ -1,9 +1,11 @@
 # Standalone Distribution module (Egypt)
 
-`CPAT_Distribution_Standalone_Egypt.xlsx` is a standalone rebuild of the household
+`CPAT_Distribution_Standalone_Egypt_vN.N.xlsx` (top-level = latest confirmed-working
+version; `Old/` = earlier snapshots) is a standalone rebuild of the household
 distributional/incidence module from `cpat_excel/original/CPAT 1.0pre_456_NoPropData.xlsb`
 (sheet "Distribution"), scoped to Egypt only. See the workbook's own **ReadMe** tab for
-scope, structure and verification notes.
+scope, structure and verification notes, and its **Tests** tab (cell C5) for a live
+pass/fail check after running the macro.
 
 ## Pipeline
 
@@ -38,8 +40,31 @@ encoding problem entirely: Excel does its own internal encoding, guaranteed corr
 
 To use: open the .xlsx, Alt+F11, Insert > Module, paste in `RebuildDistributionModule.bas`,
 then run `RebuildDistributionModule` (F5). It defines all 39 named LAMBDA functions plus
-the plain named ranges, then writes all ~1,400 formula cells in Distribution_Inputs and
-Distribution_Outputs, then forces a full recalculation.
+the plain named ranges, then writes all ~1,460 formula cells across Distribution_Inputs,
+Distribution_Outputs and Tests, then forces a full recalculation.
+
+### Automated testing (less manual re-checking after a formula change)
+
+Two layers, both run automatically as part of `build_workbook.py` (no extra step needed):
+
+1. **Build-time static checks** -- every LAMBDA formula is scanned for the two array-
+   broadcasting bug *shapes* that caused real, hard-to-diagnose failures during manual
+   testing: `INDEX(range, 0, X)` where `X` can be array-valued (only well-defined when the
+   *other* index is scalar -- this produced ELASTADJ/ASPIRE_PC's `#VALUE!`), and
+   `MIN`/`MAX` called with an array-valued argument (Excel's MIN/MAX reduce *all* arguments
+   to one value instead of broadcasting element-wise -- this produced PIT_REDUCTION's
+   `#VALUE!`). The build raises `AssertionError` and names the offending LAMBDA/call if
+   either shape reappears, instead of waiting to be found by hand in Excel again. Same
+   collision check as before also still runs (defined names vs. Excel Table names, which
+   share one case-insensitive namespace -- the ELASTADJ/"ElastAdj" bug).
+2. **Tests sheet** (in the workbook itself, populated by the same macro as everything
+   else) -- ~20 checks, each calling a LAMBDA with the *full* `DECILE_ARRAY` (the exact
+   call pattern that triggered both bugs above; a scalar-decile smoke test would not have
+   caught either) and comparing the live Excel result against `reference_calc.py`'s
+   independently-computed value, plus 3 checks of the live Gini cells. Open the workbook,
+   run the macro, read cell `Tests!C5` -- `"ALL 20 TESTS PASS"` or a failure count pointing
+   at exactly which block to look at, instead of typing test formulas into blank cells by
+   hand after every change.
 
 Re-run with:
 

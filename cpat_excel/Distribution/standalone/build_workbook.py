@@ -31,6 +31,8 @@ Run: python3 build_workbook.py
 import pickle
 import os
 
+import reference_calc as rc
+
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
@@ -737,6 +739,105 @@ for name, formula in LAMBDAS.items():
     define_name(name, "=" + formula)
 print(f"{len(LAMBDAS)} LAMBDA functions defined.")
 
+
+# ---------------------------------------------------------------------------
+# Static checks for the two array-broadcasting bug *categories* found during
+# manual testing (ELASTADJ/ASPIRE_PC and PIT_SHORTFALL_TOTAL/PIT_REDUCTION --
+# see the ReadMe "Tests tab" paragraph and the Tests sheet itself):
+#   1. INDEX(range, 0, X) -- "0 = whole column" is only well-defined when the
+#      OTHER index is scalar; when X can be array-valued (as any decile-
+#      shaped argument can be here), this silently returns #VALUE! instead
+#      of picking several columns. MATCH+INDEX(range,row,0)+CHOOSECOLS is the
+#      construct that actually supports an array-valued column selector.
+#   2. MIN(...)/MAX(...) called with more than one argument, where an
+#      argument's text references `decile`/DECILE_ARRAY: Excel's MIN/MAX
+#      reduce ALL arguments (scalars and array elements alike) to a single
+#      value instead of broadcasting element-wise, so this does not clamp an
+#      array-shaped argument the way IF(cond,a,b) does.
+# Both bugs compiled and ran without any visible error the first time -- they
+# only surfaced once called with the full DECILE_ARRAY, so a smoke test with
+# scalar deciles alone would not have caught either. Hence a static check
+# here, in addition to (not instead of) the DECILE_ARRAY-based Tests sheet.
+# ---------------------------------------------------------------------------
+def _split_top_level_args(s):
+    """Split a function's argument-list text on top-level commas (respecting
+    nested parens and quoted strings)."""
+    args, depth, in_quote, cur = [], 0, False, []
+    for ch in s:
+        if in_quote:
+            cur.append(ch)
+            if ch == '"':
+                in_quote = False
+        elif ch == '"':
+            in_quote = True
+            cur.append(ch)
+        elif ch == '(':
+            depth += 1
+            cur.append(ch)
+        elif ch == ')':
+            depth -= 1
+            cur.append(ch)
+        elif ch == ',' and depth == 0:
+            args.append(''.join(cur))
+            cur = []
+        else:
+            cur.append(ch)
+    args.append(''.join(cur))
+    return args
+
+
+def _find_calls(formula, func_name):
+    """Argument-list text (between the outer parens) of every call to
+    `func_name(` in `formula`, found by a flat left-to-right scan (so a call
+    nested inside another call's arguments is still found)."""
+    out, token, i = [], func_name + "(", 0
+    while True:
+        j = formula.find(token, i)
+        if j == -1:
+            return out
+        start = j + len(token)
+        depth, k, in_quote = 1, start, False
+        while k < len(formula) and depth > 0:
+            ch = formula[k]
+            if in_quote:
+                if ch == '"':
+                    in_quote = False
+            elif ch == '"':
+                in_quote = True
+            elif ch == '(':
+                depth += 1
+            elif ch == ')':
+                depth -= 1
+            k += 1
+        out.append(formula[start:k - 1])
+        i = k
+
+
+_array_bug_findings = []
+for _lname, _lformula in LAMBDAS.items():
+    for _call_args in _find_calls(_lformula, "INDEX"):
+        _args = _split_top_level_args(_call_args)
+        # row=0 (whole column) is only risky when the column argument can
+        # itself be array-valued -- i.e. it references `decile`/DECILE_ARRAY
+        # (as ELASTADJ/ASPIRE_PC's old, buggy column selector did). row=0
+        # with a scalar column index (e.g. BSHARE/ELAST's MATCH(colname,...),
+        # colname is always a plain string) is well-defined and fine.
+        if len(_args) == 3 and _args[1].strip() == "0" and "decile" in _args[2].lower():
+            _array_bug_findings.append(
+                f"{_lname}: INDEX(...,0,{_args[2].strip()}) -- row=0 with a decile-"
+                "referencing (possibly array-valued) column argument; use "
+                "MATCH+INDEX(range,row,0)+CHOOSECOLS instead")
+    for _fn in ("MIN", "MAX"):
+        for _call_args in _find_calls(_lformula, _fn):
+            _args = _split_top_level_args(_call_args)
+            if len(_args) > 1 and any("decile" in a.lower() for a in _args):
+                _array_bug_findings.append(
+                    f"{_lname}: {_fn}({', '.join(a.strip() for a in _args)}) -- does not "
+                    "broadcast element-wise over a decile-shaped argument; use IF(...) instead")
+if _array_bug_findings:
+    raise AssertionError("Array-broadcasting bug pattern(s) found:\n" + "\n".join(_array_bug_findings))
+print(f"Checked {len(LAMBDAS)} LAMBDA formulas for known array-broadcasting bug patterns: none found.")
+
 # ---------------------------------------------------------------------------
 # Distribution_Outputs: sections C.II - F. Column layout is standardized
 # across the whole sheet (the source workbook drifts across sections -- see
@@ -1144,6 +1245,204 @@ for cat in CAT_CODES:
 print("Distribution_Outputs written, last row", r)
 
 # ---------------------------------------------------------------------------
+# Tests: an automated cross-check sheet, populated (like everything else) by
+# the VBA rebuild macro. Each test calls a LAMBDA from the Name Manager with
+# the full DECILE_ARRAY (the exact call pattern that produced the ELASTADJ/
+# ASPIRE_PC and PIT_SHORTFALL_TOTAL/PIT_REDUCTION array-broadcasting bugs --
+# a scalar-decile call would not have caught either) and compares the live
+# Excel result against a value independently computed in reference_calc.py.
+# Three Gini rows instead reference the live Distribution_Outputs cells
+# directly (Gini has no reusable named LAMBDA of its own -- it's one bespoke
+# C.IX formula -- so a direct cell reference is the only way to check the
+# shipped formula itself rather than a hand-duplicated copy of it that could
+# silently drift out of sync).
+# ---------------------------------------------------------------------------
+TC = {"label": 2, "tag": 3, "dec1": 4, "tol": 15, "status": 17}
+
+
+def _decile_array_test(desc, excel_fn, python_fn, tol=1e-6):
+    """excel_fn(decile_arg) -> Excel formula string (decile_arg is the
+    literal 'DECILE_ARRAY'); python_fn(decile_int) -> expected float."""
+    return {
+        "desc": desc,
+        "formula": excel_fn("DECILE_ARRAY"),
+        "expected": [python_fn(d) for d in range(1, 11)],
+        "tol": tol,
+    }
+
+
+TEST_CASES = [
+    _decile_array_test(
+        "ELASTADJ(coal, deciles) -- array-broadcast fix (INDEX/CHOOSECOLS)",
+        lambda dec: f'=ELASTADJ("coa",{dec})',
+        lambda d: rc.elast_adj_factor("coa", d)),
+    _decile_array_test(
+        "ELASTADJ(food, deciles) -- array-broadcast fix (INDEX/CHOOSECOLS)",
+        lambda dec: f'=ELASTADJ("food",{dec})',
+        lambda d: rc.elast_adj_factor("food", d)),
+    _decile_array_test(
+        "ASPIRE_PC(allsp, deciles) -- array-broadcast fix (INDEX/CHOOSECOLS)",
+        lambda dec: f'=ASPIRE_PC("allsp",{dec})',
+        lambda d: rc.aspire_pc("allsp", d)),
+    _decile_array_test(
+        "DIRECT_EFFECT(electricity, deciles, Overall, mean)",
+        lambda dec: f'=DIRECT_EFFECT("ely","Electricity","ely_share","ely_elasticity",{dec},"Overall","mean")',
+        lambda d: rc.direct_effect("ely", d, "Overall", "mean")),
+    _decile_array_test(
+        "INDIRECT_EFFECT(food, deciles, Overall, mean)",
+        lambda dec: f'=INDIRECT_EFFECT("food","food_share","food_elasticity",{dec},"Overall","mean")',
+        lambda d: rc.indirect_effect("food", d, "Overall", "mean")),
+    _decile_array_test(
+        "TOTAL_EFFECT(deciles, Overall, mean)",
+        lambda dec: f'=TOTAL_EFFECT({dec},"Overall","mean")',
+        lambda d: rc.total_effect(d, "Overall", "mean")),
+    _decile_array_test(
+        "ADJ_POP(deciles, Overall)",
+        lambda dec: f'=ADJ_POP({dec},"Overall")',
+        lambda d: rc.adj_pop(d, "Overall")),
+    _decile_array_test(
+        "ADJ_CONS_TOT(deciles, Overall)",
+        lambda dec: f'=ADJ_CONS_TOT({dec},"Overall")',
+        lambda d: rc.adj_cons_tot(d, "Overall"), tol=1e-3),
+    _decile_array_test(
+        "PIT_LIABILITY(deciles)",
+        lambda dec: f'=PIT_LIABILITY({dec})',
+        lambda d: rc.pit_liability(d), tol=1e-3),
+    _decile_array_test(
+        "PIT_REDUCTION(deciles) -- MIN/MAX-with-array-argument fix (IF instead)",
+        lambda dec: f'=PIT_REDUCTION({dec})',
+        lambda d: rc.pit_reduction_personal_allowance(d), tol=1e-3),
+    _decile_array_test(
+        "TARGETED_TRANSFER(deciles)",
+        lambda dec: f'=TARGETED_TRANSFER({dec})',
+        lambda d: rc.targeted_transfer(d), tol=1e-3),
+    _decile_array_test(
+        "PUBLIC_INVESTMENT(deciles)",
+        lambda dec: f'=PUBLIC_INVESTMENT({dec})',
+        lambda d: rc.public_investment(d), tol=1e-3),
+    _decile_array_test(
+        "CURRENT_SPENDING(deciles)",
+        lambda dec: f'=CURRENT_SPENDING({dec})',
+        lambda d: rc.current_spending(d), tol=1e-3),
+    _decile_array_test(
+        "AMOUNT_RECYCLED(deciles)",
+        lambda dec: f'=AMOUNT_RECYCLED({dec})',
+        lambda d: rc.amount_recycled(d), tol=1e-3),
+    _decile_array_test(
+        "NET_EFFECT(deciles, Overall)",
+        lambda dec: f'=NET_EFFECT({dec},"Overall")',
+        lambda d: rc.net_effect(d, "Overall")),
+    _decile_array_test(
+        "POST_CP_EXCL_RECYCLING(deciles, Overall)",
+        lambda dec: f'=POST_CP_EXCL_RECYCLING({dec},"Overall")',
+        lambda d: rc.post_cp_excl(d, "Overall"), tol=1e-3),
+    _decile_array_test(
+        "POST_CP_INCL_RECYCLING(deciles, Overall)",
+        lambda dec: f'=POST_CP_INCL_RECYCLING({dec},"Overall")',
+        lambda d: rc.post_cp_incl(d, "Overall"), tol=1e-3),
+]
+
+GINI_TESTS = [
+    ("Gini - Baseline (live C.IX cell vs. independent Python recompute)", GINI_BASE_ROW, rc.gini_baseline()),
+    ("Gini - Post-CP excl. recycling (live C.IX cell vs. independent Python recompute)", GINI_EXCL_ROW, rc.gini_post_cp_excl()),
+    ("Gini - Post-CP incl. recycling (live C.IX cell vs. independent Python recompute)", GINI_INCL_ROW, rc.gini_post_cp_incl()),
+]
+
+ws_tests = new_output_sheet("Tests", tab_color="C00000")
+ws_tests.sheet_view.showGridLines = False
+ws_tests.column_dimensions["B"].width = 62
+for c in range(TC["dec1"], TC["dec1"] + 10):
+    ws_tests.column_dimensions[get_column_letter(c)].width = 13
+ws_tests.freeze_panes = "C1"
+
+tr = 1
+style_cell(ws_tests, tr, 1, "Distribution module -- automated cross-checks", TITLE_FONT)
+tr += 1
+INTRO_ROW = tr
+tr += 2
+SUMMARY_LABEL_ROW = tr
+style_cell(ws_tests, tr, 1, "Summary", BOLD_FONT)
+tr += 1
+SUMMARY_ROW = tr
+style_cell(ws_tests, tr, 2, "Overall status", BOLD_FONT)
+tr += 2
+
+style_cell(ws_tests, INTRO_ROW, 1,
+           f"Run RebuildDistributionModule.bas, then check cell C{SUMMARY_ROW} below. Each "
+           "block: Actual (live formula) vs. Expected (from reference_calc.py, computed "
+           "independently in Python) vs. Max Abs Diff/Status. Every 'deciles' test calls its "
+           "LAMBDA with the full DECILE_ARRAY -- the exact call pattern that produced the "
+           "array-broadcasting bugs found during manual testing -- so a regression in that "
+           "pattern shows up here automatically instead of needing to be found by hand again.",
+           ITALIC_FONT, align=Alignment(wrap_text=True))
+ws_tests.merge_cells(start_row=INTRO_ROW, start_column=1, end_row=INTRO_ROW, end_column=17)
+ws_tests.row_dimensions[INTRO_ROW].height = 45
+
+status_col = get_column_letter(TC["status"])
+FIRST_STATUS_ROW = None
+
+for tc in TEST_CASES:
+    style_cell(ws_tests, tr, TC["label"], tc["desc"], BOLD_FONT)
+    tr += 1
+    style_cell(ws_tests, tr, TC["tag"], "Actual")
+    style_cell(ws_tests, tr, TC["dec1"], tc["formula"], fill=CALC_FILL)
+    actual_row = tr
+    tr += 1
+    style_cell(ws_tests, tr, TC["tag"], "Expected")
+    for i, v in enumerate(tc["expected"]):
+        style_cell(ws_tests, tr, TC["dec1"] + i, v)
+    expected_row = tr
+    tr += 1
+    dcol0 = get_column_letter(TC["dec1"])
+    dcol9 = get_column_letter(TC["dec1"] + 9)
+    style_cell(ws_tests, tr, TC["tag"], "Max Abs Diff")
+    diff_formula = f'=MAX(ABS({dcol0}{actual_row}:{dcol9}{actual_row}-{dcol0}{expected_row}:{dcol9}{expected_row}))'
+    style_cell(ws_tests, tr, TC["dec1"], diff_formula, fill=CALC_FILL)
+    style_cell(ws_tests, tr, TC["tol"] - 1, "Tolerance")
+    style_cell(ws_tests, tr, TC["tol"], tc["tol"])
+    style_cell(ws_tests, tr, TC["status"] - 1, "Status")
+    dcol = get_column_letter(TC["dec1"])
+    tcol = get_column_letter(TC["tol"])
+    status_formula = f'=IF({dcol}{tr}<{tcol}{tr},"PASS","FAIL")'
+    style_cell(ws_tests, tr, TC["status"], status_formula, fill=CALC_FILL)
+    if FIRST_STATUS_ROW is None:
+        FIRST_STATUS_ROW = tr
+    tr += 2
+
+for desc, out_row, expected_val in GINI_TESTS:
+    style_cell(ws_tests, tr, TC["label"], desc, BOLD_FONT)
+    tr += 1
+    style_cell(ws_tests, tr, TC["tag"], "Actual")
+    p_col = get_column_letter(OC["basket"])
+    style_cell(ws_tests, tr, TC["dec1"], f"='Distribution_Outputs'!{p_col}{out_row}", fill=CALC_FILL)
+    actual_row = tr
+    tr += 1
+    style_cell(ws_tests, tr, TC["tag"], "Expected")
+    style_cell(ws_tests, tr, TC["dec1"], expected_val)
+    expected_row = tr
+    tr += 1
+    style_cell(ws_tests, tr, TC["tag"], "Abs Diff")
+    dcol = get_column_letter(TC["dec1"])
+    style_cell(ws_tests, tr, TC["dec1"], f'=ABS({dcol}{actual_row}-{dcol}{expected_row})', fill=CALC_FILL)
+    style_cell(ws_tests, tr, TC["tol"] - 1, "Tolerance")
+    style_cell(ws_tests, tr, TC["tol"], 1e-6)
+    style_cell(ws_tests, tr, TC["status"] - 1, "Status")
+    tcol = get_column_letter(TC["tol"])
+    status_formula = f'=IF({dcol}{tr}<{tcol}{tr},"PASS","FAIL")'
+    style_cell(ws_tests, tr, TC["status"], status_formula, fill=CALC_FILL)
+    tr += 2
+
+LAST_STATUS_ROW = tr - 2
+summary_formula = (
+    f'=IF(COUNTIF({status_col}{FIRST_STATUS_ROW}:{status_col}{LAST_STATUS_ROW},"FAIL")=0,'
+    f'"ALL "&COUNTIF({status_col}{FIRST_STATUS_ROW}:{status_col}{LAST_STATUS_ROW},"PASS")&" TESTS PASS",'
+    f'COUNTIF({status_col}{FIRST_STATUS_ROW}:{status_col}{LAST_STATUS_ROW},"FAIL")&" TEST(S) FAILED -- see below")'
+)
+style_cell(ws_tests, SUMMARY_ROW, 3, summary_formula, BOLD_FONT, fill=CALC_FILL)
+
+print(f"Tests sheet written: {len(TEST_CASES) + len(GINI_TESTS)} test cases, last row {tr}")
+
+# ---------------------------------------------------------------------------
 # ReadMe
 # ---------------------------------------------------------------------------
 ws_r = wb.create_sheet("ReadMe")
@@ -1196,7 +1495,15 @@ README_PARAS = [
      "method, incl. the undercoverage redistribution step) and the baseline Gini coefficient all "
      "reproduce the source to at least 10 significant figures. Net effect / Gini-including-"
      "recycling will differ slightly from the source to the extent of the targeted-transfer/"
-     "public-investment simplification noted above."),
+     "public-investment simplification noted above. See also the Tests tab below."),
+    ("Tests tab", BOLD_FONT,
+     "A Tests sheet, populated by the same macro as everything else, re-checks the LAMBDA "
+     "library's live results against reference_calc.py (an independent Python re-implementation) "
+     "after every rebuild -- open it and read cell C5 (\"ALL n TESTS PASS\" / \"k TEST(S) FAILED\"). "
+     "Every 'deciles' test deliberately calls its LAMBDA with the full DECILE_ARRAY, the exact call "
+     "pattern that produced the ELASTADJ/ASPIRE_PC (INDEX-with-array-column) and PIT_REDUCTION "
+     "(MIN/MAX-with-array-argument) bugs found during manual testing, so a regression in that "
+     "pattern is caught automatically instead of requiring another manual hunt through the sheet."),
     ("Conventions", BOLD_FONT,
      "Distribution_Outputs uses one consistent column layout throughout (A=section code, "
      "B=section title, C=item label, D=statistic, E=sample, F=quantile type, G=item code, "
@@ -1213,7 +1520,7 @@ for title, font, body in README_PARAS:
     rr += 2
 
 wb._sheets = (
-    [ws_r, ws_in, ws_out]
+    [ws_r, ws_in, ws_out, ws_tests]
     + [wb[n] for n in ["HHSurvey", "HH_Elast", "ASPIRE", "WHOCooking", "GDPRatios", "IO_GTAP", "Price_Changes", "Mapping"]]
 )
 wb.active = 0
@@ -1225,7 +1532,7 @@ wb.active = 0
 # RebuildDistributionModule.bas / this folder's README for why.
 # ---------------------------------------------------------------------------
 FORMULA_LOG = []  # (sheet_name, coordinate, clean_formula_without_leading_=)
-for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs", "Tests"]:
     for row in wb[sheet_name].iter_rows():
         for cell in row:
             if isinstance(cell.value, str) and cell.value.startswith("="):
@@ -1422,7 +1729,7 @@ print(f"Wrote {vba_path}")
 # ---------------------------------------------------------------------------
 for dn_name in list(wb.defined_names.keys()):
     del wb.defined_names[dn_name]
-for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs", "Tests"]:
     for row in wb[sheet_name].iter_rows():
         for cell in row:
             if isinstance(cell.value, str) and cell.value.startswith("="):
