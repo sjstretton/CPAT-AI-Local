@@ -25,6 +25,7 @@ Sub RebuildDistributionModule()
     WriteFormulas_Part11
     WriteFormulas_Part12
     Application.Calculation = xlCalculationAutomatic
+    Application.CalculateFullRebuild
     Application.ScreenUpdating = True
     MsgBox "Distribution module rebuilt: " & Names.Count & _
         " names, 1397 formulas.", vbInformation

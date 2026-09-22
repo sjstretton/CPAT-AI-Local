@@ -1343,9 +1343,15 @@ def generate_vba():
     # re-find end and add calc/finish lines
     end_idx = lines.index("End Sub")
     lines.insert(end_idx, "    Application.Calculation = xlCalculationAutomatic")
-    lines.insert(end_idx + 1, "    Application.ScreenUpdating = True")
-    lines.insert(end_idx + 2, '    MsgBox "Distribution module rebuilt: " & Names.Count & _' )
-    lines.insert(end_idx + 3, '        " names, ' + str(len(FORMULA_LOG)) + ' formulas.", vbInformation')
+    # A plain switch back to automatic calc isn't always enough to clear
+    # names/formulas that were defined while calculation was suspended --
+    # force Excel to fully rebuild the dependency tree and recalculate
+    # everything from scratch (this is what fixed the #REF! errors on
+    # ELASTADJ and everything downstream of it).
+    lines.insert(end_idx + 1, "    Application.CalculateFullRebuild")
+    lines.insert(end_idx + 2, "    Application.ScreenUpdating = True")
+    lines.insert(end_idx + 3, '    MsgBox "Distribution module rebuilt: " & Names.Count & _' )
+    lines.insert(end_idx + 4, '        " names, ' + str(len(FORMULA_LOG)) + ' formulas.", vbInformation')
 
     return "\n".join(lines) + "\n"
 
