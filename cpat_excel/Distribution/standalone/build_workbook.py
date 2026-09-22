@@ -80,10 +80,14 @@ def style_cell(ws, r, c, value=None, font=BASE_FONT, fill=None, align=None, numf
     return cell
 
 
+TABLE_NAMES = []  # every Excel Table displayName created, for the collision check below
+
+
 def write_table(ws, top_row, top_col, header, data, table_name, style="TableStyleMedium2"):
     """Write header+data starting at (top_row, top_col) and register as an
     Excel Table (ListObject) so formulas elsewhere can use structured
     references like TableName[Column]."""
+    TABLE_NAMES.append(table_name)
     ncols = len(header)
     seen = {}
     dedup_header = []
@@ -274,7 +278,12 @@ def build_data_tabs():
     ea = DATA["elasticity_adjustment"]
     ea_header = ["code"] + [f"D{d}" for d in range(1, 11)]
     ea_rows = [[code] + vals for code, vals in ea.items()]
-    write_table(ws, r3 + 1, 1, ea_header, ea_rows, "ElastAdj")
+    # NOTE: table displayName must not collide (case-insensitively -- Excel
+    # names are case-insensitive) with the ELASTADJ LAMBDA function name
+    # defined later, or Names.Add for ELASTADJ silently fails (swallowed by
+    # AddDistributionNames' On Error Resume Next) and every formula that
+    # calls it shows #REF!. Hence "ElastAdjTbl", not "ElastAdj".
+    write_table(ws, r3 + 1, 1, ea_header, ea_rows, "ElastAdjTbl")
     define_name("ElastAdj_Codes", f"Price_Changes!$A${r3 + 2}:$A${r3 + 1 + len(ea_rows)}")
     define_name("ElastAdj_Data", f"Price_Changes!$B${r3 + 2}:$K${r3 + 1 + len(ea_rows)}")
 
@@ -1198,6 +1207,23 @@ for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
             if isinstance(cell.value, str) and cell.value.startswith("="):
                 FORMULA_LOG.append((sheet_name, cell.coordinate, cell.value[1:]))
 print(f"Captured {len(FORMULA_LOG)} formula cells and {len(NAMED_RANGES)} named ranges for the VBA rebuild.")
+
+# Excel's name namespace (defined names AND table displayNames) is CASE-
+# INSENSITIVE. AddDistributionNames' Names.Add calls run inside On Error
+# Resume Next, so a name that collides with an existing Excel Table name
+# fails SILENTLY -- the LAMBDA function (or plain named range) simply never
+# gets created, and every formula that calls it shows #REF! with no error
+# ever surfacing anywhere. (This is exactly how the ELASTADJ / "ElastAdj"
+# table collision went undetected until testing in real Excel.) Catch any
+# such collision here, at build time, instead.
+_table_lc = {t.lower(): t for t in TABLE_NAMES}
+for _n in NAMED_RANGES:
+    if _n.lower() in _table_lc and _table_lc[_n.lower()] != _n:
+        raise AssertionError(f"name {_n!r} collides case-insensitively with table {_table_lc[_n.lower()]!r}")
+if len(_table_lc) != len(TABLE_NAMES):
+    _dupe = [t for t in TABLE_NAMES if TABLE_NAMES.count(t) > 1]
+    raise AssertionError(f"duplicate table name(s): {sorted(set(_dupe))}")
+print(f"Checked {len(NAMED_RANGES)} names against {len(TABLE_NAMES)} table names: no collisions.")
 
 
 def vba_wrapped_string_expr(text, cont_indent="        ", max_chunk=150, max_line=800):
