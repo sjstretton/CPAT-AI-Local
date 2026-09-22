@@ -1200,12 +1200,36 @@ for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
 print(f"Captured {len(FORMULA_LOG)} formula cells and {len(NAMED_RANGES)} named ranges for the VBA rebuild.")
 
 
-def vba_string_literal(text, max_chunk=180):
-    """VBA string literal for `text`, doubling embedded quotes and chunking
-    into '"a" & "b" & ...' pieces so no single quoted run gets unwieldy."""
+def vba_wrapped_string_expr(text, cont_indent="        ", max_chunk=150, max_line=800):
+    """VBA string-literal expression for `text` (quotes doubled), returned as
+    a list of physical source lines: '"chunk1" & "chunk2" & _' / ... / last
+    line with no trailing continuation. VBA caps a physical line at ~1023
+    chars, so a single long '"a" & "b" & "c"' run on one line (as opposed to
+    across several continued lines) will fail to compile for any formula
+    much longer than a couple hundred characters -- every one of our LAMBDA
+    definitions and effect-summing formulas is well past that. The first
+    returned line has no leading indent (the caller's statement prefix, e.g.
+    'wb.Names.Add Name:="X", RefersTo:=', goes immediately before it);
+    continuation lines are indented with `cont_indent` for readability."""
     escaped = text.replace('"', '""')
     chunks = [escaped[i:i + max_chunk] for i in range(0, len(escaped), max_chunk)] or [""]
-    return " & ".join(f'"{c}"' for c in chunks)
+    literals = [f'"{c}"' for c in chunks]
+    out_lines = [literals[0]]
+    for lit in literals[1:]:
+        candidate = out_lines[-1] + " & " + lit
+        if len(candidate) > max_line:
+            out_lines[-1] += " & _"
+            out_lines.append(cont_indent + lit)
+        else:
+            out_lines[-1] = candidate
+    return out_lines
+
+
+def vba_assign_statement(prefix, text):
+    """`prefix` (e.g. 'wb.Names.Add Name:="X", RefersTo:=') followed by a
+    (possibly line-continued) VBA string-literal expression for `text`."""
+    expr_lines = vba_wrapped_string_expr(text)
+    return [prefix + expr_lines[0]] + expr_lines[1:]
 
 
 def generate_vba():
@@ -1233,7 +1257,7 @@ def generate_vba():
     lines.append("    On Error Resume Next")
     for name, ref in NAMED_RANGES.items():
         formula = ref if ref.startswith("=") else "=" + ref
-        lines.append(f"    wb.Names.Add Name:=\"{name}\", RefersTo:={vba_string_literal(formula)}")
+        lines.extend(vba_assign_statement(f'    wb.Names.Add Name:="{name}", RefersTo:=', formula))
     lines.append("    On Error GoTo 0")
     lines.append("End Sub")
     lines.append("")
@@ -1254,7 +1278,7 @@ def generate_vba():
                 lines.append(f"    Set ws = ThisWorkbook.Worksheets(\"{sheet_name}\")")
                 cur_sheet = sheet_name
             full_formula = "=" + formula
-            lines.append(f"    ws.Range(\"{coord}\").Formula2 = {vba_string_literal(full_formula)}")
+            lines.extend(vba_assign_statement(f'    ws.Range("{coord}").Formula2 = ', full_formula))
         lines.append("End Sub")
         lines.append("")
 
