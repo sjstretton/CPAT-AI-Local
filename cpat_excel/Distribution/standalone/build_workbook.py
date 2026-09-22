@@ -561,9 +561,20 @@ LAMBDAS = {
     ),
     "PCHANGE_DIRECT": "LAMBDA(fuel,XLOOKUP(fuel,PriceDirect_Codes,PriceDirect_Values))",
     "PCHANGE_INDIRECT": "LAMBDA(cat,XLOOKUP(cat,PriceIndirect_Codes,PriceIndirect_Values))",
+    # INDEX(range,0,{array of column numbers}) is NOT a supported way to
+    # pull several columns at once (0 = "whole column/row" only behaves
+    # predictably when the OTHER index is a scalar) -- it's what produced
+    # the #VALUE! error when called with the full DECILE_ARRAY. Instead:
+    # find the item's row with MATCH (item is always a scalar, so this is
+    # a scalar row number), pull that whole row with INDEX(range,row,0)
+    # (again scalar row, so this direction is well-defined), then use
+    # CHOOSECOLS -- which *is* designed to take an array of column
+    # positions -- to pick out the (possibly array-valued) decile(s).
     "ELASTADJ": (
         "LAMBDA(item,decile,"
-        "XLOOKUP(item,ElastAdj_Codes,INDEX(ElastAdj_Data,0,IF(decile=0,1,decile))))"
+        "LET(r,MATCH(item,ElastAdj_Codes,0),"
+        "row,INDEX(ElastAdj_Data,r,0),"
+        "CHOOSECOLS(row,IF(decile=0,1,decile))))"
     ),
     "BEHAVIOR_ADJ": "LAMBDA(IF(AdjustBehaviorSwitch=\"Yes\",BehaviorAdjFactor,1))",
     "DWL": (
@@ -644,9 +655,14 @@ LAMBDAS = {
     ),
     "TOTAL_ADJ_POP": 'LAMBDA(SUM(BSHARE("popw",DECILE_ARRAY,"Overall","mean"))*PopAdjFactor)',
     "PIT_MAX_TRANSFER_PC": "LAMBDA(RevLaborTaxLCU/TOTAL_ADJ_POP())",
+    # MAX(0, array) would NOT clamp element-wise here -- Excel's MIN/MAX
+    # reduce ALL arguments (scalars and array elements alike) to a single
+    # value rather than broadcasting, so MAX(0, {array of 10}) collapses to
+    # one number instead of 10 clamped ones. IF(...) broadcasts correctly.
     "PIT_SHORTFALL_TOTAL": (
-        "LAMBDA(SUM(MAX(0,PIT_MAX_TRANSFER_PC()-PIT_LIABILITY(DECILE_ARRAY)/ADJ_POP(DECILE_ARRAY,\"Overall\"))"
-        '*ADJ_POP(DECILE_ARRAY,"Overall")))'
+        'LAMBDA(LET(gap,PIT_MAX_TRANSFER_PC()-PIT_LIABILITY(DECILE_ARRAY)/ADJ_POP(DECILE_ARRAY,"Overall"),'
+        'clipped,IF(gap>0,gap,0),'
+        'SUM(clipped*ADJ_POP(DECILE_ARRAY,"Overall"))))'
     ),
     "PIT_ADDITIONAL_PC": "LAMBDA(PIT_SHORTFALL_TOTAL()/TOTAL_ADJ_POP())",
     "PIT_LIABILITY_TOTAL_EXEMPT": (
@@ -657,8 +673,13 @@ LAMBDAS = {
         "LET(liability,PIT_LIABILITY(decile),"
         'pop,ADJ_POP(decile,"Overall"),'
         "prop_amt,liability*LaborTaxCutCoef,"
-        "pa_pc,MIN(PIT_MAX_TRANSFER_PC(),liability/pop)+PIT_ADDITIONAL_PC(),"
+        "liab_pc,liability/pop,"
+        "capped_pc,IF(PIT_MAX_TRANSFER_PC()<liab_pc,PIT_MAX_TRANSFER_PC(),liab_pc),"
+        "pa_pc,capped_pc+PIT_ADDITIONAL_PC(),"
         "pa_amt,pa_pc*pop,"
+        # both operands here are always scalar (RevLaborTaxLCU and
+        # PIT_LIABILITY_TOTAL_EXEMPT() are workbook-level totals, not
+        # per-decile), so plain MIN is fine.
         "te_scale,MIN(1,RevLaborTaxLCU/PIT_LIABILITY_TOTAL_EXEMPT()),"
         "te_amt,IF(decile<=ExemptBottomDeciles_PIT,liability*te_scale,0),"
         'IF(LaborTaxMethod="Proportional Compensation",prop_amt,'
@@ -676,10 +697,13 @@ LAMBDAS = {
     ),
     "TARGETED_TRANSFER": "LAMBDA(decile,RevTargetedTransferLCU*INFRA_SHARE(decile))",
     "PUBLIC_INVESTMENT": "LAMBDA(decile,RevPublicInvestLCU*INFRA_SHARE(decile))",
+    # Same INDEX(range,0,{array}) fix as ELASTADJ above.
     "ASPIRE_PC": (
         "LAMBDA(program,decile,"
         "LET(q,ROUNDUP(decile/2,0),"
-        "XLOOKUP(program,ASPIRE_Programs,INDEX(ASPIRE_Values,0,q))))"
+        "r,MATCH(program,ASPIRE_Programs,0),"
+        "row,INDEX(ASPIRE_Values,r,0),"
+        "CHOOSECOLS(row,q)))"
     ),
     "ASPIRE_TOTAL": (
         'LAMBDA(program,SUMPRODUCT(ASPIRE_PC(program,DECILE_ARRAY)*BSHARE("popw",DECILE_ARRAY,"Overall","mean")))'
