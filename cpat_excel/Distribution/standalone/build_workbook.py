@@ -85,8 +85,16 @@ def write_table(ws, top_row, top_col, header, data, table_name, style="TableStyl
     Excel Table (ListObject) so formulas elsewhere can use structured
     references like TableName[Column]."""
     ncols = len(header)
+    seen = {}
+    dedup_header = []
+    for h in header:
+        h = str(h)
+        n = seen.get(h, 0)
+        seen[h] = n + 1
+        dedup_header.append(h if n == 0 else f"{h}_{n + 1}")
+    header = dedup_header
     for c, h in enumerate(header):
-        style_cell(ws, top_row, top_col + c, str(h), BOLD_FONT, fill=SUBSECTION_FILL, border=True)
+        style_cell(ws, top_row, top_col + c, h, BOLD_FONT, fill=SUBSECTION_FILL, border=True)
     for r, row in enumerate(data, start=top_row + 1):
         for c, v in enumerate(row):
             style_cell(ws, r, top_col + c, v, BASE_FONT, border=True)
@@ -1176,6 +1184,144 @@ wb._sheets = (
     + [wb[n] for n in ["HHSurvey", "HH_Elast", "ASPIRE", "WHOCooking", "GDPRatios", "IO_GTAP", "Price_Changes", "Mapping"]]
 )
 wb.active = 0
+
+# ---------------------------------------------------------------------------
+# Capture every formula cell's clean formula text for the VBA rebuild script
+# (see generate_vba() below), then blank the cells and drop all defined
+# names so the shipped .xlsx opens without a repair prompt -- see
+# RebuildDistributionModule.bas / this folder's README for why.
+# ---------------------------------------------------------------------------
+FORMULA_LOG = []  # (sheet_name, coordinate, clean_formula_without_leading_=)
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+    for row in wb[sheet_name].iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                FORMULA_LOG.append((sheet_name, cell.coordinate, cell.value[1:]))
+print(f"Captured {len(FORMULA_LOG)} formula cells and {len(NAMED_RANGES)} named ranges for the VBA rebuild.")
+
+
+def vba_wrapped_string_expr(text, cont_indent="        ", max_chunk=150, max_line=800):
+    """VBA string-literal expression for `text` (quotes doubled), returned as
+    a list of physical source lines: '"chunk1" & "chunk2" & _' / ... / last
+    line with no trailing continuation. VBA caps a physical line at ~1023
+    chars, so a single long '"a" & "b" & "c"' run on one line (as opposed to
+    across several continued lines) will fail to compile for any formula
+    much longer than a couple hundred characters -- every one of our LAMBDA
+    definitions and effect-summing formulas is well past that. The first
+    returned line has no leading indent (the caller's statement prefix, e.g.
+    'wb.Names.Add Name:="X", RefersTo:=', goes immediately before it);
+    continuation lines are indented with `cont_indent` for readability."""
+    escaped = text.replace('"', '""')
+    chunks = [escaped[i:i + max_chunk] for i in range(0, len(escaped), max_chunk)] or [""]
+    literals = [f'"{c}"' for c in chunks]
+    out_lines = [literals[0]]
+    for lit in literals[1:]:
+        candidate = out_lines[-1] + " & " + lit
+        if len(candidate) > max_line:
+            out_lines[-1] += " & _"
+            out_lines.append(cont_indent + lit)
+        else:
+            out_lines[-1] = candidate
+    return out_lines
+
+
+def vba_assign_statement(prefix, text):
+    """`prefix` (e.g. 'wb.Names.Add Name:="X", RefersTo:=') followed by a
+    (possibly line-continued) VBA string-literal expression for `text`."""
+    expr_lines = vba_wrapped_string_expr(text)
+    return [prefix + expr_lines[0]] + expr_lines[1:]
+
+
+def generate_vba():
+    lines = []
+    lines.append('Attribute VB_Name = "RebuildDistributionModule"')
+    lines.append("' Rebuilds the named LAMBDA functions and all Distribution_Outputs /")
+    lines.append("' Distribution_Inputs formulas via Excel's own object model, so Excel")
+    lines.append("' itself performs the internal _xlfn/_xlpm encoding instead of relying")
+    lines.append("' on formula text written directly into the .xlsx XML.")
+    lines.append("' Usage: Alt+F11 -> Insert -> Module -> paste this file -> F5 (or run")
+    lines.append("' RebuildDistributionModule from the macro list). Run once after opening")
+    lines.append("' the workbook; safe to re-run.")
+    lines.append("Option Explicit")
+    lines.append("")
+    lines.append("Sub RebuildDistributionModule()")
+    lines.append("    Application.ScreenUpdating = False")
+    lines.append("    Application.Calculation = xlCalculationManual")
+    lines.append("    AddDistributionNames")
+
+    # --- names (both plain ranges and LAMBDA-valued) ---
+    lines.append("End Sub")
+    lines.append("")
+    lines.append("Sub AddDistributionNames()")
+    lines.append("    Dim wb As Workbook: Set wb = ThisWorkbook")
+    lines.append("    On Error Resume Next")
+    for name, ref in NAMED_RANGES.items():
+        formula = ref if ref.startswith("=") else "=" + ref
+        lines.extend(vba_assign_statement(f'    wb.Names.Add Name:="{name}", RefersTo:=', formula))
+    lines.append("    On Error GoTo 0")
+    lines.append("End Sub")
+    lines.append("")
+
+    # --- formulas, chunked into ~120-statement Subs to stay well under the
+    #     ~64K-character-per-procedure VBA limit ---
+    CHUNK = 120
+    part_names = []
+    for i in range(0, len(FORMULA_LOG), CHUNK):
+        part = i // CHUNK + 1
+        part_name = f"WriteFormulas_Part{part}"
+        part_names.append(part_name)
+        lines.append(f"Sub {part_name}()")
+        lines.append("    Dim ws As Worksheet")
+        cur_sheet = None
+        for sheet_name, coord, formula in FORMULA_LOG[i:i + CHUNK]:
+            if sheet_name != cur_sheet:
+                lines.append(f"    Set ws = ThisWorkbook.Worksheets(\"{sheet_name}\")")
+                cur_sheet = sheet_name
+            full_formula = "=" + formula
+            lines.extend(vba_assign_statement(f'    ws.Range("{coord}").Formula2 = ', full_formula))
+        lines.append("End Sub")
+        lines.append("")
+
+    # --- master sub, appended after AddDistributionNames call list ---
+    master_idx = lines.index("Sub RebuildDistributionModule()")
+    insert_idx = lines.index("    AddDistributionNames") + 1
+    for pn in part_names:
+        lines.insert(insert_idx, f"    {pn}")
+        insert_idx += 1
+    # re-find end and add calc/finish lines
+    end_idx = lines.index("End Sub")
+    lines.insert(end_idx, "    Application.Calculation = xlCalculationAutomatic")
+    lines.insert(end_idx + 1, "    Application.ScreenUpdating = True")
+    lines.insert(end_idx + 2, '    MsgBox "Distribution module rebuilt: " & Names.Count & _' )
+    lines.insert(end_idx + 3, '        " names, ' + str(len(FORMULA_LOG)) + ' formulas.", vbInformation')
+
+    return "\n".join(lines) + "\n"
+
+
+vba_path = os.path.join(HERE, "RebuildDistributionModule.bas")
+with open(vba_path, "w", newline="\r\n") as f:
+    f.write(generate_vba())
+print(f"Wrote {vba_path}")
+
+# ---------------------------------------------------------------------------
+# Ship a CLEAN-opening .xlsx: no LAMBDA-valued (or other future-function)
+# defined names, no formulas referencing them -- only these were ever the
+# source of the "file needs repair" prompt. All row/column labels, section
+# structure, styling and the data tabs are untouched; run the .bas macro
+# above after opening to populate the LAMBDA names and every formula cell.
+# Cells that would have held a formula are left blank with a short note so
+# it's obvious the macro still needs to run.
+# ---------------------------------------------------------------------------
+for dn_name in list(wb.defined_names.keys()):
+    del wb.defined_names[dn_name]
+for sheet_name in ["Distribution_Inputs", "Distribution_Outputs"]:
+    for row in wb[sheet_name].iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                cell.value = None
+style_cell(ws_r, 2, 2, 'Run RebuildDistributionModule.bas (Alt+F11 -> Insert -> Module -> paste -> F5) '
+                       "to populate the LAMBDA names and every formula cell -- they are intentionally "
+                       "left blank in this file so it opens without a repair prompt.", ITALIC_FONT)
 
 wb.save(OUT)
 print("Saved", OUT)
