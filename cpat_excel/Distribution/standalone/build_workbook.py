@@ -1201,19 +1201,30 @@ print(f"Captured {len(FORMULA_LOG)} formula cells and {len(NAMED_RANGES)} named 
 
 
 def vba_wrapped_string_expr(text, cont_indent="        ", max_chunk=150, max_line=800):
-    """VBA string-literal expression for `text` (quotes doubled), returned as
-    a list of physical source lines: '"chunk1" & "chunk2" & _' / ... / last
-    line with no trailing continuation. VBA caps a physical line at ~1023
-    chars, so a single long '"a" & "b" & "c"' run on one line (as opposed to
-    across several continued lines) will fail to compile for any formula
-    much longer than a couple hundred characters -- every one of our LAMBDA
-    definitions and effect-summing formulas is well past that. The first
-    returned line has no leading indent (the caller's statement prefix, e.g.
-    'wb.Names.Add Name:="X", RefersTo:=', goes immediately before it);
-    continuation lines are indented with `cont_indent` for readability."""
-    escaped = text.replace('"', '""')
-    chunks = [escaped[i:i + max_chunk] for i in range(0, len(escaped), max_chunk)] or [""]
-    literals = [f'"{c}"' for c in chunks]
+    """VBA string-literal expression for `text`, returned as a list of
+    physical source lines: '"chunk1" & "chunk2" & _' / ... / last line with
+    no trailing continuation. VBA caps a physical line at ~1023 chars, so a
+    single long '"a" & "b" & "c"' run on one line (as opposed to across
+    several continued lines) will fail to compile for any formula much
+    longer than a couple hundred characters -- every one of our LAMBDA
+    definitions and effect-summing formulas is well past that.
+
+    Chunking happens on the RAW text, and each chunk is quote-escaped (" ->
+    "") independently afterwards -- NOT the other way around. Escaping
+    first and then slicing at a fixed character offset can land the cut
+    between the two characters of a doubled "" escape pair, silently
+    corrupting the literal from that point on (this was a real bug: it
+    passed every syntax check because both halves are individually valid
+    VBA text, it just decodes back to the wrong string). Chunking before
+    escaping makes that class of bug structurally impossible, since a chunk
+    boundary can only ever fall between two original characters, never
+    inside the two-character encoding of one.
+
+    The first returned line has no leading indent (the caller's statement
+    prefix, e.g. 'wb.Names.Add Name:="X", RefersTo:=', goes immediately
+    before it); continuation lines are indented with `cont_indent`."""
+    chunks = [text[i:i + max_chunk] for i in range(0, len(text), max_chunk)] or [""]
+    literals = [f'"{c.replace(chr(34), chr(34) * 2)}"' for c in chunks]
     out_lines = [literals[0]]
     for lit in literals[1:]:
         candidate = out_lines[-1] + " & " + lit
@@ -1222,7 +1233,48 @@ def vba_wrapped_string_expr(text, cont_indent="        ", max_chunk=150, max_lin
             out_lines.append(cont_indent + lit)
         else:
             out_lines[-1] = candidate
+    _verify_vba_string_roundtrip(text, chunks, out_lines)
     return out_lines
+
+
+def _parse_vba_string_concat(source):
+    """Parse VBA source of the form '"a" & "b" & "c"' (a chain of quoted
+    literals joined by ' & ', doubled "" as the in-literal escaped quote)
+    back into the single string it represents. A real character-by-
+    character parser rather than string-replace, so it can't be confused by
+    '&' or other characters that legitimately appear inside a literal
+    (e.g. HHKEY's own '&' string-concatenation formula)."""
+    i, n, out = 0, len(source), []
+    while i < n:
+        assert source[i] == '"', f"expected opening quote at {i}: {source[max(0, i-20):i+20]!r}"
+        i += 1
+        while True:
+            if source[i] == '"':
+                if i + 1 < n and source[i + 1] == '"':
+                    out.append('"')
+                    i += 2
+                else:
+                    i += 1
+                    break
+            else:
+                out.append(source[i])
+                i += 1
+        if i < n:
+            assert source[i:i + 3] == " & ", f"expected ' & ' at {i}: {source[i:i + 10]!r}"
+            i += 3
+    return "".join(out)
+
+
+def _verify_vba_string_roundtrip(text, chunks, out_lines, cont_indent="        "):
+    assert "".join(chunks) == text, "chunking changed the text"
+    logical = out_lines[0]
+    for line in out_lines[1:]:
+        assert logical.endswith(" & _"), f"expected continuation marker before {line[:40]!r}"
+        assert line.startswith(cont_indent), f"expected continuation indent before {line[:40]!r}"
+        logical = logical[:-4] + " & " + line[len(cont_indent):]
+    decoded = _parse_vba_string_concat(logical)
+    if decoded != text:
+        raise AssertionError(f"VBA string round-trip failed for text starting {text[:60]!r}")
 
 
 def vba_assign_statement(prefix, text):
