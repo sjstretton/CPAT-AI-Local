@@ -24,11 +24,12 @@ Sub RebuildDistributionModule()
     WriteFormulas_Part10
     WriteFormulas_Part11
     WriteFormulas_Part12
+    WriteFormulas_Part13
     Application.Calculation = xlCalculationAutomatic
     Application.CalculateFullRebuild
     Application.ScreenUpdating = True
     MsgBox "Distribution module rebuilt: " & Names.Count & _
-        " names, 1397 formulas.", vbInformation
+        " names, 1458 formulas.", vbInformation
 End Sub
 
 Sub AddDistributionNames()
@@ -1577,5 +1578,72 @@ Sub WriteFormulas_Part12()
     ws.Range("P1485").Formula2 = "=PCHANGE_INDIRECT(""ret"")"
     ws.Range("P1486").Formula2 = "=PCHANGE_INDIRECT(""teq"")"
     ws.Range("P1487").Formula2 = "=PCHANGE_INDIRECT(""tpu"")"
+    Set ws = ThisWorkbook.Worksheets("Tests")
+    ws.Range("C5").Formula2 = "=IF(COUNTIF(Q10:Q105,""FAIL"")=0,""ALL ""&COUNTIF(Q10:Q105,""PASS"")&"" TESTS PASS"",COUNTIF(Q10:Q105,""FAIL"")&"" TEST(S) FAILED -- see below"")"
+    ws.Range("D8").Formula2 = "=ELASTADJ(""coa"",DECILE_ARRAY)"
+    ws.Range("D10").Formula2 = "=MAX(ABS(D8:M8-D9:M9))"
+    ws.Range("Q10").Formula2 = "=IF(D10<O10,""PASS"",""FAIL"")"
+    ws.Range("D13").Formula2 = "=ELASTADJ(""food"",DECILE_ARRAY)"
+    ws.Range("D15").Formula2 = "=MAX(ABS(D13:M13-D14:M14))"
+    ws.Range("Q15").Formula2 = "=IF(D15<O15,""PASS"",""FAIL"")"
+    ws.Range("D18").Formula2 = "=ASPIRE_PC(""allsp"",DECILE_ARRAY)"
+    ws.Range("D20").Formula2 = "=MAX(ABS(D18:M18-D19:M19))"
+    ws.Range("Q20").Formula2 = "=IF(D20<O20,""PASS"",""FAIL"")"
+    ws.Range("D23").Formula2 = "=DIRECT_EFFECT(""ely"",""Electricity"",""ely_share"",""ely_elasticity"",DECILE_ARRAY,""Overall"",""mean"")"
+    ws.Range("D25").Formula2 = "=MAX(ABS(D23:M23-D24:M24))"
+    ws.Range("Q25").Formula2 = "=IF(D25<O25,""PASS"",""FAIL"")"
+    ws.Range("D28").Formula2 = "=INDIRECT_EFFECT(""food"",""food_share"",""food_elasticity"",DECILE_ARRAY,""Overall"",""mean"")"
+    ws.Range("D30").Formula2 = "=MAX(ABS(D28:M28-D29:M29))"
+    ws.Range("Q30").Formula2 = "=IF(D30<O30,""PASS"",""FAIL"")"
+    ws.Range("D33").Formula2 = "=TOTAL_EFFECT(DECILE_ARRAY,""Overall"",""mean"")"
+    ws.Range("D35").Formula2 = "=MAX(ABS(D33:M33-D34:M34))"
+    ws.Range("Q35").Formula2 = "=IF(D35<O35,""PASS"",""FAIL"")"
+    ws.Range("D38").Formula2 = "=ADJ_POP(DECILE_ARRAY,""Overall"")"
+    ws.Range("D40").Formula2 = "=MAX(ABS(D38:M38-D39:M39))"
+    ws.Range("Q40").Formula2 = "=IF(D40<O40,""PASS"",""FAIL"")"
+    ws.Range("D43").Formula2 = "=ADJ_CONS_TOT(DECILE_ARRAY,""Overall"")"
+    ws.Range("D45").Formula2 = "=MAX(ABS(D43:M43-D44:M44))"
+    ws.Range("Q45").Formula2 = "=IF(D45<O45,""PASS"",""FAIL"")"
+    ws.Range("D48").Formula2 = "=PIT_LIABILITY(DECILE_ARRAY)"
+    ws.Range("D50").Formula2 = "=MAX(ABS(D48:M48-D49:M49))"
+    ws.Range("Q50").Formula2 = "=IF(D50<O50,""PASS"",""FAIL"")"
+    ws.Range("D53").Formula2 = "=PIT_REDUCTION(DECILE_ARRAY)"
+    ws.Range("D55").Formula2 = "=MAX(ABS(D53:M53-D54:M54))"
+    ws.Range("Q55").Formula2 = "=IF(D55<O55,""PASS"",""FAIL"")"
+    ws.Range("D58").Formula2 = "=TARGETED_TRANSFER(DECILE_ARRAY)"
+    ws.Range("D60").Formula2 = "=MAX(ABS(D58:M58-D59:M59))"
+    ws.Range("Q60").Formula2 = "=IF(D60<O60,""PASS"",""FAIL"")"
+    ws.Range("D63").Formula2 = "=PUBLIC_INVESTMENT(DECILE_ARRAY)"
+    ws.Range("D65").Formula2 = "=MAX(ABS(D63:M63-D64:M64))"
+    ws.Range("Q65").Formula2 = "=IF(D65<O65,""PASS"",""FAIL"")"
+    ws.Range("D68").Formula2 = "=CURRENT_SPENDING(DECILE_ARRAY)"
+    ws.Range("D70").Formula2 = "=MAX(ABS(D68:M68-D69:M69))"
+    ws.Range("Q70").Formula2 = "=IF(D70<O70,""PASS"",""FAIL"")"
+    ws.Range("D73").Formula2 = "=AMOUNT_RECYCLED(DECILE_ARRAY)"
+    ws.Range("D75").Formula2 = "=MAX(ABS(D73:M73-D74:M74))"
+    ws.Range("Q75").Formula2 = "=IF(D75<O75,""PASS"",""FAIL"")"
+End Sub
+
+Sub WriteFormulas_Part13()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Worksheets("Tests")
+    ws.Range("D78").Formula2 = "=NET_EFFECT(DECILE_ARRAY,""Overall"")"
+    ws.Range("D80").Formula2 = "=MAX(ABS(D78:M78-D79:M79))"
+    ws.Range("Q80").Formula2 = "=IF(D80<O80,""PASS"",""FAIL"")"
+    ws.Range("D83").Formula2 = "=POST_CP_EXCL_RECYCLING(DECILE_ARRAY,""Overall"")"
+    ws.Range("D85").Formula2 = "=MAX(ABS(D83:M83-D84:M84))"
+    ws.Range("Q85").Formula2 = "=IF(D85<O85,""PASS"",""FAIL"")"
+    ws.Range("D88").Formula2 = "=POST_CP_INCL_RECYCLING(DECILE_ARRAY,""Overall"")"
+    ws.Range("D90").Formula2 = "=MAX(ABS(D88:M88-D89:M89))"
+    ws.Range("Q90").Formula2 = "=IF(D90<O90,""PASS"",""FAIL"")"
+    ws.Range("D93").Formula2 = "='Distribution_Outputs'!P1377"
+    ws.Range("D95").Formula2 = "=ABS(D93-D94)"
+    ws.Range("Q95").Formula2 = "=IF(D95<O95,""PASS"",""FAIL"")"
+    ws.Range("D98").Formula2 = "='Distribution_Outputs'!P1378"
+    ws.Range("D100").Formula2 = "=ABS(D98-D99)"
+    ws.Range("Q100").Formula2 = "=IF(D100<O100,""PASS"",""FAIL"")"
+    ws.Range("D103").Formula2 = "='Distribution_Outputs'!P1379"
+    ws.Range("D105").Formula2 = "=ABS(D103-D104)"
+    ws.Range("Q105").Formula2 = "=IF(D105<O105,""PASS"",""FAIL"")"
 End Sub
 
