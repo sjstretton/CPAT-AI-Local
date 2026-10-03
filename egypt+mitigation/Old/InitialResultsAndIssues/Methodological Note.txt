@@ -1,0 +1,14 @@
+Methodological Note
+------------------
+
+Major Caveats:
+
+Lack of an explicit output model: CPAT has a simple elasticity model in industry. Neither output nor price intensity is explicitly modelled. However, CPAT energy price elasticities are split in two: an output price elasticity that in effect determines the impact of fuel prices on output and the component that models the impact on emissions intensity. Given this split we can split the industrial output adjustments
+
+Lack of explicitly modelling technological pathways: We do not explicitly model different technology types.
+
+lack of a trade model: CPAT does not explicitly model the trade effects.
+
+Process emissions impacts through half-elasticities: The impacts of process emissions is calculated through semi-elasticities that are generated from marginal abatement cost curves in the latest IPCCC report.
+
+Revenue numbers are calculated separately from CPAT.

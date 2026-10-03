@@ -1,0 +1,44 @@
+# Context: Egypt CBAM / industry work
+
+Companion to `instructions-egypt.yaml` (task codes TASK-0, TASK-1, TASK-2a, TASK-2b).
+
+## Background
+- Egypt-specific analysis of CBAM (EU Carbon Border Adjustment Mechanism) exposure for industry.
+- Earlier Egypt results were produced partly **off-CPAT** in an ad hoc spreadsheet with substantial errors. These need redoing.
+- In parallel, CPAT (Climate Policy Assessment Tool) is being re-built as an **AI-coded prototype**. The first scope is only the **CBAM-related industrial modules** (CPAT_industry).
+
+## Key files and folders (repo root: `CPAT-ai-local`)
+| Item | Path | Role |
+|---|---|---|
+| Legacy CPAT (reference, read-only) | `original_cpat_excel/CPAT 1.0pre_456_NoPropData.xlsb` | Ground truth for column/row structure. Also called `cpat_excel_original`. |
+| CBAM block in legacy CPAT | rows **12198–12353** of the above | CBAM calculations to replicate |
+| Ad hoc calculations (flawed) | `egypt+mitigation/Old/InitialResultsAndIssues/AdHocCalculations.xlsb` | Off-CPAT calculations producing current final results |
+| Issues list | `egypt+mitigation/Old/InitialResultsAndIssues/MajorIssues.docx` | Describes problems with the ad hoc calculations |
+| Initial results | `egypt+mitigation/Old/InitialResultsAndIssues/EgyptResultsInitial.docx` | Results produced so far |
+| Methodology note | `egypt+mitigation/Old/InitialResultsAndIssues/TechnicalNoteonCPATResults_expanded_v2.docx` | Method description |
+| Existing kernel | `egypt+mitigation/Old/CPAT_Industry_Kernel_Egypt_v0.1.xlsx` | Early Egypt industry kernel (superseded) |
+| Prototype (CBAM block response) | `cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v1.0.xlsx` | Final CPAT_industry prototype; sheet `CarveOut_Table2` = final Table 2 in live formulas; copies in `Egypt Final results/` and `egypt+mitigation/`. Builder `build_v1_0.py` (relabels v0.17; `build_v0_17.py` in `Old/`); older versions and builders in `Old/` |
+| Final results folder | `Egypt Final results/` (same set at top of `egypt+mitigation/`) | Final deliverables (.docx): all v1.0: **CarveOut_Table2 (final Table 2: original CPAT runs, CBAM block replaced; O = CBAM-product embedded-intensity change)**, UpdatedResults tracked, Methodology, FinalCaveats; kernel. Markdown sources in `Old/`; earlier drafts in `Old/Superseded/`; builders `egypt+mitigation/Old/AdHocRebuild/make_carveout_v0_3.py`, `make_results_page_v1_2.py` |
+| Egypt working folder | `egypt+mitigation/` | Same final deliverables at top level + `EgyptTaskReference.md`; all supporting and superseded work in `Old/` |
+| **Integrated methodology (main document)** | `egypt+mitigation/EGYPT_Methodology_v1.0.docx` (Markdown source in `Old/`) | Whole-thread method: bundles, CPAT reading, CBAM block, Table 2 composition, kernel v0.1-v0.13, open issues; App. A four-way EFs, App. B process semi-elasticities |
+| Emission factors (Task EF) | `egypt+mitigation/Old/EmissionFactors/EGY_CBAM_EF_Methodology_v0.1.md` + `EGY_CBAM_EF_v0.1.xlsx` | Egypt fc/fp/np/no EFs for the 8 CBAM goods; builder `build_ef_v0_1.py`, verifier `recalc_and_check.py`; not yet applied to the kernel (TODO T5) |
+| Process half-elasticities (Task D) | `egypt+mitigation/Old/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md` | Paste-ready IPCC-based values + steps; §2.3 maps onto v0.9 `'Manual inputs'` rows 53–60 / `E50` (legacy v0.8: `E40:F47`); derivation in `egypt+mitigation/Old/ProcessEmissions_CarbonPrice_Response/` |
+| Ad hoc pseudocode (TASK-2a) | `egypt+mitigation/Old/TASK-2a_AdHocCalculations_Pseudocode_v0.1.md` | What `AdHocCalculations.xlsb` does as-is, mapped to MajorIssues |
+| Ad hoc rebuild (TASK-2b) | `egypt+mitigation/Old/AdHocRebuild/AdHocCalculations_Rebuild_v0.1.xlsx` + `MethodologyNote_v0.1.md/.docx` | Live rebuild of Table 2 in the original PolicyMatrix format; Inputs tab, Mode switch REBUILD/PROTOTYPE (v0.11 reproduced exactly), Comparison, Issues resolved, Checks. Builder `build_adhoc_rebuild_v0_1.py`, verifier `recalc_and_check_adhoc.py` |
+| Queued kernel tasks | `TODO.md` (repo root) | T1 apply Task D to latest kernel; T2 merge Stream 2 (Task F) branch onto mainline; T3 move hard-coded CBAM market data from `Mitigation_Industry` into `Manual inputs` |
+| Instructions | `instructions/` | This file and `instructions-egypt.yaml` |
+| Repo conventions | `NORMS.md`, `README.md` | Follow these |
+
+## Structural rules (TASK-1)
+- **Columns**: must match the legacy CPAT workbook exactly.
+- **Rows**: number of rows per process/block must match exactly; absolute row numbers need not.
+- Additions: process emissions and other CBAM-relevant industrial items from the main CPAT.
+
+## Ad hoc calculations (TASK-2a / TASK-2b)
+- The CPAT CBAM block is not fully used; final results rely on extra ad hoc calculations.
+- TASK-2a: pseudocode describing the **existing** ad hoc calculations, mapped to issues in `MajorIssues.docx` (v0.1 written).
+- TASK-2b (done, v0.1): rebuilt workbook `egypt+mitigation/Old/AdHocRebuild/` — same PolicyMatrix layout, assumptions on `Inputs`, `Mode` = REBUILD (coherent method, default) or PROTOTYPE (= kernel v0.11 block), 19 MajorIssues items mapped on `Issues resolved`, 19 Checks. Open flags: κ(EG3) = 0.54 → re-run EG3 with full industry coverage; `ThetaOther` for 3B revenue; β set / σ judgements; O convention (NOPHASE default).
+- Results comparison (`AdHocRebuild/ResultsComparison_Table2_v0.1.md/.docx`): Table 2 of `EgyptResultsInitial.docx` vs rebuild vs kernel v0.14 Task M (2030). K 1A −41.6 / −31.6 / −27.7; 3A −21.5 / −18.0 / −9.7. Drivers: CPAT IPPU scaling (Table 2), β set and fixed block fuel intensity (prototype), industry-only scope = 4 kernel sectors vs all industry, +1.9 Mt data-vintage mix in the Task M composition (kernel industry CO₂ 75.4 vs csv 89.0), 3C fund fixed at pre-abatement revenue (P < 0). M identical everywhere; 1A–2B coverage and revenue agree rebuild/prototype within 0.1 $bn.
+
+## Sequencing
+- TASK-0 (done) → TASK-1 (done, v0.3; kernel now v0.15) and TASK-2a (done) in parallel → TASK-2b (done, v0.1; v0.2 on Egypt EF v0.1). Task M (in-kernel Table 2) built in v0.14; T1 (Task D) and T5 (EF) applied in v0.15. Next: T3, re-run CPAT EG3 with full industry coverage, then re-run Task M.

@@ -1,0 +1,445 @@
+# Sheet PolicyMatrix: UsedRange $A$1:$AV$31 ; r0=1 c0=1
+# ColWidths: A=2.8 B=0.0 C=41.2 D=0.0 E=0.0 F=24.6 G=19.2 H=12.3 I=12.3 J=12.3 K=12.3 L=12.3 M=12.3 N=12.3 O=12.3 P=12.3 Q=12.3 R=12.3 S=12.3 T=8.4 U=8.4 V=8.4 W=8.4 X=8.4 Y=8.4 Z=8.4 AA=8.4 AB=8.4 AC=8.4 AD=8.4 AE=8.4 AF=8.4 AG=8.4 AH=8.4 AI=13.7 AJ=8.4 AK=8.4 AL=8.4 AM=8.4 AN=8.4 AO=8.4 AP=8.4 AQ=8.4 AR=19.2 AS=16.4 AT=15.3 AU=19.2 AV=8.4
+# HiddenCols: ['B', 'D', 'E']  HiddenRows: []
+# FreezePanes/Zoom not read. Tab colour: False
+C1	V	'Egypt - Policy Options Matrix'		[General] fill= font=000000B 
+D1	V	'Notes:'		[0.0] fill= font=000000 
+C2	V	'5th June 2026'		[d-mmm-yy] fill= font=000000 
+D2	V	'* relies on CPAT modeling (where feasible)'		[0.0] fill= font=000000 
+C3	V	'All results for 2030, at $20 carbon price.'		[d-mmm-yy] fill= font=000000B 
+D3	V	'** may require different modeling or assumptions to estimate sector-specific emission intensity reductions'		[0.0] fill= font=000000 
+E4	V	'(+) CPAT assumptions'		[General] fill= font=000000 
+V4	V	'Calculations (+)'		[General] fill= font=000000B 
+AS4	V	"Other/Don't Trust (+)"		[General] fill= font=000000B 
+A5	V	'Code'		[General] fill=DBEDFF font=0078F0B W
+B5	V	'CPAT Scenario code'		[General] fill=DBEDFF font=0078F0B W
+C5	V	'Policy Bundle'		[General] fill=DBEDFF font=0078F0B W
+D5	V	'Examples of jurisdictions with experience'		[General] fill=DBEDFF font=0078F0B W
+E5	V	'Rationale'		[General] fill=DBEDFF font=0078F0B W
+F5	V	'Implementation in CPAT'		[General] fill=DBEDFF font=0078F0B W
+G5	V	'Scenario assumptions ($20 in 2030 for all)'		[General] fill=DBEDFF font=0078F0B W
+H5	V	'Carbon price in 2030'		[General] fill=DBEDFF font=0078F0B W
+I5	V	'Revenue recycling option'		[General] fill=DBEDFF font=0078F0B W
+J5	V	'Emissions coverage (% of total GHG)'		[0%] fill=DBEDFF font=0078F0B W
+K5	V	'Estimated total emissions reductions (MtCO2)'		[General] fill=DBEDFF font=0078F0B W
+L5	V	'Estimated total emissions reductions  (% of baseline)'		[General] fill=DBEDFF font=0078F0B W
+M5	V	'CBAM coverage (% of CBAM sector emissions)'		[0%] fill=DBEDFF font=0078F0B W
+N5	V	'Emissions intensity reduction, CBAM (% of baseline)'		[General] fill=DBEDFF font=0078F0B W
+O5	V	'CBAM obligations reduced**'		[General] fill=DBEDFF font=0078F0B W
+P5	V	'Carbon revenues raised ($bn)'		[0.0] fill=DBEDFF font=0078F0B W
+Q5	V	'Air pollution deaths avoided'		[_(* #,##0_);_(* (#,##0);_(* "-"??_);_(@_)] fill=DBEDFF font=0078F0B W
+R5	V	'% of total air pollution deaths'		[General] fill=DBEDFF font=0078F0B W
+T5	V	'Industrial Emissions Change'		[General] fill=DBEDFF font=0078F0B W
+U5	V	'Industrial Output Change'		[General] fill=DBEDFF font=0078F0B W
+V5	V	'Carbon Revenues'		[General] fill=DBEDFF font=0078F0B W
+W5	V	'Price'		[General] fill=DBEDFF font=0078F0B W
+X5	V	'Total Emissions (all GHG)'		[General] fill=DBEDFF font=0078F0B W
+Y5	V	'Industrial CO2 Emissions'		[General] fill=DBEDFF font=0078F0B W
+Z5	V	'CBAM Energy related'		[General] fill=DBEDFF font=0078F0B W
+AA5	V	'CBAM process emissions'		[General] fill=DBEDFF font=0078F0B W
+AB5	V	'Total Covered Emissions'		[General] fill=DBEDFF font=0078F0B W
+AC5	V	'% coverage'		[General] fill=DBEDFF font=0078F0B W
+AD5	V	'Total CBAM emissions'		[General] fill=DBEDFF font=0078F0B W
+AE5	V	'Total Covered CBAM Emissions'		[General] fill=DBEDFF font=0078F0B W
+AF5	V	'Half Elasticity Energy'		[0%] fill=DBEDFF font=0078F0B W
+AG5	V	'Emissions Intensity Change Energy'		[0%] fill=DBEDFF font=0078F0B W
+AH5	V	'Half Elasticity Process'		[0%] fill=DBEDFF font=0078F0B W
+AI5	V	'Emissions Intensity Change Process'		[0%] fill=DBEDFF font=0078F0B W
+AJ5	V	'Include Process'		[0.00] fill=DBEDFF font=0078F0B W
+AK5	V	'Total Emis. Intensity Change'		[0%] fill=DBEDFF font=0078F0B W
+AL5	V	'Add. ER. Process'		[General] fill=DBEDFF font=0078F0B W
+AM5	V	'Assumed Subsidy Price'		[0%] fill=DBEDFF font=0078F0B W
+AN5	V	'Half elasticity'		[0%] fill=DBEDFF font=0078F0B W
+AO5	V	'ER % from fund'		[0%] fill=DBEDFF font=0078F0B W
+AP5	V	'Add. ER. Fund'		[General] fill=DBEDFF font=0078F0B W
+AR5	V	'Total change in revenues (CPAT)'		[0.0] fill=DBEDFF font=0078F0B W
+AS5	V	'National emissions covered by carbon pricing (IEA)'		[General] fill=DBEDFF font=0078F0B W
+AT5	V	'Cobenefits (% of GDP)'		[General] fill=DBEDFF font=0078F0B W
+AU5	V	'Fuel subsidy expenditures saved'		[0.0] fill=DBEDFF font=0078F0B W
+C6	V	'Policy Bundle Options - Carbon Pricing (modelled)'		[General] fill=F2F2F2 font=0078F0B MW
+AS6	V	'Replaced by CPAT data'		[General] fill=F2F2F2 font=0078F0B W
+AT6	V	"Don't trust"		[General] fill=F2F2F2 font=0078F0B W
+AU6	V	"Don't trust"		[General] fill=F2F2F2 font=0078F0B W
+A7	V	'1A'		[General] fill= font=000000 
+B7	V	'ED1_adjusted'		[General] fill= font=000000 
+C7	V	'Carbon levy on all  fossil fuel consumption (upstream carbon price) + Upstream emissions in CBAM sectors only + recycling to public investment'		[General] fill= font=000000 W
+D7	V	'South Africa ($18), Washington State ($65)'		[General] fill= font=000000 W
+E7	V	'•  Economy-wide carbon price covering most GHG sectors \n•  Generates CBAM-deductible "carbon price effectively paid"\n• Captures fuel-related and process emissions'		[General] fill= font=000000 W
+F7	V	'Energy CO2 only all sectors + CBAM process emissisons ONLY (close to 2B)'		[General] fill= font=000000 W
+G7	V	'$20 flat from 2027'		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+H7	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I7	V	'Public investment'		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+J7	V	0.72		[0%] fill= font=000000 W
+K7	F	=K9+AL7	=> -41.62107989197109	[0.0] fill= font=000000 W
+L7	F	=K7/X7	=> -0.08516205310923682	[0.0%] fill= font=000000 W
+M7	F	=AE7/AD7	=> 1.0	[0%] fill= font=000000 W
+N7	F	=AK7	=> -0.075700848979203	[0.0%] fill= font=000000 W
+O7	F	=N7-(1+N7)*W7*M7/100	=> -0.2605606791833624	[0.0%] fill= font=000000 W
+P7	F	=V7	=> 5.77153670698	[0.0] fill= font=000000 W
+Q7	F	=Q9*(K$7/K$9)	=> 1655.62609881969	[0] fill= font=000000 W
+R7	F	=R9*(Q7/Q9)	=> 0.020031531364650038	[0.0%] fill= font=000000 W
+T7	F	=(1+U7)*(1+N7)-1	=> -0.15263656331058706	[0%] fill= font=000000I 
+U7	F	=$U$11	=> -0.08323681163876018	[0%] fill= font=000000I 
+V7	F	=W7*AB7/1000	=> 5.77153670698	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W7	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X7	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y7	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z7	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA7	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB7	V	288.576835349		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC7	F	=AB7/X7	=> 0.5904651162794029	[0%] fill= font=000000 
+AD7	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE7	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF7	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG7	F	=AF7*$W7	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH7	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI7	F	=AH7*$W7	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ7	V	1.0		[0] fill= font=000000 
+AK7	F	=AG7+AJ7*AI7	=> -0.075700848979203	[0.00%] fill= font=000000 
+AL7	F	=AA7*AI7	=> -0.6190798919711425	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AR7	V	10.62		[0.0] fill= font=000000 W
+AS7	V	0.9		[0%] fill= font=000000 W
+AT7	F	=AT8	=> 0.0069	[0.0%] fill= font=BFBFBF W
+AU7	F	=AR7-P7	=> 4.848463293019999	[0.0] fill= font=000000 W
+A8	V	'2A'		[General] fill= font=000000 
+B8	V	'EG1'		[General] fill= font=000000 
+C8	V	'Carbon levy on all fossil fuel consumption (upstream carbon price) \n+ recycling to public investment'		[General] fill= font=None W
+D8	V	'Canada (prior to 2025), Mexico ($4), Colombia ($8)'		[General] fill= font=000000 W
+E8	V	'•  Applied at point of fuel entry into the economy at low administrative cost by relying on an existing excise tax administration system \n• Can start gradually by recalculating existing excise duty rates on carbon content\n•  Broad coverage across all fuel-consuming sectors but can miss process emissions\n•  Generates measurable, verifiable carbon price for CBAM credit claims, but requires further estimates of emissions covered'		[General] fill= font=None W
+F8	V	'Energy CO2 only all sectors; revenues for public investment'		[General] fill= font=000000 W
+G8	F	=G7	=> '$20 flat from 2027'	[General] fill= font=000000 W
+H8	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I8	V	'Public investment'		[General] fill= font=000000 W
+J8	V	0.65		[0%] fill= font=000000 W
+K8	V	-38.87699999999995		[0.0] fill= font=000000 W
+L8	F	=K8/X8	=> -0.07954731466173404	[0.0%] fill= font=000000 W
+M8	F	=AE8/AD8	=> 0.44493487111875607	[0%] fill= font=000000 W
+N8	F	=AK8	=> -0.054896920040469	[0.0%] fill= font=000000 W
+O8	F	=N8-(1+N8)*W8*M8/100	=> -0.13899878345561567	[0.0%] fill= font=000000 W
+P8	F	=V8	=> 5.17638	[0.0] fill= font=000000 W
+Q8	V	1564.0		[0] fill= font=000000 W
+R8	V	0.01892294104124572		[0.0%] fill= font=000000 W
+T8	F	=(1+U8)*(1+N8)-1	=> -0.13356428708627255	[0%] fill= font=000000I 
+U8	F	=$U$11	=> -0.08323681163876018	[0%] fill= font=000000I 
+V8	F	=W8*AB8/1000	=> 5.17638	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W8	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X8	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y8	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z8	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA8	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB8	V	258.819		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC8	F	=AB8/X8	=> 0.5295767789036029	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD8	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE8	V	23.853594734849995		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF8	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG8	F	=AF8*$W8	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH8	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI8	F	=AH8*$W8	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ8	V	0.0		[0] fill= font=000000 
+AK8	F	=AG8+AJ8*AI8	=> -0.054896920040469	[0.00%] fill= font=000000 
+AR8	V	10.62		[0.0] fill= font=000000 W
+AS8	V	'70-85% (IEA)'		[0%] fill= font=000000 W
+AT8	V	0.0069		[0.0%] fill= font=000000 W
+AU8	F	=AR8-P8	=> 5.443619999999999	[0.0] fill= font=000000 W
+A9	V	'2B'		[General] fill= font=000000 
+B9	V	'EG2'		[General] fill= font=000000 
+C9	V	'Carbon levy on all  fossil fuel consumption (upstream carbon price) \n+ recycling to households'		[General] fill= font=000000 W
+F9	V	'Energy CO2 only all sectors: revenues per capita transfers'		[General] fill= font=000000 W
+G9	F	=G7	=> '$20 flat from 2027'	[General] fill= font=000000 W
+H9	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I9	V	'Households'		[General] fill= font=000000 W
+J9	V	0.65		[0%] fill= font=000000 W
+K9	V	-41.00199999999995		[0.0] fill= font=000000 W
+L9	F	=K9/X9	=> -0.08389533646527302	[0.0%] fill= font=000000 W
+M9	F	=AE9/AD9	=> 0.44493487111875607	[0%] fill= font=000000 W
+N9	F	=AK9	=> -0.054896920040469	[0.0%] fill= font=000000 W
+O9	F	=N9-(1+N9)*W9*M9/100	=> -0.13899878345561567	[0.0%] fill= font=000000 W
+P9	F	=V9	=> 5.17638	[0.0] fill= font=000000 W
+Q9	V	1631.0		[0] fill= font=000000 W
+R9	V	0.019733578541094483		[0.0%] fill= font=000000 W
+T9	F	=(1+U9)*(1+N9)-1	=> -0.13356428708627255	[0%] fill= font=000000I 
+U9	F	=$U$11	=> -0.08323681163876018	[0%] fill= font=000000I 
+V9	F	=W9*AB9/1000	=> 5.17638	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W9	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X9	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y9	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z9	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA9	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB9	V	258.819		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC9	F	=AB9/X9	=> 0.5295767789036029	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD9	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE9	V	23.853594734849995		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF9	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG9	F	=AF9*$W9	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH9	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI9	F	=AH9*$W9	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ9	V	0.0		[0] fill= font=000000 
+AK9	F	=AG9+AJ9*AI9	=> -0.054896920040469	[0.00%] fill= font=000000 
+AR9	V	10.62		[0.0] fill= font=000000 W
+AS9	V	'70-85% (IEA)'		[0%] fill= font=000000 W
+AT9	V	0.0066		[0.0%] fill= font=000000 W
+AU9	F	=AR9-P9	=> 5.443619999999999	[0.0] fill= font=000000 W
+A10	V	'3A'		[General] fill= font=000000 
+B10	V	'EG3'		[General] fill= font=000000 
+C10	V	'Downstream carbon price on heavy industry \n+ recycling to households'		[General] fill= font=None W
+D10	V	'Chile ($35 by 2030)'		[General] fill= font=000000 W
+E10	V	'• Can be implemented with carbon levy or cap-and-trade system\n• Generates easily measured carbon price for reducing CBAM obligations\n• Raises revenues that can be recycled to address distributional concerns or public priorities'		[General] fill= font=000000 W
+F10	V	'Energy CO2 only for ALL industry plus all process emisssions CBAM sectors'		[General] fill= font=000000 W
+G10	V	'Phased-in price from $5 to $50 in 2034 ($20 in 2030)'		[General] fill= font=000000 W
+H10	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I10	V	'Households'		[General] fill= font=000000 W
+J10	F	=AB10/X10	=> 0.24293847569404656	[0%] fill= font=000000 W
+K10	V	-21.541999999999916		[0.0] fill= font=000000 W
+L10	F	=K10/X10	=> -0.044077687384393605	[0.0%] fill= font=000000 W
+M10	F	=AE10/AD10	=> 1.0	[0%] fill= font=000000 W
+N10	F	=AK10	=> -0.075700848979203	[0.0%] fill= font=000000 W
+O10	F	=N10-(1+N10)*W10*M10/100	=> -0.2605606791833624	[0.0%] fill= font=000000 W
+P10	F	=V10	=> 2.37461670698	[0.0] fill= font=000000 W
+Q10	V	546.0		[0] fill= font=000000 W
+R10	V	0.006606090670409312		[0.0%] fill= font=000000 W
+T10	F	=K10/AB10	=> -0.1814355970517591	[0%] fill= font=000000 
+U10	F	=(1+T10)/(1+N10)-1	=> -0.11439450956520147	[0%] fill= font=000000 
+V10	F	=W10*AB10/1000	=> 2.37461670698	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W10	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X10	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y10	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z10	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA10	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB10	F	=Y10+AA10	=> 118.73083534899999	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC10	F	=AB10/X10	=> 0.24293847569404656	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD10	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE10	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF10	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG10	F	=AF10*$W10	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH10	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI10	F	=AH10*$W10	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ10	V	1.0		[0] fill= font=000000 
+AK10	F	=AG10+AJ10*AI10	=> -0.075700848979203	[0.00%] fill= font=000000 
+AR10	V	2.69		[0.0] fill= font=000000 W
+AS10	V	'23% (IEA)'		[0%] fill= font=000000 W
+AT10	V	0.0033		[0.0%] fill= font=000000 W
+AU10	F	=AR10-P10	=> 0.31538329302	[0.0] fill= font=000000 W
+A11	V	'3B'		[General] fill= font=000000 
+B11	V	'EG4'		[General] fill= font=000000 
+C11	V	'Downstream carbon price on heavy industry +\nfree allocation for CBAM producers (output-based)'		[General] fill= font=000000 W
+D11	V	'China, India, Türkiye, Canadian provinces\xa0'		[General] fill= font=000000 W
+E11	V	'•  OBR / free allocation protects firm competitiveness by reducing net carbon costs\n• Can be implemented with tradable performance standard, baseline and credit system, cap-and-trade with output-based allocation, or feebate\n•  Maintains carbon price incentive at the margin \n•  Rebate limits the CBAM deduction '		[General] fill= font=000000 W
+F11	V	'Energy CO2 only for ALL industry plus all process emisssions CBAM sectors'		[General] fill= font=000000 W
+G11	V	'Phased-in price from $5 to $50 in 2034 ($20 in 2030)'		[General] fill= font=000000 W
+H11	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I11	V	'Firms (output)'		[General] fill= font=000000 W
+J11	F	=AB11/X11	=> 0.24293847569404656	[0%] fill= font=000000 W
+K11	F	=(-13.5919999999999)*(2/3)/0.5	=> -18.122666666666532	[0.0] fill= font=000000 W
+L11	F	=K11/X11	=> -0.03708129402585187	[0.0%] fill= font=000000 W
+M11	F	=AE11/AD11	=> 1.0	[0%] fill= font=000000 W
+N11	F	=AK11	=> -0.075700848979203	[0.0%] fill= font=000000 W
+O11	F	=N11	=> -0.075700848979203	[0.0%] fill= font=000000 W
+P11	V	0.0		[0.0] fill= font=000000 W
+Q11	V	345.0		[0] fill= font=000000 W
+R11	V	0.002577101305489347		[0.0%] fill= font=000000 W
+T11	F	=K11/AB11	=> -0.15263656331058711	[0%] fill= font=000000 
+U11	F	=(1+T11)/(1+N11)-1	=> -0.08323681163876018	[0%] fill= font=000000 
+V11	F	=W11*AB11/1000	=> 2.37461670698	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W11	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X11	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y11	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z11	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA11	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB11	F	=Y11+AA11	=> 118.73083534899999	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC11	F	=AB11/X11	=> 0.24293847569404656	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD11	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE11	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF11	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG11	F	=AF11*$W11	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH11	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI11	F	=AH11*$W11	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ11	V	1.0		[0] fill= font=000000 
+AK11	F	=AG11+AJ11*AI11	=> -0.075700848979203	[0.00%] fill= font=000000 
+AR11	F	=P11	=> 0.0	[0.0] fill= font=000000 W
+AS11	V	0.23		[0%] fill= font=000000 W
+AT11	V	0.002		[0.0%] fill= font=000000 W
+A12	V	'3C'		[General] fill= font=000000 
+C12	V	'Downstream carbon price on heavy industry +\nrebate for industrial abatement'		[General] fill= font=000000 W
+D12	V	'Alberta TIER'		[General] fill= font=000000 W
+E12	V	'•  same as 3A, with revenues supporting additional emission reductions\n•  Rebates do not reduce CBAM deduction'		[General] fill= font=000000 W
+G12	V	'Phased-in price from $5 to $50 in 2034 ($20 in 2030)'		[General] fill= font=000000 W
+H12	V	Decimal('20')		[$#,##0_);[Red]($#,##0)] fill= font=000000 W
+I12	V	'Firms (abatement)'		[General] fill= font=000000 W
+J12	F	=AB12/X12	=> 0.24293847569404656	[0%] fill= font=000000 W
+K12	F	=K10+AP12	=> -24.485102390568223	[0.0] fill= font=000000 W
+L12	F	=K12/X12	=> -0.05009965132050593	[0.0%] fill= font=000000 W
+M12	F	=AE12/AD12	=> 1.0	[0%] fill= font=000000 W
+N12	F	=AK12+AO12	=> -0.130597769019672	[0.0%] fill= font=000000 W
+O12	F	=N12-(1+N12)*W12*M12/100	=> -0.3044782152157376	[0.0%] fill= font=000000 W
+P12	V	0.0		[0.0] fill= font=000000 W
+Q12	F	=Q10*K12/K10	=> 620.5953906438725	[0] fill= font=000000 W
+R12	F	=Q12*R10/Q10	=> 0.007508625311779319	[0.0%] fill= font=000000 W
+T12	F	=K12/AB12	=> -0.20622361763560562	[0%] fill= font=000000 
+U12	F	=(1+T12)/(1+N12)-1	=> -0.0869860300802987	[0%] fill= font=000000 
+V12	F	=W12*AB12/1000	=> 2.37461670698	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+W12	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X12	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Y12	V	88.973		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+Z12	F	=$AB$10-$AA$7	=> 88.973	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AA12	F	=$AD$9-$AE$9	=> 29.757835348999993	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB12	F	=Y12+AA12	=> 118.73083534899999	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC12	F	=AB12/X12	=> 0.24293847569404656	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD12	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE12	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF12	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AG12	F	=AF12*$W12	=> -0.054896920040469	[0.00%] fill= font=000000 
+AH12	V	-0.0010401964469367		[0.00%] fill= font=000000 
+AI12	F	=AH12*$W12	=> -0.020803928938734	[0.00%] fill= font=000000 
+AJ12	V	1.0		[0] fill= font=000000 
+AK12	F	=AG12+AJ12*AI12	=> -0.075700848979203	[0.00%] fill= font=000000 
+AM12	V	20.0		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AN12	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0.00%] fill= font=000000 
+AO12	F	=AN12*AM12	=> -0.054896920040469	[0.00%] fill= font=000000 
+AP12	F	=AN12*AM12*AD12	=> -2.943102390568307	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AS12	V	0.23		[0%] fill= font=000000 W
+AT12	V	0.002		[0.0%] fill= font=000000 W
+C13	V	'Policy Bundle Options - Carbon Pricing (non-modelled)'		[General] fill=F2F2F2 font=0078F0B MW
+A14	V	'3D'		[General] fill= font=000000 
+C14	V	'Downstream carbon price on heavy industry with domestic offsets ($5) allowed up to 50%'		[General] fill= font=000000 W
+D14	V	'Colombia, Chile'		[General] fill= font=000000 W
+E14	V	'•  similar to 3D, but credits offset emissions, so project-based reductions are not additional\n•  Lower price of credits reduces effective carbon price for CBAM'		[General] fill= font=000000 W
+G14	F	=G11	=> 'Phased-in price from $5 to $50 in 2034 ($20 in 2030)'	[General] fill= font=000000 W
+H14	V	20.0		[General] fill= font=000000 W
+I14	V	'Firms (domestic production)'		[General] fill= font=000000 W
+J14	F	=AB14/X14	=> 0.10969584325811083	[0%] fill= font=000000 W
+K14	V	'less than 3A due to lower effective price and offset additionality'		[General] fill= font=000000 W
+M14	F	=AE14/AD14	=> 1.0	[0%] fill= font=000000 W
+N14	F	=AK14	=> -0.034310575025293125	[0%] fill= font=000000 W
+O14	F	=N14-(1+N14)*W14/100	=> -0.15502175314713149	[0%] fill= font=000000 W
+P14	V	'50% x price x industrial emissions'		[0.0] fill= font=000000 W
+W14	F	=0.5*20+0.5*5	=> 12.5	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+X14	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB14	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC14	F	=AB14/X14	=> 0.10969584325811083	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD14	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE14	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF14	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0%] fill= font=000000 
+AG14	F	=AF14*$W14	=> -0.034310575025293125	[0%] fill= font=000000 
+AH14	V	-0.0010401964469367		[0%] fill= font=000000 
+AI14	F	=AH14*$W14	=> -0.01300245558670875	[0%] fill= font=000000 
+AK14	F	=AG14+AJ14*AI14	=> -0.034310575025293125	[0%] fill= font=000000 
+AS14	V	0.23		[0%] fill= font=000000 W
+AT14	V	0.002		[General] fill= font=000000 W
+A15	V	'3E'		[General] fill= font=000000 
+C15	V	'Downstream carbon price on heavy industry + \nOBR for CBAM producers +\ncarbon credit purchases on EU exports'		[General] fill= font=000000 W
+D15	V	'(academic proposal)'		[General] fill= font=000000 W
+E15	V	'•  ETS targeted to producers, protects firm competitiveness, CBAM compliant \n•  OBR rebates offset by carbon credit purchases on EU-bound exports, restoring full domestic carbon price signal \n•  Firms selling domestically retain competitive protection; EU exporters get full CBAM credit'		[General] fill= font=000000 W
+G15	F	=G12	=> 'Phased-in price from $5 to $50 in 2034 ($20 in 2030)'	[General] fill= font=000000 W
+I15	V	'Firms (domestic production)'		[General] fill= font=000000 W
+J15	V	0.15		[0%] fill= font=000000 W
+K15	V	'more than 3B due to offset outcomes'		[General] fill= font=000000 W
+M15	F	=AE15/AD15	=> 1.0	[0%] fill= font=000000 W
+O15	V	'CBAM embedded emission reductions + carbon price paid'		[General] fill= font=000000 W
+P15	V	0.0		[0.0] fill= font=000000 W
+X15	V	488.728		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AB15	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AC15	F	=AB15/X15	=> 0.10969584325811083	[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AD15	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AE15	V	53.61143008384999		[_(* #,##0.00_);_(* (#,##0.00);_(* "-"??_);_(@_)] fill= font=000000 
+AF15	F	=-0.54896920040469%/2	=> -0.00274484600202345	[0%] fill= font=000000 
+AG15	F	=AF15*$W15	=> 0.0	[0%] fill= font=000000 
+AH15	V	-0.0010401964469367		[0%] fill= font=000000 
+AI15	F	=AH15*$W15	=> 0.0	[0%] fill= font=000000 
+AS15	V	0.23		[0%] fill= font=000000 W
+A16	V	'4A'		[General] fill= font=000000 
+C16	V	'Voluntary export contribution to decarbonization fund'		[General] fill= font=000000B W
+D16	V	'(government proposal)'		[General] fill= font=000000 W
+E16	V	'•  Contributions presented as evidence of carbon cost "effectively paid" \n•  CBAM rules require a legally enforceable obligation — voluntary schemes face significant eligibility risk \n•  May serve as transitional or complementary measure '		[General] fill= font=000000 W
+G16	V	'$100 (presumed CBAM certificate price)'		[General] fill= font=000000 W
+I16	V	'Decarbonization fund'		[General] fill= font=000000 W
+J16	V	'0% (same as no policy but revenues redirected)'		[0%] fill= font=000000 W
+K16	V	'only from expenditures'		[General] fill= font=000000 W
+M16	V	0.0		[0%] fill= font=000000 W
+O16	V	'most likely only from resulting reductions'		[General] fill= font=000000 W
+P16	V	0.0		[0.0] fill= font=000000 W
+AS16	V	'0% (same as no policy but revenues redirected)'		[General] fill= font=000000 W
+AT16	V	'only from expenditures'		[General] fill= font=000000 W
+AU16	V	0.0		[0.0] fill= font=000000 W
+A17	V	'4B'		[General] fill= font=000000 
+C17	V	'Voluntary purchase of domestic A6 credits'		[General] fill= font=000000B W
+D17	V	'(none)'		[General] fill= font=000000 W
+E17	V	'•  Allows domestic firms to purchase and retire certified emission reduction credits (e.g., under Article 6.4 PACM or authorized A6.2 ITMOs) as evidence of a carbon cost effectively paid \n•  CBAM eligibility unlikely outside of a domestic compliance system\n•  Most viable as a complementary or transitional instrument alongside a formal carbon price'		[General] fill= font=000000 W
+G17	V	'$30 A6 credit price'		[General] fill= font=000000 W
+I17	V	'A6 projects'		[General] fill= font=000000 W
+J17	V	0.0		[0%] fill= font=000000 W
+K17	V	'only from offset outcomes and requires NDC credibility'		[General] fill= font=000000 W
+M17	V	0.0		[0%] fill= font=000000 W
+O17	V	0.0		[General] fill= font=000000 W
+P17	V	0.0		[0.0] fill= font=000000 W
+AS17	V	0.0		[0%] fill= font=000000 W
+AU17	V	0.0		[0.0] fill= font=000000 W
+C18	V	'Policy Bundle Options - Non-Carbon Pricing (reduce certificate quantity only)'		[General] fill=F2F2F2 font=0078F0B MW
+A19	V	9.0		[General] fill= font=000000 
+C19	V	'Clean power expansion'		[General] fill= font=000000B W
+E19	V	'•  Reduces indirect (Scope 2) emissions embedded in electricity-intensive CBAM exports (aluminum, fertilizers) \n•  Lowers CBAM liability for fertilizers and cement\n•  Supports NDC targets and long-term competitiveness'		[General] fill= font=000000 W
+J19	V	0.0		[0%] fill= font=000000 W
+M19	V	0.0		[0%] fill= font=000000 W
+O19	V	'Reduces scope 2 emissions for fertilizers and cement'		[General] fill= font=000000 W
+P19	V	0.0		[0.0] fill= font=000000 W
+AS19	V	0.0		[0%] fill= font=000000 W
+AU19	V	'negative, if electricity prices below cost recovery'		[0.0] fill= font=000000 W
+A20	V	10.0		[General] fill= font=000000 
+C20	V	'Emissions performance or efficiency standards for CBAM sectors'		[General] fill= font=000000B W
+D20	V	'EU BAT benchmarks; US Clean Air Act'		[General] fill= font=000000 W
+E20	V	'•  Mandates emissions intensity limits for cement, steel, aluminum, fertilizer producers \n•  Directly reduces CBAM exposure by narrowing gap to EU benchmark\n•  Does not generate a CBAM-deductible credit but reduces certificates needed'		[General] fill= font=000000 W
+J20	V	0.0		[0%] fill= font=000000 W
+M20	V	0.0		[0%] fill= font=000000 W
+O20	V	'CBAM embedded emission reductions '		[General] fill= font=000000 W
+P20	V	0.0		[0.0] fill= font=000000 W
+AS20	V	0.0		[0%] fill= font=000000 W
+A21	V	11.0		[General] fill= font=000000 
+C21	V	'Green electricity procurement / renewable energy mandates for industry'		[General] fill= font=000000B W
+D21	V	'EU Renewable Energy Directive; Morocco industrial RE zones'		[General] fill= font=000000 W
+E21	V	"•  Mandates or incentivizes CBAM-covered producers to source certified renewable electricity \n•  Reduces Scope 2 emissions embedded in exports, lowering obligations for fertilizers and cement \n•  Leverages Egypt's significant solar and wind potential"		[General] fill= font=000000 W
+J21	V	0.0		[0%] fill= font=000000 W
+M21	V	0.0		[0%] fill= font=000000 W
+O21	V	'Reduces scope 2 emissions for fertilizers and cement'		[General] fill= font=000000 W
+P21	V	0.0		[0.0] fill= font=000000 W
+AS21	V	0.0		[0%] fill= font=000000 W
+A22	V	12.0		[General] fill= font=000000 
+C22	V	'Concessional finance / green industrial policy for decarbonization'		[General] fill= font=000000B W
+D22	V	'EU Innovation Fund; World Bank climate finance instruments'		[General] fill= font=000000 W
+E22	V	'•  Subsidized financing for decarbonization investment in CBAM-covered sectors \n•  Reduces emissions intensity without an explicit carbon price \n•  Can be paired with any of the above pricing instruments'		[General] fill= font=000000 W
+J22	V	0.0		[0%] fill= font=000000 W
+M22	V	0.0		[0%] fill= font=000000 W
+O22	V	'CBAM embedded emission reductions '		[General] fill= font=000000 W
+P22	V	0.0		[0.0] fill= font=000000 W
+AS22	V	0.0		[0%] fill= font=000000 W
+C26	V	'Standard Price Trajectories'		[General] fill= font=000000B W
+D26	V	2027.0		[General] fill= font=000000 W
+E26	V	2028.0		[General] fill= font=000000 W
+G26	V	2029.0		[General] fill= font=000000 W
+I26	V	2030.0		[General] fill= font=000000 W
+J26	V	2031.0		[0%] fill= font=000000 W
+K26	V	2033.0		[General] fill= font=000000 W
+M26	V	2032.0		[0%] fill= font=000000 W
+N26	V	2033.0		[General] fill= font=000000 W
+O26	V	2034.0		[General] fill= font=000000 W
+AS26	V	2031.0		[General] fill= font=000000 W
+C27	V	'Price Trajectory  1 (flat)'		[General] fill= font=000000 W
+D27	V	0.0		[General] fill= font=000000 W
+E27	V	20.0		[General] fill= font=000000 W
+G27	V	20.0		[General] fill= font=000000 W
+I27	V	20.0		[General] fill= font=000000 W
+J27	V	20.0		[0%] fill= font=000000 W
+K27	V	20.0		[General] fill= font=000000 W
+M27	V	20.0		[0%] fill= font=000000 W
+N27	V	20.0		[General] fill= font=000000 W
+O27	V	20.0		[General] fill= font=000000 W
+AS27	V	20.0		[General] fill= font=000000 W
+C28	V	'Price Trajectory 2 (rising)'		[General] fill= font=000000 W
+D28	V	0.0		[General] fill= font=000000 W
+E28	V	5.0		[General] fill= font=000000 W
+G28	V	12.5		[General] fill= font=000000 W
+I28	V	20.0		[General] fill= font=000000 W
+J28	V	27.5		[0%] fill= font=000000 W
+K28	V	42.5		[General] fill= font=000000 W
+M28	V	35.0		[0%] fill= font=000000 W
+N28	V	42.5		[General] fill= font=000000 W
+O28	V	50.0		[General] fill= font=000000 W
+AS28	V	27.5		[General] fill= font=000000 W

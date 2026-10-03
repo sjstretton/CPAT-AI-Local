@@ -1,0 +1,41 @@
+PROTOTYPE/FULL: 132 block values match the prototype, 0 differ; workbook ProtoPass=126.0 ProtoFail=0.0; Checks overall=PASS
+PROTOTYPE/NOPHASE: 132 block values match the prototype, 0 differ; workbook ProtoPass=126.0 ProtoFail=0.0; Checks overall=PASS
+Switches / parameters: {'Mode': 'REBUILD', 'Conv': 'NOPHASE', 'Yr': 2030.0, 'SigmaEff': 20.0, 'BetaSet': 'IPCC_CENTRAL', 'BfScen': 'EG1', 'ThetaOther': 0.0, 'IppuOther': 'NONE', 'KappaMode': 'SCALE', 'EpsU': -0.5, 'EpsF': -0.5, 'SInt': 0.33333333, 'EpsQ': -0.5, 'PEU': 100.0, 'PStar': 122.0, 'Bf': -0.0024956, 'CBFyr': 0.485, 'CBFsel': 1.0, 'Ssel': 1.0, 'BaseYr': 2024.0}
+REBUILD/NOPHASE: 588 Results values match the Python mirror, 0 differ; keys not mirrored: []
+
+Checks sheet:
+  1  Mode switch valid (REBUILD / PROTOTYPE)                                                         REBUILD                      PASS
+  2  CBAM convention valid (FULL / NOPHASE / SCALED)                                                 NOPHASE                      PASS
+  3  Reporting year present in CPAT_Outputs                                                          2030.0                       PASS
+  4  No errors in Inputs section C (CPAT values)                                                     0.0                          PASS
+  5  No errors in Results                                                                            0.0                          PASS
+  6  No errors in CBAM_Products                                                                      0.0                          PASS
+  7  No errors in PolicyMatrix rows 7-12                                                             0.0                          PASS
+  8  E_base (2030) = prototype 61.1572316750106 Mt when Yr = 2030 and EFSet = PROTOTYPE              62.423609890817644           n/a
+  9  PolicyMatrix K equals Results K for all six bundles                                             0.0                          PASS
+  10 K decomposition closes (sum of AF..AL = K) for all bundles                                      0.0                          PASS
+  11 Coverage J within [0,1]                                                                         0.208353505505121 / 0.631957744122588 PASS
+  12 CBAM coverage M within [0,1]                                                                    1.0000000000000002           PASS
+  13 Intensity change N <= 0 and output change U <= 0 for all bundles                                0.0                          PASS
+  14 Total reduction K <= 0 for all bundles                                                          -19.62628519511848           PASS
+  15 PROTOTYPE mode: all Comparison section-2 rows PASS (0 FAIL)                                     0.0                          n/a
+  16 3C fund outlay upper bound <= fund budget                                                       -2.096143777643853           PASS
+  17 Net revenue P >= 0 for all bundles                                                              0.0                          PASS
+  18 Flat trajectory (Yr) equals CPAT EG1 cptraj.2 (Yr)                                              0.0                          PASS
+  19 Block process + fuel baseline emissions below CPAT IPPU / industry energy CO2 (EG1 2030)        -51.14851458309945           PASS
+     overall                                                                                                                      PASS
+
+PolicyMatrix rows 7-12 (live, Mode=REBUILD, Conv=NOPHASE, Yr=2030):
+          A         H         J         K         L         M         N         O         P         Q         R         T         U        AR        AF        AG        AH        AI        AJ        AK        AL        AM        AN        AO        AP        AQ
+         1A   20.0000    0.6320  -31.3458   -0.0528    1.0000   -0.0579   -0.2434    6.8380 1564.0000    0.0189   -0.1156   -0.0612   10.4300  -38.8770   11.9550    0.0000   -2.1254   -2.2985    0.0000    0.0000    0.0000   -0.0542    6.8380    0.0000   -0.4442
+         2A   20.0000    0.5734  -27.8190   -0.0468    0.4421   -0.0215   -0.1253    6.2300 1564.0000    0.0189   -0.0468   -0.0258   10.4300  -38.8770   11.9550    0.0000    0.0000   -0.8970    0.0000    0.0000    0.0000   -0.0255    6.2300    0.0000   -0.2312
+         2B   20.0000    0.5734  -29.3360   -0.0494    0.4421   -0.0215   -0.1253    6.1900 1631.0000    0.0197   -0.0468   -0.0258   10.6200  -41.0020   12.5630    0.0000    0.0000   -0.8970    0.0000    0.0000    0.0000   -0.0255    6.1900    0.0000   -0.2312
+         3A   20.0000    0.2084  -25.0655   -0.0422    1.0000   -0.0579   -0.2434    2.3386  850.3418    0.0103   -0.1156   -0.0612    2.6900  -36.0164   15.3748    0.0000   -2.1254   -2.2985    0.0000    0.0000    0.0000   -0.0542    2.3386    0.0000   -0.4442
+         3B   20.0000    0.2084  -19.6263   -0.0330    1.0000   -0.0580   -0.0542    1.1331  714.2841    0.0086   -0.0580    0.0000    1.4415  -36.0164   15.3748    0.0000   -2.2757    0.0000    3.2911    0.0000    0.0000   -0.0542    2.3816    1.2485   -0.0542
+         3C   20.0000    0.2084  -30.6038   -0.0515    1.0000   -0.1124   -0.2841    0.0000  997.3975    0.0121   -0.1667   -0.0612    0.3910  -36.0164   15.3748    0.0000   -4.1066   -2.2985    0.0000   -3.5571    0.0000   -0.1051    2.2990    0.0000   -0.4741
+
+C3: All results for 2030, at the CPAT carbon price of that year ($20 for 1A).
+C4: Mode: REBUILD   |   CBAM convention: NOPHASE   |   process beta set: IPCC_CENTRAL   |   edit only on Inputs
+Trajectories F26:M29: [[2027.0, 2028.0, 2029.0, 2030.0, 2031.0, 2032.0, 2033.0, 2034.0], [0.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0], [0.0, 5.0, 12.5, 20.0, 27.5, 35.0, 42.5, 50.0], [0.05, 0.1, 0.225, 0.485, 0.61, 0.735, 0.86, 1.0]]
+
+RESULT: ALL PASSED
