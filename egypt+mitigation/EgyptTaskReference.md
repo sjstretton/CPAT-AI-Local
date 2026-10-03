@@ -1,6 +1,6 @@
 Key: ✅ done in v0.3, ◐ partly done, ✗ not started.
 
-> The integrated methodology for the whole Egypt thread is **[`EGYPT_Methodology_v1.0.md`](EGYPT_Methodology_v1.0.md)** (also `.docx`). Its appendices cover the EF derivation (A) and the process semi-elasticities (B). This file stays the gap list.
+> The integrated methodology for the whole Egypt thread is **[`EGYPT_Methodology_v1.3.docx`](EGYPT_Methodology_v1.3.docx)** (also `.docx`). Its appendices cover the EF derivation (A) and the process semi-elasticities (B). This file stays the gap list.
 
 ## 1. Carbon pricing on non-fuel process emissions
 

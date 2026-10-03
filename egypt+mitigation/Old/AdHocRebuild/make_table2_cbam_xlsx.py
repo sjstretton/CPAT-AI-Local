@@ -1,7 +1,7 @@
-"""Build EGYPT_Table2_Final_CBAMcalc_v1.0.xlsx: final Table 2 (2030) with hard-coded results except CBAM
+"""Build EGYPT_Table2_Final_CBAMcalc_v1.3.xlsx: final Table 2 (2030) with hard-coded results except CBAM
 obligations (O), which are computed live by product from editable assumptions (EU price, CBAM phase-in, deduction).
 
-Data: kernel_products_2030.json (extract_kernel_products_2030.py, kernel v1.0). Other rows: CBAM carve-out v1.0.
+Data: kernel_products_2030.json (extract_kernel_products_2030.py, kernel v1.3). Other rows: CBAM carve-out v1.3.
 Run: python make_table2_cbam_xlsx.py   (writes with openpyxl, then recalculates and saves with Excel so values are cached)
 """
 import json
@@ -14,13 +14,13 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-NAME = "EGYPT_Table2_Final_CBAMcalc_v1.0.xlsx"
-OUT = os.path.join(ROOT, "Egypt Final results", NAME)
+NAME = "EGYPT_Table2_Final_CBAMcalc_v1.3.xlsx"
+OUT = os.path.join(ROOT, "Egypt Final results", "CBAM Guess - Needs Carolyn Input", "EGYPT_Table2_Final_CBAMcalc_v1.3 - Guess Needs Carolyn Confirmation.xlsx")
 COPY = os.path.join(ROOT, "egypt+mitigation", NAME)
 D = json.load(open(os.path.join(HERE, "kernel_products_2030.json")))
 SC = ["1A", "2A", "2B", "3A", "3B", "3C"]
 
-# Hard-coded results: CBAM carve-out v1.0 (kernel v1.0 CarveOut_Table2 stored snapshot rows 80-85)
+# Hard-coded results: CBAM carve-out v1.3 (kernel v1.3 CarveOut_Table2 stored snapshot rows 80-85)
 HARD = {
     "J": [63.209336136123014, 57.33511064434257, 57.33511064434257, 13.9156322940344, 13.9156322940344, 13.9156322940344],
     "P": [6.85949372503708, 6.2668866648981085, 6.229441806962326, 1.5352488618688684, 0.6425370663466966, 0.4060502367633877],
@@ -76,7 +76,7 @@ def build():
     t.title = "Table2"
     t["A1"] = "Table 2. Simulated outcomes of carbon policy scenarios for Egypt, 2030 (USD 20/tCO2 in 2030 in all scenarios)"
     t["A1"].font = Font(bold=True, size=12)
-    t["A2"] = ("All rows are hard-coded from the final CBAM carve-out (EGYPT_CarveOut_Table2_v1.0), except row O, which is "
+    t["A2"] = ("All rows are hard-coded from the final CBAM carve-out (EGYPT_CarveOut_Table2_v1.3), except row O, which is "
                "computed live on sheet 'CBAM_calc' as the export-weighted change in the embedded emission intensity of CBAM "
                "products only. Change the yellow cells on 'Scenarios' and 'CBAM_data' to test alternatives.")
     t["A2"].alignment = WRAP
@@ -102,7 +102,7 @@ def build():
             if key:
                 c.value = HARD[key][j]
                 c.number_format = "#,##0" if key == "Q" else "0.0"
-                t.cell(r, 10, "Hard-coded: CBAM carve-out v1.0")
+                t.cell(r, 10, "Hard-coded: CBAM carve-out v1.3")
             else:
                 c.value = "=CBAM_calc!%s5" % chr(ord("C") + j)
                 c.number_format = "0.0"
@@ -214,7 +214,7 @@ def build():
         "F6. Policy fuel intensity = baseline x (1 + i_f), where i_f is CPAT's fuel-intensity response (one third of CPAT's "
         "industry fuel response; 3A-3C use the 1A value as the CBAM sectors are fully priced), plus, in 3C, the kernel's "
         "fund-financed fuel abatement.",
-        "F7. Policy process intensity = industry kernel (CPAT_Industry_Kernel_Egypt_v1.0) process abatement response.",
+        "F7. Policy process intensity = industry kernel (CPAT_Industry_Kernel_Egypt_v1.3) process abatement response.",
         "F8. Products: DRI-EAF and scrap-EAF steel, grey clinker, ammonia, urea, ammonium nitrate, primary aluminium "
         "(BF-BOF steel not produced in Egypt). Baseline intensities: Egypt CBAM EF v0.1 (Methodology App. A).",
         "F9. EU export volumes: 2024 (kt): see CBAM_data column C.",
@@ -260,7 +260,7 @@ def build():
 
     # ---------------- CBAM_data (by scenario x product) ----------------
     d = wb.create_sheet("CBAM_data")
-    d["A1"] = ("CBAM products by scenario, 2030. Columns C-H are data from kernel v1.0 (hard-coded); "
+    d["A1"] = ("CBAM products by scenario, 2030. Columns C-H are data from kernel v1.3 (hard-coded); "
                "columns I onwards are formulas.")
     d["A1"].font = B
     cols = ["Scenario", "Product", "EU exports 2024 (kt)", "Output 2030, policy (kt)",
