@@ -1,6 +1,6 @@
 """Build egypt-final/simple/Egypt_Simple.xlsx: a very small, plain-words workbook of the final Egypt results.
 Visible: How it works / Results / Try it (material parameters only). Hidden: Other parameters.
-Numbers come from carveout_v1_5_results.json (same source as the final documents)."""
+Numbers come from carveout_v1_6_results.json (same source as the final documents)."""
 import json
 import os
 
@@ -9,7 +9,8 @@ from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "egypt-final", "simple", "Egypt_Simple.xlsx"))
-R = json.load(open(os.path.join(HERE, "carveout_v1_5_results.json"), encoding="utf8"))
+_raw = json.load(open(os.path.join(HERE, "carveout_v1_6_results.json"), encoding="utf8"))
+R = _raw["results"] if "results" in _raw else _raw
 B = ["1A", "2A", "2B", "3A", "3B", "3C"]
 
 INPUT = PatternFill("solid", fgColor="FFF2CC")   # you can change these
@@ -159,7 +160,7 @@ inputs = [
     (5, "Price of the product (USD per tonne)", 110, "0", "What a tonne of clinker sells for."),
     (6, "Emissions per tonne from burning fuel (tonnes CO₂)", 0.314, "0.000", "Heat for the kiln."),
     (7, "Emissions per tonne from the process itself (tonnes CO₂)", 0.537, "0.000", "Chemistry: limestone turning into lime."),
-    (8, "Output response (1% dearer → this % less made)", -0.5, "0.0", "-0.5 means 1% dearer gives 0.5% less output. A rough placeholder."),
+    (8, "Output response (1% dearer → this % less made)", -0.1, "0.00", "-0.1 for cement: 1% dearer gives 0.1% less output. Steel and fertiliser -0.4, aluminium -0.5. Based on studies of demand and pass-through."),
     (9, "Fuel saved per tonne at this price", -0.049, "0.0%", "Plants get a little more efficient. From the climate tool."),
     (10, "Process emissions saved per tonne at this price", 0.065, "0.0%", "From international cost studies of cleaner methods."),
 ]

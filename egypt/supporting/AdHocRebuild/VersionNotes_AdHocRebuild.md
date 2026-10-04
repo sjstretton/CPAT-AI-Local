@@ -2,6 +2,11 @@
 
 Change history only. The method itself is in `MethodologyNote_v0.4.md` (current state, no history); numbers compared with the final Table 2 are in `ResultsComparison_Table2_v0.4.md`. Per `NORMS.md` section 7, history does not go in the methodology.
 
+## v0.5 (builder and verifier drafted 2026-10-08, not run)
+
+- Output elasticity by product (`EpsQ1`..`EpsQ8` on `Inputs`: cement -0.10, steel and fertilisers -0.40, aluminium -0.50), from `egypt/supporting/OutputElasticity_Note_v0.1.md`. `PROTOTYPE` mode keeps the uniform `EpsQ` = -0.5, so the reproduction of kernel v0.11 is unchanged. No other change.
+- Files: `build_adhoc_rebuild_v0_5.py`, `recalc_and_check_adhoc_v0_5.py`. Results and notes (`MethodologyNote_v0.5`, `ResultsComparison_Table2_v0.5`) to be written after the verifier has run.
+
 ## v0.4 (2026-10-04)
 
 - **Defaults changed, no formula changes.** `Conv` = FULL (was NOPHASE) and `ThetaOther` = 1 (was 0), following the decisions recorded in `CAVEATS.md` (2026-10-04). `ThetaOther` is forced to 0 in PROTOTYPE mode, so the reproduction of kernel v0.11 is unchanged.

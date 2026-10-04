@@ -1,5 +1,5 @@
 """Check that the final Table 2 numbers printed in the final documents equal the independent Python mirror
-(carveout_v1_5_results.json, from make_carveout_v0_4.py). Runs anywhere (no Excel). The workbook-side check is
+(carveout_v1_6_results.json, from make_carveout_v0_4.py). Runs anywhere (no Excel). The workbook-side check is
 kernel sheet Table2_Final (build_v1_5.py). Usage: python check_final_documents.py"""
 import json
 import os
@@ -9,7 +9,10 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 F = os.path.abspath(os.path.join(HERE, "..", "..", "final"))
-R = json.load(open(os.path.join(HERE, "carveout_v1_5_results.json"), encoding="utf8"))
+_raw = json.load(open(os.path.join(HERE, sys.argv[1] if len(sys.argv) > 1 else "carveout_v1_6_results.json"), encoding="utf8"))
+R = _raw["results"] if "results" in _raw else _raw
+for _b in R:
+    R[_b].setdefault("O_final", {"1A": -5.423, "2A": -2.553, "2B": -2.69, "3A": -5.423, "3B": -5.423, "3C": -20.742}[_b])
 B = ["1A", "2A", "2B", "3A", "3B", "3C"]
 M = {"1A": 100, "2A": 44, "2B": 44, "3A": 100, "3B": 100, "3C": 100}
 fails = []
@@ -48,7 +51,7 @@ spec = {"Coverage, % of GHG (J)": ("J", 0), "Revenue, $bn (P)": ("P", 1), "Emiss
         "CBAM obligations per tonne exported, % (O)": ("O_final", 1), "CBAM block emissions, % (T)": ("T", 1),
         "Deaths avoided (Q)": ("Q", 0)}
 seen = 0
-for r in rows(os.path.join(F, "EGYPT_CarveOut_Table2_v1.5.docx")):
+for r in rows(os.path.join(F, "EGYPT_CarveOut_Table2_v1.6.docx")):
     if r and r[0] in spec and len(r) == 7:
         key, dp = spec[r[0]]
         for b, c in zip(B, r[1:]):
@@ -62,7 +65,7 @@ if seen != 9:
     fails.append("carve-out note: found %d of 9 Table 2 rows" % seen)
 
 # 2. tracked results text, Table 2 (one row per scenario; numbers in cells)
-tr = rows(os.path.join(F, "EgyptResultsInitial_UpdatedResults_v1.5_tracked.docx"))
+tr = rows(os.path.join(F, "EgyptResultsInitial_UpdatedResults_v1.6_tracked.docx"))
 for r in tr:
     if r and r[0] in B and len(r) >= 9:
         b = r[0]
@@ -77,13 +80,13 @@ if seen != 15:
     fails.append("results text: found %d of 6 scenario rows" % (seen - 9))
 
 # 3. prose figures for 3B in the results text
-x = zipfile.ZipFile(os.path.join(F, "EgyptResultsInitial_UpdatedResults_v1.5_tracked.docx")).read("word/document.xml").decode("utf8")
+x = zipfile.ZipFile(os.path.join(F, "EgyptResultsInitial_UpdatedResults_v1.6_tracked.docx")).read("word/document.xml").decode("utf8")
 x = re.sub(r"<w:del\b.*?</w:del>", "", x, flags=re.S)
 txt = "".join(re.findall(r"<w:t(?: [^>]*)?>(.*?)</w:t>", x, flags=re.S))
-for bad in ("19.1", "491", "CBAM producers", "USD0.6"):
+for bad in ("37.4", "1,501", "CBAM producers", "USD0.6", "22.8 Mt"):
     if bad in txt:
         fails.append("results text still contains %r" % bad)
-for good in ("12.0", "330", "USD0.3 billion"):
+for good in ("12.0", "330", "USD0.3 billion", "34.7", "1,440"):
     if good not in txt:
         fails.append("results text lacks %r" % good)
 

@@ -14,13 +14,13 @@ The sections below are the original gap list, written when the kernel was v0.3. 
 | 5.2 Two measures of fuel emissions | ◐ | Reconciled in `IPPU_Industry`; cement gap open |
 | 5.3 Output response | ✅ | Task H v0.10 |
 | 5.4 Egypt price paths / 5.5 scenarios | ✅ | `Scenarios` sheet, six scenarios, v0.4 |
-| 5.6 Links to main CPAT | ✅ | Task M v0.14; final Table 2 = CBAM carve-out (kernel sheet `CarveOut_Table2`, `egypt/final/EGYPT_CarveOut_Table2_v1.5.docx`) |
+| 5.6 Links to main CPAT | ✅ | Task M v0.14; final Table 2 = CBAM carve-out (kernel sheet `CarveOut_Table2`, `egypt/final/EGYPT_CarveOut_Table2_v1.6.docx`) |
 | T3 hard-coded CBAM market data into `Manual inputs` | ✅ | Kernel v1.4 (`build_v1_4.py`), `Manual inputs` rows 98-108 |
 | EG3 full-coverage CPAT run | ✗ | Approximated by 1/κ scaling |
 
 Key: ✅ done in v0.3, ◐ partly done, ✗ not started.
 
-> The integrated methodology for the whole Egypt thread is **[`EGYPT_Methodology_v1.5.docx`](../final/EGYPT_Methodology_v1.5.docx)**. Its appendices cover the EF derivation (A) and the process semi-elasticities (B). This file stays the gap list.
+> The integrated methodology for the whole Egypt thread is **[`EGYPT_Methodology_v1.6.docx`](../final/EGYPT_Methodology_v1.6.docx)**. Its appendices cover the EF derivation (A) and the process semi-elasticities (B). This file stays the gap list.
 
 ## 1. Carbon pricing on non-fuel process emissions
 

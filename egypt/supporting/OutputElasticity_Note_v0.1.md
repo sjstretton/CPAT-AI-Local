@@ -53,4 +53,4 @@ A lower elasticity makes the cut smaller by about 3 Mt (8%) in 1A, 1A–2B ranki
 - The numbers above come from web search summaries; the web egress here blocked opening the papers, so I could not confirm which study gives each cement and steel figure, nor read the GTAP and Ganapati tables directly. Check the citations before using them in a publication.
 - No Egypt-specific output elasticity was found.
 - Pass-through is not a separate input in the kernel; ε absorbs it. A cleaner design would split ε into demand elasticity × pass-through, with trade exposure by product.
-- Nothing in the kernel or the final documents has been changed. Applying −0.10 for cement would need a kernel rebuild (`Manual inputs` rows 66–73), new carve-out numbers and updates to all documents.
+- Decision 2026-10-04: applied in final set v1.6 (full recommended set). The documents carry mirror-based numbers until `build_v1_6.py` has been run on Windows; see `TODO.md`, Final steps.

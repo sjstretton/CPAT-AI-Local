@@ -38,11 +38,11 @@ Follow [`NORMS.md` section 6](NORMS.md#6-task-completion-caveats-log-and-bookkee
 4. Do not commit unless asked.
 
 ### Key documents
-> **Egypt methodology (start here):** [`egypt/final/EGYPT_Methodology_v1.5.docx`](egypt/final/EGYPT_Methodology_v1.5.docx) (edited Word master). This is the integrated method for the whole Egypt thread. Appendix A covers emission factors split four ways; Appendix B covers process-emission semi-elasticities.
+> **Egypt methodology (start here):** [`egypt/final/EGYPT_Methodology_v1.6.docx`](egypt/final/EGYPT_Methodology_v1.6.docx) (edited Word master). This is the integrated method for the whole Egypt thread. Appendix A covers emission factors split four ways; Appendix B covers process-emission semi-elasticities.
 
 | Document | Role |
 |---|---|
-| [`egypt/final/EGYPT_Methodology_v1.5.docx`](egypt/final/EGYPT_Methodology_v1.5.docx) | Integrated Egypt methodology: scenarios, scope, CPAT reading, CBAM block, parameters; App. A EFs, App. B semi-elasticities, App. C glossary |
+| [`egypt/final/EGYPT_Methodology_v1.6.docx`](egypt/final/EGYPT_Methodology_v1.6.docx) | Integrated Egypt methodology: scenarios, scope, CPAT reading, CBAM block, parameters; App. A EFs, App. B semi-elasticities, App. C glossary |
 | [`NORMS.md`](NORMS.md) | Norms for all Excel work (sections 1-5) and the task-completion process for all work (section 6) |
 | [`CAVEATS.md`](CAVEATS.md) | Log of completed tasks - task, inputs, outputs, caveats. Read before building on earlier work |
 | [`TODO.md`](TODO.md) | Queued kernel tasks T1-T3 and the conventions every kernel increment must follow |
@@ -59,22 +59,22 @@ The source workbook (`CPAT 1.0pre_456_NoPropData.xlsb`). Read-only reference; do
 
 ### `cpat_excel_new/` - Excel-AI prototypes
 - `distribution/` - Distribution module: `docs/` (pseudocode), `data_*` staged data exports, `scripts/` (conversion pipeline), `standalone/` (standalone Egypt workbook + builder; `Old/` holds earlier versions), plus README, lessons learned and regeneration notes
-- `standalone_working_version/` - current working version of the industry kernel, `CPAT_Industry_Kernel_Egypt_v1.5.xlsx` (the final Egypt prototype; sheet `CarveOut_Table2` = final Table 2 in live formulas), with its builder `build_v1_0.py` (Excel COM; relabels v0.17); earlier versions, Stream-2 branch files and earlier builders (including `build_v0_17.py`) in `Old/`. See NORMS.md section 5
+- `standalone_working_version/` - current working version of the industry kernel, `CPAT_Industry_Kernel_Egypt_v1.6.xlsx` (the final Egypt prototype; sheet `CarveOut_Table2` = final Table 2 in live formulas), with its builder `build_v1_0.py` (Excel COM; relabels v0.17); earlier versions, Stream-2 branch files and earlier builders (including `build_v0_17.py`) in `Old/`. See NORMS.md section 5
 - `standalone_initial_prototypes/` - first-generation standalone workbooks (distribution v0.4, prices module v1.12, industry kernel v0.1/v0.1b LAMBDA, energy-kernel mock-up, South Africa inputs, mitigation-equations PoC)
 - `tecp_and_validation/` - total effective carbon price data and price-elasticity references
 - `old/` - archived data from an earlier conversion effort (`Coded_Conversion_Data/`)
 - `readme.xlsx`
 
 ### `egypt/` - Egypt case
-One folder holds all Egypt material (details in [`egypt/README.md`](egypt/README.md)); **the final model is the kernel `CPAT_Industry_Kernel_Egypt_v1.5.xlsx`** (the ad hoc rebuild is supporting material only):
-- `final/` - final deliverables, all v1.5:
-  - `CPAT_Industry_Kernel_Egypt_v1.5.xlsx` - **the one workbook that confirms the final numbers** (identical to `cpat_excel_new/standalone_working_version/`); sheet `CarveOut_Table2` computes the final Table 2 line by line (live for the scenario in Settings!B10, plus a stored 6-scenario snapshot and check); sheet `Table2_Final` holds the six-scenario Table 2, the figures printed in the documents, their differences (zero) and a live recomputation of row O
-  - **`EGYPT_Methodology_v1.5.docx` - main methodology document for the Egypt thread (start here)**; section 4.5 = CBAM block and obligations, 4.7 = composition of the final Table 2. Current method only, no change history. Edited Word master, no Markdown source
-  - `EGYPT_VersionNotes_v1.5.docx` - change history of the final set and the kernel (kept out of the methodology, `NORMS.md` section 7)
-  - `EGYPT_CarveOut_Table2_v1.5.docx` - **final Table 2**: original CPAT runs with only the CBAM block replaced; published vs final comparison
-  - `EgyptResultsInitial_UpdatedResults_v1.5_tracked.docx` - updated results text (tracked changes against the published text)
-  - `EGYPT_FinalCaveats_v1.5.docx` - key caveats on the final results
-  - `EGYPT_CBAM_ObligationNote_v1.5_NeedsCarolynConfirmation.docx` - note on how row O is calculated; a guess pending Carolyn's confirmation
+One folder holds all Egypt material (details in [`egypt/README.md`](egypt/README.md)); **the final model is the kernel `CPAT_Industry_Kernel_Egypt_v1.6.xlsx`** (the ad hoc rebuild is supporting material only):
+- `final/` - final deliverables, all v1.6:
+  - `CPAT_Industry_Kernel_Egypt_v1.6.xlsx` - **the one workbook that confirms the final numbers** (identical to `cpat_excel_new/standalone_working_version/`); sheet `CarveOut_Table2` computes the final Table 2 line by line (live for the scenario in Settings!B10, plus a stored 6-scenario snapshot and check); sheet `Table2_Final` holds the six-scenario Table 2, the figures printed in the documents, their differences (zero) and a live recomputation of row O
+  - **`EGYPT_Methodology_v1.6.docx` - main methodology document for the Egypt thread (start here)**; section 4.5 = CBAM block and obligations, 4.7 = composition of the final Table 2. Current method only, no change history. Edited Word master, no Markdown source
+  - `EGYPT_VersionNotes_v1.6.docx` - change history of the final set and the kernel (kept out of the methodology, `NORMS.md` section 7)
+  - `EGYPT_CarveOut_Table2_v1.6.docx` - **final Table 2**: original CPAT runs with only the CBAM block replaced; published vs final comparison
+  - `EgyptResultsInitial_UpdatedResults_v1.6_tracked.docx` - updated results text (tracked changes against the published text)
+  - `EGYPT_FinalCaveats_v1.6.docx` - key caveats on the final results
+  - `EGYPT_CBAM_ObligationNote_v1.6_NeedsCarolynConfirmation.docx` - note on how row O is calculated; a guess pending Carolyn's confirmation
   - `md_sources/` - Markdown sources of the caveats, Table 2, version notes and CBAM note
 - `supporting/` - supporting work: `AdHocRebuild/` (current rebuild workbook v0.4 and v0.3 with builders, verifiers, `MethodologyNote_v0.4`, `ResultsComparison_Table2_v0.4`, `VersionNotes_AdHocRebuild.md`, `md_to_docx.py`; v0.1-v0.2 and earlier notes are in `egypt/archive/AdHocRebuild/`), `EmissionFactors/` (Egypt CBAM EFs `EGY_CBAM_EF_v0.1.xlsx` + builder), `ProcessEmissions_CarbonPrice_Response/` (derivation of the process semi-elasticities), `InitialResultsAndIssues/` (reference material, do not edit), and the `TASK-D_...` / `TASK-2a_...` specs
 - `archive/` - all superseded versions: kernels v0.1-v1.0 and v1.3, methodology v1.0-v1.3, the retired CBAM-calculation workbook, caveats, Table 2, results text, CBAM note, results summary, `CAVEATS.md` snapshots
