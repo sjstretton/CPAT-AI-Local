@@ -1,7 +1,7 @@
 """Build CPAT_Industry_Kernel_Egypt_v0.14.xlsx from v0.13 (Task M: links to main CPAT and Table 2 assembly).
 
 Gap item 5.6 (EgyptTaskReference.md): national GHG for coverage %, total revenue, deaths avoided and recycling
-effects, then Table 2. Method follows the TASK-2b ad-hoc rebuild (egypt+mitigation/AdHocRebuild, MethodologyNote
+effects, then Table 2. Method follows the TASK-2b ad-hoc rebuild (egypt/supporting/AdHocRebuild, MethodologyNote
 v0.1) but uses the kernel's own responses instead of the rebuild's kappa / D_obr / F_fund corrections.
 
 New sheet CPAT_National: CPAT national outputs of runs EG1-EG4 (cpat_outputs_egypt_2022_2041.csv), stored values.
@@ -38,7 +38,7 @@ SRC = os.path.join(HERE, "CPAT_Industry_Kernel_Egypt_v0.13.xlsx")
 if not os.path.exists(SRC):
     SRC = os.path.join(HERE, "Old", "CPAT_Industry_Kernel_Egypt_v0.13.xlsx")
 DST = os.path.join(HERE, "CPAT_Industry_Kernel_Egypt_v0.14.xlsx")
-CSV = os.path.normpath(os.path.join(HERE, "..", "..", "egypt+mitigation", "AdHocRebuild",
+CSV = os.path.normpath(os.path.join(HERE, "..", "..", "..", "egypt", "supporting", "AdHocRebuild",
                                     "cpat_outputs_egypt_2022_2041.csv"))
 VER = "v0.14"
 MI, IP, CN, T2 = "Mitigation_Industry!", "IPPU_Industry!", "CPAT_National!", "Table2_Industry!"
@@ -172,7 +172,7 @@ def build_national(wb, data):
     ws, band, header, line = new_sheet(
         wb, "CPAT_National", "IPPU_Industry",
         "Main CPAT - Egypt: national outputs of the CPAT runs EG1-EG4 used by Task M (stored values)")
-    band(3, "A. CPAT national outputs by run (cpat_outputs_egypt_2022_2041.csv, egypt+mitigation/AdHocRebuild; "
+    band(3, "A. CPAT national outputs by run (cpat_outputs_egypt_2022_2041.csv, egypt/supporting/AdHocRebuild; "
             "EG1 = 1A/2A, EG2 = 2B, EG3 = 3A-3C, EG4 unused)")
     header(5, "", ("Key (code|run)", "Run", "Description", "Unit", "Source", "", "CPAT code", "Note"))
     r = 6

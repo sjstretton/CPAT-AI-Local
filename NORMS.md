@@ -1,6 +1,6 @@
 # CPAT-AI Excel Norms
 
-Norms for all Excel-based development (prototypes replicating the legacy CPAT model, and the Egypt-specific extensions). Derived from `cpat_excel_original\CPAT 1.0pre_456_NoPropData.xlsb` (older documents call this folder `original_cpat_excel\`) and the existing standalone workbooks. **Draft v0.3 - iterate** (v0.3: added Key documents and section 6). Colours verified against legacy cell fills (Excel COM read of `Mitigation` and `MTInputs`).
+Norms for all Excel-based development (prototypes replicating the legacy CPAT model, and the Egypt-specific extensions). Derived from `cpat_excel_original\CPAT 1.0pre_456_NoPropData.xlsb` (older documents call this folder `cpat_excel_original\`) and the existing standalone workbooks. **Draft v0.3 - iterate** (v0.3: added Key documents and section 6). Colours verified against legacy cell fills (Excel COM read of `Mitigation` and `MTInputs`).
 
 Sections 1-5 govern Excel work. **Section 6 (task completion: caveats log and bookkeeping) applies to every task in the repo** - Excel, Python, data and documentation alike.
 
@@ -14,15 +14,15 @@ Read these before starting a task; keep them current when you finish one (sectio
 | `NORMS.md` (this file) | Column, colour, input and versioning norms (1-5); task-completion process (6) |
 | [`CAVEATS.md`](CAVEATS.md) | **Append-only log of completed tasks**: task, inputs, outputs, caveats. Every finished task adds an entry |
 | [`TODO.md`](TODO.md) | Queued kernel tasks (T1-T3) with full procedures, and the per-task conventions (builders, codes, version log, regression, bookkeeping) |
-| [`instructions\instructions-egypt.yaml`](instructions/instructions-egypt.yaml) | Machine-readable Egypt task inventory: TASK-0/1/2a/2b/D/QUEUE, status, and per-version `notes` for kernel increments v0.3-v0.15 (Tasks E, A, B, C, K, D-scaffold, H, L; F, I, J merged in v0.12; G in v0.13; M in v0.14; T1 Task D values + T5 EFs in v0.15) |
-| [`instructions\context-egypt.md`](instructions/context-egypt.md) | Egypt background, key-files table, structural rules, sequencing |
-| [`egypt+mitigation\EGYPT_Methodology_v1.0.docx`](egypt+mitigation/EGYPT_Methodology_v1.0.docx) (source `Old\EGYPT_Methodology_v1.0.md`) | **Integrated Egypt methodology** (main document); App. A emission factors, App. B process semi-elasticities. Update it when a task changes the method |
-| [`egypt+mitigation\EgyptTaskReference.md`](egypt+mitigation/EgyptTaskReference.md) | Kernel gap list (items 1-5) and the Task A-M breakdown with dependencies |
-| [`egypt+mitigation\Old\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`](egypt+mitigation/Old/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md) | Drop-in spec for IPCC-based process semi-elasticities; section 4 caveats; derivation in `egypt+mitigation\Old\ProcessEmissions_CarbonPrice_Response\` |
-| [`egypt+mitigation\Old\TASK-2a_AdHocCalculations_Pseudocode_v0.1.md`](egypt+mitigation/Old/TASK-2a_AdHocCalculations_Pseudocode_v0.1.md) | Pseudocode of the existing (flawed) ad hoc Egypt calculations, mapped to `InitialResultsAndIssues\MajorIssues.docx` |
+| [`egypt\instructions\instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml) | Machine-readable Egypt task inventory: TASK-0/1/2a/2b/D/QUEUE, status, and per-version `notes` for kernel increments v0.3-v0.15 (Tasks E, A, B, C, K, D-scaffold, H, L; F, I, J merged in v0.12; G in v0.13; M in v0.14; T1 Task D values + T5 EFs in v0.15) |
+| [`egypt\instructions\context-egypt.md`](egypt/instructions/context-egypt.md) | Egypt background, key-files table, structural rules, sequencing |
+| [`egypt\final\EGYPT_Methodology_v1.3.docx`](egypt/final/EGYPT_Methodology_v1.3.docx) (edited Word master) | **Integrated Egypt methodology** (main document); App. A emission factors, App. B process semi-elasticities. Update it when a task changes the method |
+| [`egypt\instructions\EgyptTaskReference.md`](egypt/instructions/EgyptTaskReference.md) | Kernel gap list (items 1-5) and the Task A-M breakdown with dependencies |
+| [`egypt\supporting\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`](egypt/supporting/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md) | Drop-in spec for IPCC-based process semi-elasticities; section 4 caveats; derivation in `egypt\supporting\ProcessEmissions_CarbonPrice_Response\` |
+| [`egypt\supporting\TASK-2a_AdHocCalculations_Pseudocode_v0.1.md`](egypt/supporting/TASK-2a_AdHocCalculations_Pseudocode_v0.1.md) | Pseudocode of the existing (flawed) ad hoc Egypt calculations, mapped to `InitialResultsAndIssues\MajorIssues.docx` |
 | `cpat_excel_original\CPAT 1.0pre_456_NoPropData.xlsb` | Legacy CPAT - the reference for columns, rows, colours and values. Read-only |
 | [`templates\MTInputs_template.xlsx`](templates/MTInputs_template.xlsx) | Master `MTInputs` template (section 4). Copy, never edit |
-| `cpat_excel_new\standalone_working_version\` | Current industry kernel (`CPAT_Industry_Kernel_Egypt_v0.15.xlsx`, Stream 1 + Stream 2 merged, Tasks G and M, Task D values and Egypt EFs) and its `build_v0_<n>.py` builders; earlier versions in `Old\` (section 5) |
+| `cpat_excel_new\standalone_working_version\` | Current industry kernel (`CPAT_Industry_Kernel_Egypt_v1.3.xlsx`, final Egypt prototype) and its `build_v0_<n>.py` builders; earlier versions in `Old\` (section 5) |
 | [`cpat_excel_new\distribution\README.md`](cpat_excel_new/distribution/README.md), [`LESSONS_LEARNED.md`](cpat_excel_new/distribution/LESSONS_LEARNED.md), [`REGENERATING_THE_DISTRIBUTIONAL_WORKBOOK.md`](cpat_excel_new/distribution/REGENERATING_THE_DISTRIBUTIONAL_WORKBOOK.md) | Distribution module: spec/status and known gaps vs Excel; rules for LAMBDA/VBA workbooks; how to regenerate the distributional workbook |
 
 ## 1. Column norms
@@ -105,7 +105,7 @@ Rules: inputs green only; never hard-code values in unfilled calculation cells; 
 - Formulas live in Excel; no macros in prototypes unless documented (build via Python scripts, see `cpat_excel_new\...\build_workbook.py`).
 - Every prototype records: source legacy sheet, version, and a validation table vs. legacy values (and vs. `cpat_coded` where available).
 - Codes (`Input Code`, `Output Code`) must be identical between Excel and Python (`cpat_coded\cpat_model\mappings`).
-- Egypt-specific additions go in `egypt+mitigation\` and are flagged `EGY` in the `Scenario`/`Statistic` columns; do not alter the replicated legacy logic.
+- Egypt-specific additions go in `egypt\` and are flagged `EGY` in the `Scenario`/`Statistic` columns; do not alter the replicated legacy logic.
 
 ## 4. Policy and parameter input norms (MTInputs)
 
@@ -134,7 +134,7 @@ All new models take their policy and parameter inputs from a dedicated input tab
 
 - **File names** end in `_v<major>.<minor>` (e.g. `CPAT_Industry_Kernel_Egypt_v0.2.xlsx`). Never overwrite a saved version: every saved change increments the version (minor for fixes/conformance/small features, major for structural or methodological change).
 - **Old versions** move into an `Old\` subfolder next to the current file. The folder root holds only the current working version (plus its builder scripts/docs).
-- **Working versions** of standalone prototypes live in `cpat_excel_new\standalone_working_version\`; source/experimental drafts (e.g. in `egypt+mitigation\`) stay where they are until promoted.
+- **Working versions** of standalone prototypes live in `cpat_excel_new\standalone_working_version\`; source/experimental drafts (e.g. in `egypt\supporting\`) stay where they are until promoted.
 - **Version log.** Each workbook keeps a version log (first/ReadMe or Settings tab): version, date, one-line description of changes.
 - **Regression test on every increment.** Recalculate old and new versions in Excel and diff all values (baseline plus input shifts); differences must be zero or explained in the version log. Check sheets must stay at ~0 vs legacy CPAT.
 
@@ -150,7 +150,7 @@ Applies to **every** task (Excel, Python, data, documentation). A task is not fi
 
    Newest entry at the bottom. Never edit or delete earlier entries; to resolve a caveat, add a new entry that says so. Keep entries short and point to the task spec, report or yaml notes for detail.
 2. **Workbook version log** (section 5). Add the version-log row (version, date, one-line description, max abs regression diff) in the workbook's `Settings`/`ReadMe` tab. The `CAVEATS.md` entry and the version-log row must agree.
-3. **Task inventory.** Update the task's `status` and `notes` in [`instructions\instructions-egypt.yaml`](instructions/instructions-egypt.yaml); update the key-files table in [`instructions\context-egypt.md`](instructions/context-egypt.md) when paths or the latest version change; tick the item (✅/◐) in [`egypt+mitigation\EgyptTaskReference.md`](egypt+mitigation/EgyptTaskReference.md).
+3. **Task inventory.** Update the task's `status` and `notes` in [`egypt\instructions\instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml); update the key-files table in [`egypt\instructions\context-egypt.md`](egypt/instructions/context-egypt.md) when paths or the latest version change; tick the item (✅/◐) in [`egypt\instructions\EgyptTaskReference.md`](egypt/instructions/EgyptTaskReference.md).
 4. **Queue.** Tick the item in [`TODO.md`](TODO.md). Follow-up work the task generated goes in as a new `TODO.md` item, not only as a caveat.
 5. **Specs.** When a task applies a versioned spec (e.g. `TASK-D_..._v0.1.md`), retarget it as a new version rather than editing it in place (same rule as section 5 for workbooks).
 6. **No commit unless asked.** Leave changes in the working tree; the user decides what to commit.

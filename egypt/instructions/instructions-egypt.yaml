@@ -1,0 +1,257 @@
+# Egypt CBAM / industry task instructions (machine-readable)
+# See context-egypt.md for background, file locations and definitions.
+schema_version: 1
+project: egypt-cbam-industry
+created: 2026-10-02
+context_file: egypt/instructions/context-egypt.md
+working_folder: egypt/
+
+goals:
+  - Redo off-CPAT (ad hoc) Egypt calculations that contain substantial errors.
+  - In parallel, build an AI-coded prototype of CPAT, starting ONLY with the CBAM-related industrial modules.
+  - Prototype location: cpat_excel_new/standalone_working_version/ (final version CPAT_Industry_Kernel_Egypt_v1.3.xlsx, sheet CarveOut_Table2 = final Table 2; older versions in Old/).
+
+global_constraints:
+  - Scope is limited to CBAM-related industrial modules of CPAT for the prototype.
+  - Legacy CPAT workbook is the reference: "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb".
+  - Do not modify files in cpat_excel_original/ or egypt/supporting/InitialResultsAndIssues/ (source/reference material).
+  - Working outputs for Egypt go in egypt/.
+  - Follow repo NORMS.md.
+
+parallelism:
+  initial_parallel_tasks: [TASK-1, TASK-2a]
+  note: "TASK-1 and TASK-2a are expected to run in parallel soon; TASK-0 is done first."
+
+tasks:
+  - id: TASK-0
+    title: Save instructions
+    status: done
+    description: >
+      Save the originating prompt as machine-readable instructions (this file) plus an explicit
+      context file (context-egypt.md) in instructions/. Do nothing else.
+    outputs:
+      - egypt/instructions/instructions-egypt.yaml
+      - egypt/instructions/context-egypt.md
+
+  - id: TASK-1
+    title: Add process emissions and related industrial functionality to the prototype
+    status: done
+    depends_on: [TASK-0]
+    description: >
+      Add process-emissions functionality (and other CBAM-related industrial items present in
+      the main/legacy CPAT) to the industry prototype.
+    reference:
+      workbook: "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb"
+      cbam_rows: {first: 12198, last: 12353}
+    acceptance_criteria:
+      - Column structure must match the legacy CPAT workbook exactly.
+      - Row structure must match exactly in terms of the NUMBER of rows per process/block
+        (absolute row numbers need NOT match).
+      - Covers the CBAM calculation block (legacy rows 12198-12353).
+    output_location: cpat_excel_new/standalone_working_version/
+    outputs:
+      - cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.3.xlsx
+      - cpat_excel_new/standalone_working_version/build_v0_3.py
+    notes:
+      - "Built from v0.2 (now in standalone_working_version/Old/). Prototype increments stay in standalone_working_version (exception to the egypt/ output rule)."
+      - "156-row CBAM block (columns A-AI, same positions as legacy) added after each scenario in Mitigation_Industry: baseline rows 245-400 (legacy 5881-6036), carbon tax rows 644-799 (legacy 12198-12353)."
+      - "New 'Manual inputs' sheet: legacy rows 18-47 at the same positions; E21 replaces legacy Dashboard!G20 (process emissions in ETS/CT, FALSE). MTInputs F117:F121 linked to its row 22."
+      - "Check: all CBAM rows not changed by design match legacy (max diff 7e-15); existing kernel rows unchanged (regression diff 0)."
+      - "Changed by design: Carbon Tax/ETS rows read cptraj/etstraj from Data_Prices (legacy hard 0), so price-increase and revenue rows are non-zero in scenario 2; fixed legacy bugs (fuel emissions by sector M..AE hard-coded, aluminium fuel-ER relative ref, missing post-policy process total, product-price year header)."
+      - "Open for TASK-2b: revenues use fuel inclusion on process emissions; duplicate output codes (cpe.ind.*, emis.cbam.tot); Total Shadow Price and Revenues Fund are WIP zero inputs; v0.2 sector blocks are 60 rows vs legacy 25 (pre-existing); legacy Results CBAM rows 19028-19031 have a misaligned INDEX/MATCH range."
+      - "v0.4 (Task E, build_v0_4.py): Scenarios sheet, policy bundles, stream interface; Total Shadow Price / Revenues Fund wired to fundsp / fundsh."
+      - "v0.5 (Task A, build_v0_5.py): revenue rows fixed (process inclusion flags, post-policy emissions, fuel revenue added; split revf/revp) and output codes made unique (cpef/cpep, emisf/emisp, emrf/emrp, combined emis/emr/rev)."
+      - "v0.6 (Task B, build_v0_6.py): four-way EF split (fc/fp/np/no) with per-category coverage switches (Scenarios M:P, block o28); priced EFs, process ER, revf/revp use covered shares; post-policy emissions by category (emisfc/emisfp/emisnp/emisno, o13-16). All bundles use switches = 1 (EgyptResultsInitial's 44% fuel share = fc+fp), so results are unchanged from v0.5."
+      - "v0.7 (Task C, build_v0_7.py): CBAM process emissions (np + no) priced at pptraj (new block row o63; process path x process flag) in o65-o72, o118-o125, revp, o147-o154 and o15-o16; fuel CO2 stays on cptraj (o2). Identical to v0.6 for all bundles (process path = energy path); Check enforces the 20 $/t-in-2030 convention."
+      - "v0.8 (Task K, build_v0_8.py): CBAM metrics in spare block rows: cbcov (o39, covered share of pre-policy CBAM emissions), cbint (o40, tCO2e/t product), cbintch (o41, intensity change vs pre-policy), cbintchx (o51, EU-export-weighted intensity change), cbcovx (o52, export-weighted coverage). Coverage = legal scope (flags x covered shares), not conditional on price > 0. 2030: cbcov 100% (1A/3x) and 44.5% (LEGACY/2A/2B), matching EgyptResultsInitial; cbintch -1.1% vs the doc's -7.6%/-5.5%/-13.1% because fuel emissions respond only via the fund (Task G) and IPCC semi-elasticities are pending (Task D)."
+      - "v0.9 (Task D, build_v0_9.py): process semi-elasticities by product and category (np, no) in Manual inputs rows 53-60, form ER(P) = ERmax x (1 - exp(-beta x P)), beta calibrated from an anchor (P*, ER*); selector Manual inputs E50 (IPCC default / ADHOC = rows 40-47 = v0.8). Block o118-o125 apply np and no separately (E:H = beta.np, ERmax.np, beta.no, ERmax.no). Anchors are PLACEHOLDERS (ERmax 1, P* 100, ER* = ad hoc ER@$100; review fill) pending the separate IPCC research report, so all results equal v0.8. Fund placeholder o107-o114 still uses rows 40-47 (Task G/J)."
+      - "v0.10 (Task H, build_v0_10.py): CBAM output responds to the carbon cost net of the output-based rebate: production o31-o38 = baseline path x (1 + dp_net)^eps, dp_net = (fuel + process carbon cost - min(obrrb, price) x covered EF) / pre-policy product price (o75-o82, redefined). eps in Manual inputs rows 66-73 (PLACEHOLDER -0.5, switch E63; effective eps = 0 when OFF or bundle LEGACY). 'Pre-policy' rows o85-o103 = pre-policy intensity x policy output, so Task K metrics stay pure intensity. New codes cbqch (o62), emrq (o73, output effect), emrt (o83 = emrq + emr). 2030: 1A/3A/3C output -5.8%, emrq -3.53 Mt, emis 56.99 Mt (v0.9 60.48); 2A/2B -2.4%, -1.44 Mt; 3B zero output effect (theta = 1). Fuel part of emrq is a memo (kernel energy demand already responds to fuel prices)."
+      - "v0.11 (Task L, build_v0_11.py): CBAM obligations in spare block rows: cbobl (o94, USD m, EU exports x max(0, CBF x P_EU x EI - S x d)), cbobl0 (o105, no domestic policy: pre-policy EF, baseline output), cbobch (o116 = o94/o105 - 1), cbobchu (o127, per tonne exported, base-year EU export mix). EI = post-policy direct intensity (fuel + process); d = carbon price paid per t net of OBR rebate (3B -> no credit; 3C fund not deducted). Manual inputs rows 75-82: selector E76 FULL (default; regulation phase-in CBF, price paid deducted in full) / SCALED (deduction x CBF) / NOPHASE (CBF = 1, doc convention); EU price 100 flat (placeholder); CBF 2026 2.5% ... 2030 48.5% ... 2034 100%. Direct emissions only. Check Task L summary at D1506. 2030 cbobchu FULL: 1A/3A/3C -42.1%, 2A/2B -22.6%, 3B -1.4%; NOPHASE/SCALED: -21.1%, -10.9%, -1.4% (doc: -26.1/-30.4, -13.9, -7.6; gap = Task D placeholders and fund abatement, Task G)."
+      - "v0.12 (T2 merge, build_v0_12.py): Stream 2 (branch v0.7 -> Stream2_v1/v2/v3) merged onto v0.11 by re-applying build_stream2_v1/v2/v3 functions. Task F: Data_EF, Emissions_Industry (eco2 = ener x EF). Task I: Rebate_Industry (theta, output-based rebate, net prices atpn into the kernel usage term; ppin memo since Task H deducts obrrb). Task J: Fund_Industry (F = phi x pre-fund revenue, shadow price s), process abatement rebuilt for the v0.9 ERmax form; o5 = F, '+o4' in o118-o125 and o15/o16; Data_Prices shp/ssc .2 and Scenarios fundsp wired. Check sections F/I/J after row 1516; Task F check (d) conditions on o2+o3 (o1 is a year cascade). LEGACY/1A/2A/2B/3A identical to v0.11; 3B and 3C change by design. 2030 3C: F 1139.8 USD m, s 149.8 $/t, fund abatement 7.61 Mt. v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+      - "v0.13 (Task G, build_v0_13.py): new sheet IPPU_Industry. CPAT IPPU (xlsb Mitigation rows 7566-7570/13883-13887, stored); CPAT-method IPPU (prev x ind CO2 ratio from 2024; exact in s1, kernel energy-CO2 change only in s2); block np/no/proc + ammonia fp as IPPU (Manual inputs E88:E95); non-block = CPAT - block in s1, s2 per switch Manual inputs E85 IppuOther NONE (default, = s1) / CPAT (s1 x CPAT s2/s1); kernel IPPU = block + non-block; double-count correction = kernel - CPAT-method. Sections C1/C2 reconcile block fuel CO2 with Emissions_Industry sector CO2 (report-only; block > sector in cem/nfm/mch every year). Check Task G summary D1831. Prior sheets identical to v0.12. 2030 s2 kernel vs CPAT-method (Mt): LEGACY 87.67/82.79, 1A 84.75/85.27, 3C 80.01/81.91. v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+      - "v0.14 (Task M, build_v0_14.py, before T1/T3): new sheets CPAT_National (csv runs EG1-EG4, stored) and Table2_Industry (bundle -> run map 1A/2A EG1, 2B EG2, 3A-3C EG3, LEGACY '-'; Table 2 columns J K L M N O P Q R T U AR per year; live summary + stored 2030 snapshot). Deltas only (csv vintage != stored xlsb): K = dGHG CPAT + (dIPPU kernel - dIPPU CPAT) + (dInd kernel - dInd CPAT). Check Task M summary D1861. Prior sheets identical to v0.13. 2030 K (Mt) 1A -27.7, 2A -25.7, 2B -27.1, 3A -9.7, 3B -6.6, 3C -17.3 (rebuild -31.6/-27.7/-29.3/-18.0/-12.8/-22.4). v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+      - "v0.15 (T1 + T5, build_v0_15.py): Egypt CBAM EF v0.1 in Manual inputs H30:K37 (urea np 0, AN no 0.9944 incl. HNO3 N2O; M35/M36 embedded NH3); Task D applied (E50 IPCC; rows 53-60 ER at $100 IPCC central: DRI 0.3433, scrap 0.1810, BF 0.2803, clinker 0.3352, AN no 0.6179 blend, Al 0.2164 np+no, NH3/urea 0; P* 100). Bug fix o15/o16 (no used np beta, ERmax ignored). Task J v2 table and Table 2 snapshot refilled. Check T1/T5 row 1881. 2030 K (Mt) 1A -29.8, 2A -25.8, 2B -27.1, 3A -11.8, 3B -8.6, 3C -23.9 (rebuild v0.2 -31.8/-27.8/-29.3/-18.2/-12.7/-22.6). v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+      - "v0.16 (run-2 fixes, build_v0_16.py): P* 122 (USD2024); Table2_Industry kappa row 54, EG3 1/kappa full-coverage approximation (rows 64, 84, 91, 94, 96), block fuel CO2 above sector reallocated from non-kernel industry (rows 59-60); Fund_Industry stored fund rows 425-433 = post-abatement block payments (fixed point). 2030 K (Mt) 1A -29.0, 2A -25.5, 2B -26.7, 3A -21.1, 3B -17.4, 3C -32.9 (rebuild v0.3 -31.4/-27.8/-29.3/-25.1/-19.6/-30.6). Final deliverables in 'egypt/final/'. See CAVEATS.md 2026-10-03."
+      - "FINAL v1.0 (2026-10-04): Table 2 = CBAM carve-out (egypt/supporting/AdHocRebuild/make_carveout_v0_3.py): original CPAT runs, CPAT implied block change removed, block = kernel output/process response + CPAT fuel-intensity response (1+r)^(1/3)-1; O = export-weighted CBAM-product embedded-intensity change (no domestic-price deduction; 2026-10-06): 1A -5.4, 2A -2.6, 2B -2.7, 3A -5.4, 3B -5.4, 3C -20.7%. 2030 K 1A -37.4, 2A -33.1, 2B -34.8, 3A -22.8, 3B -19.1, 3C -33.0. Text: EgyptResultsInitial_UpdatedResults_v1.3_tracked.docx. v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+  - id: TASK-2a
+    title: Pseudocode of existing ad hoc (off-CPAT) calculations
+    status: pending
+    depends_on: [TASK-0]
+    description: >
+      The CPAT CBAM calculations are not fully used; final Egypt results were produced with
+      additional ad hoc calculations in AdHocCalculations.xlsb. Describe in pseudocode what
+      those EXISTING calculations do, cross-referenced against the problems listed in
+      MajorIssues.docx. This pseudocode is the basis for the corrected calculations (TASK-2b).
+    inputs:
+      - egypt/supporting/InitialResultsAndIssues/AdHocCalculations.xlsb
+      - egypt/supporting/InitialResultsAndIssues/MajorIssues.docx
+      - egypt/supporting/InitialResultsAndIssues/EgyptResultsInitial.docx
+      - egypt/supporting/Methodology/TechnicalNoteonCPATResults_expanded_v2.docx
+      - "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb (rows 12198-12353)"
+    outputs:
+      - Pseudocode document of existing calculations (in egypt/)
+    acceptance_criteria:
+      - Faithfully describes the existing calculations (including the erroneous parts).
+      - Each issue in MajorIssues.docx is mapped to the relevant pseudocode step(s).
+
+  - id: TASK-2b
+    title: Corrected ad hoc calculations (rebuild of AdHocCalculations.xlsb) + concise methodology note
+    status: done_v0.1
+    depends_on: [TASK-2a]
+    description: >
+      Rebuild of the flawed AdHocCalculations.xlsb behind Table 2 of the Egypt results, as a
+      transparent Excel workbook in the original PolicyMatrix format, with all assumptions on a
+      separate Inputs tab, an 'Issues resolved' tab mapping the 19 MajorIssues items, and an
+      ultra-concise methodology note (core equations only). A one-cell Mode switch selects
+      REBUILD (coherent method, default) or PROTOTYPE (reproduces the TASK-1 kernel v0.11 block
+      exactly, verified in the Comparison tab).
+    inputs:
+      - egypt/supporting/InitialResultsAndIssues/AdHocCalculations.xlsb
+      - egypt/supporting/InitialResultsAndIssues/MajorIssues.docx
+      - egypt/supporting/Methodology/TechnicalNoteonCPATResults_expanded_v2.docx
+      - egypt/supporting/TASK-2a_AdHocCalculations_Pseudocode_v0.1.md
+      - cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.11.xlsx (product inputs, block equations)
+      - "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb (Outputs sheet, Egypt EG1-EG4, 2022-2041)"
+    outputs:
+      - egypt/supporting/AdHocRebuild/AdHocCalculations_Rebuild_v0.1.xlsx (sheets ReadMe, Inputs, CPAT_Outputs, CBAM_Products, Results, PolicyMatrix, Comparison, Issues resolved, Checks)
+      - egypt/supporting/AdHocRebuild/build_adhoc_rebuild_v0_1.py (openpyxl builder) + recalc_and_check_adhoc.py (Excel COM verifier) + recalc_and_check_adhoc_report.txt
+      - egypt/supporting/AdHocRebuild/MethodologyNote_v0.1.md / .docx (md_to_docx.py [note.md])
+      - egypt/supporting/AdHocRebuild/ResultsComparison_Table2_v0.1.md / .docx (Table 2 of EgyptResultsInitial.docx vs rebuild vs kernel v0.14 Task M, 2030, with K decomposition and docx text/table inconsistencies)
+      - egypt/supporting/AdHocRebuild/cpat_outputs_egypt_2022_2041.csv, prototype_v0_11_results.json, original_PolicyMatrix_cells.txt (provenance)
+    acceptance_criteria:
+      - PolicyMatrix keeps the original layout; rows 7-12 (1A, 2A, 2B, 3A, 3B, 3C) fully live; no typed numbers outside Inputs.
+      - Mode = PROTOTYPE reproduces v0.11 block metrics for all bundles under FULL and NOPHASE (132/132 within 1e-7).
+      - REBUILD results match an independent Python re-implementation (534/534 values); 19 Checks PASS.
+      - Each MajorIssues item mapped to a resolution (Issues resolved tab); differences vs original and vs prototype stated.
+    notes:
+      - "v0.1 (2026-10-02). 2030 REBUILD/NOPHASE headline: K = -31.6/-27.7/-29.3/-18.0/-12.8/-22.4 Mt (original -41.6/-38.9/-41.0/-21.5/-18.1/-24.5); J = 63/57/57/14/14/14 % (kappa(EG3) = 0.54); P = 6.81/6.23/6.19/1.51/0.33/0 $bn; Q = 1564/1564/1631/546/412/633."
+      - "Differences vs original: single 2030 base, computed coverage with kappa, bottom-up CBAM base 61.2 Mt, process via beta + output channel with CPAT IPPU scaling removed, 1A on EG1, 3B from EG3 with explicit OBR correction, revenue net of rebates/fund, deaths rescaled by energy CO2 only, price start 2028, b_f from CPAT."
+      - "Differences vs prototype v0.11: fuel-intensity channel x_f = exp(b_f (tau + sigma)), IPCC beta set (Task D), fund as shadow price sigma = 20 $/t on both channels, CPAT national totals/revenue/deaths/AR, OBR rebates deducted, NOPHASE default for O."
+      - "Format changes: PolicyMatrix columns AF-AQ redefined (K decomposition, AN export-weighted intensity, AO gross revenue, AP rebates, AQ O under FULL); row 4 mode indicator; trajectory rows 26-29 contiguous 2027-2034; rows 14-22 verbatim/greyed; GHG tab not rebuilt."
+      - "Open flags: kappa(EG3) = 0.54 (re-run EG3 with full industry coverage, then KappaMode = ONE); 3B revenue depends on ThetaOther; non-CBAM IPPU unresponsive (IppuOther); 3B/3C deaths rescaling proportional; beta set and sigma judgements; fund outlay bound 0.19 vs budget 1.47 $bn; O convention."
+      - "Excel pitfalls recorded: defined names are case-insensitive (PT_g/PT_G collided -> PT_Growth/PT_ProcFac); TRANSPOSE(INDEX(..)) inside SUMPRODUCT unreliable -> explicit term sums."
+
+  - id: TASK-D
+    title: IPCC-based process half-elasticities for the industry kernel
+    status: values_ready_not_applied
+    depends_on: [TASK-1]
+    description: >
+      Replace the undocumented 'Manual inputs'!E40:F47 half-elasticities (TASK-1 v0.8) with
+      values derived from IPCC AR6 WGIII (Table 11.3 technology costs, Table 12.3 2030
+      potentials) using the kernel's convention Half Elasticity = -LN(1 - ER at $100)/100.
+      Derivation, report and live workbook are done; the drop-in has NOT yet been applied to
+      any kernel increment.
+    spec: egypt/supporting/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md
+    outputs:
+      - egypt/supporting/ProcessEmissions_CarbonPrice_Response/ProcessEmissions_CarbonPriceResponse_Report.md
+      - egypt/supporting/ProcessEmissions_CarbonPrice_Response/ProcessEmissions_CarbonPriceResponse_Report.docx
+      - egypt/supporting/ProcessEmissions_CarbonPrice_Response/ProcessEmissions_CarbonPriceResponse.xlsx
+    target: "cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.9.xlsx -> 'Manual inputs' rows 53-60 (np E:G, no I:K, text Q:S) + selector E50 = IPCC (spec section 2.3). Legacy v0.8 target was 'Manual inputs'!E40:F47 (readers: Mitigation_Industry rows 352-359 fuel ER, 363-370 process ER)."
+    todo: "TODO.md (root) task T1 - full procedure, acceptance checks, bookkeeping"
+    recommended_values_central_ER_at_100: {DRI-EAF: 0.3433, Scrap-EAF: 0.1810, BF-BOF: 0.2803, Clinker: 0.3352, Ammonia: 0.2974, Urea: 0.1158, AN_unabated: 0.7210, Aluminium: 0.2164}
+    v0_9_category_split: {steel_and_clinker: np, AN: no, Aluminium: "np 0.1282 (inert anodes) + no 0.1078 (PFC control)", Ammonia: "np = 0 in v0.9 (SMR CO2 is fp) - decision in T1", Urea: "inherits from ammonia; not applied separately"}
+    notes:
+      - "Set F as the only input and E = -LN(1-F)/100; 2030-horizon and long-run alternatives in the spec section 2.1."
+      - "Caveats: table is shared by fuel and process ER in v0.8; AN assumes unabated N2O (K36 = 0.97); urea row only if embedded NH3 CO2 (M35) is priced; USD2019 basis (100 USD2019 ~ 122 USD2024)."
+      - "Closes EgyptTaskReference.md item 1b."
+
+  - id: TASK-EF
+    title: Egypt CBAM direct emission factors split four ways (fc / fp / np / no)
+    status: methodology_and_values_ready_not_applied
+    depends_on: [TASK-1]
+    description: >
+      Transparent, auditable derivation of Scope 1 emission factors for the eight kernel goods
+      ('Manual inputs' rows 30-37), split into fuel combustion (fc), fuel-based process /
+      reductant-feedstock (fp), non-fuel process CO2 (np) and non-CO2 process gases (no).
+      Every number is a cited constant, a tiered Egypt input (A-D, VERIFY flags) or a live
+      formula over defined names; 14 integrity/plausibility checks pass. CBAM conventions by
+      default (AR5 GWPs; urea-bound CO2 counted at the ammonia plant), switchable to IPCC.
+      Kernel NOT modified; adoption is a separate increment.
+    spec: egypt/supporting/EmissionFactors/EGY_CBAM_EF_Methodology_v0.1.md
+    outputs:
+      - egypt/supporting/EmissionFactors/EGY_CBAM_EF_v0.1.xlsx
+      - egypt/supporting/EmissionFactors/build_ef_v0_1.py
+      - egypt/supporting/EmissionFactors/recalc_and_check.py
+    target: "'Manual inputs'!H30:K37 (own fc/fp/np/no) and M (embedded NH3) of the latest kernel (v0.12; EF block unchanged since v0.6)."
+    results_own_process_tCO2e_per_t: {DRI-EAF: "0.178/0.393/0.038/0 = 0.609", Scrap-EAF: "0.045/0/0.044/0 = 0.089", BF-BOF_ref: "0.168/1.257/0.053/0 = 1.478", Clinker: "0.314/0/0.537/0 = 0.851", Ammonia: "0.712/1.262/0/0 = 1.975", Urea: "0.112/0/0/0 (chain 1.238)", AN: "0.112/0/0/0 (chain incl. HNO3 N2O 1.953)", Aluminium: "0.123/0/1.623/0.774 = 2.521"}
+    notes:
+      - "Kernel differences: urea np (CBAM 0 vs kernel -0.733 netting; switch urea_conv), AN (HNO3 kept as precursor vs kernel folding N2O 0.97 into own), DRI-EAF (0.609 vs 0.730; kernel EF-input cols S:V inconsistent with H:I), ammonia (1.975 vs 1.851; 35.2 vs ~33 GJ/t)."
+      - "VERIFY list (impact order): ammonia GJ/t, nitric-acid N2O abatement share (Abu Qir CDM), Egyptalum PFC rates, kiln fuel mix/intensity, DRI gas use, EISCO BF closure, EU default values (copied from kernel)."
+      - "Research pass verified IPCC Vol.2 Table 2.2, Vol.3 Tables 2.4/3.1/3.3/4.1/4.10/4.15 from PDFs; Egypt-specific portals (UNFCCC, CDM, GNR, IEA, worldsteel) were inaccessible - follow-up with browser access."
+      - "Next metrics (user): other CBAM metrics build on these EFs."
+      - "Adoption in the kernel queued as TODO.md T5 (urea/AN conventions first; combine with T1 fp routing). Summarised in the integrated methodology App. A."
+
+  - id: TASK-METHOD
+    title: Integrated Egypt methodology document (whole thread)
+    status: done_v1.0
+    depends_on: [TASK-2a, TASK-2b, TASK-1, TASK-D, TASK-EF]
+    description: >
+      Main methodology for the Egypt thread: bundles and CPAT runs, history (ad hoc results,
+      19 issues), CPAT reading (usage/efficiency split, s_int), CBAM block equations (four-way EF,
+      output, fuel and process intensity, revenue, obligations), Table 2 national composition
+      (TASK-2b), kernel v0.1-v0.13, parameters, open issues. App. A four-way EFs (Task EF);
+      App. B process semi-elasticities (Task D) incl. recommended fp routing; App. C file map.
+    outputs:
+      - egypt/final/EGYPT_Methodology_v1.3.docx
+    notes:
+      - "Update (new version) whenever a task changes the method; README, NORMS key documents and context-egypt point to it."
+
+  - id: TASK-F-I-J
+    title: Stream 2 - energy CO2 (F), output-based rebate (I), revenue fund (J)
+    status: merged_v0.12
+    depends_on: [TASK-1]
+    description: >
+      Built on a branch from v0.7 (build_stream2_v1/v2/v3.py, workbooks now in Old/) and merged
+      onto the mainline in v0.12 (TODO.md T2, build_v0_12.py). Task F: Data_EF and
+      Emissions_Industry (eco2 by sector x fuel x scenario). Task I: Rebate_Industry, net
+      prices atpn into the kernel usage term (bundle 3B, theta). Task J: Fund_Industry, fund
+      F = phi x pre-fund revenue, shadow price s into shp/ssc and the CBAM block o4/o5
+      (bundle 3C, phi). Merge notes and caveats in CAVEATS.md.
+    outputs:
+      - cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.12.xlsx
+      - cpat_excel_new/standalone_working_version/build_v0_12.py
+
+  - id: TASK-QUEUE
+    title: Queued kernel tasks (see root TODO.md)
+    status: not_started
+    depends_on: [TASK-1, TASK-D]
+    description: >
+      Root TODO.md holds full instructions for the queued increments: T1 apply Task D values
+      to the latest kernel (pending); T2 merge Stream 2 (Tasks F, I, J; branch
+      CPAT_Industry_Kernel_Egypt_v0.7branch_Stream2_v1/v2/v3.xlsx) onto the mainline - DONE in
+      v0.12; T3 move hard-coded CBAM market data (Mitigation_Industry F276:I283,
+      G288:G295 and policy-block mirrors F675:I682, G687:G694) into a new 'Manual inputs'
+      section from row 62 with code/source/confidence (pending).
+    spec: TODO.md
+
+original_prompt: |
+  I've created a blank folder 'instructions' for saving below instructions, and a folder
+  'egypt+mitigation' for the working files.
+  (Repo since reorganised: all Egypt material is now under egypt/ - see egypt/README.md.)
+
+  We have an Egypt specific task. We wish to redo some off-CPAT calculations which have
+  substantial errors, at the same time as building a prototype of CPAT now coded using AI.
+  At present we are building a prototype of CPAT_industry models which will shortly be stored
+  in standalone_working_version.
+
+  We will build the prototype first only for the CBAM related industrial modules of CPAT.
+
+  Task 0: Save this prompt into a machine readable set of instructions in a new folder.
+
+  Task 1 Then we will add functionality of the process emissions, and other thing in the main
+  CPAT. The column structure and the row structure (ie the number of rows for each process, but
+  not the row numbers itself, must match exactly CPAT 1.0pre_456_NoPropData.xlsb, which is the
+  legacy CPAT) this is stored in cpat_excel_original aka (original_cpat_excel) subfolder. The
+  CBAM calculations are stored in row 12198 to 12353.
+
+  Task 2a, these CPAT calculations aren't being fully used, and additional calculations that are
+  being done ad hoc manner to produce final results in AdHocCalculations.xlsb. The problems with
+  those calculations are described in a document MajorIssues.docx. We will need to describe in
+  pseudocode what the calculations should be (this is the existing calculations). This will be
+  the basis
+
+  Soon, we will have two initial tasks in parallel.
+
+  Save an 'instructions-egypt' file and an explicit 'context-egypt' file in the instructions.
+  Separate tasks should be given codes within the instructions file (use the ones above Task 0,
+  Task 2b etc). Beyond writing those files don't do anything else yet.

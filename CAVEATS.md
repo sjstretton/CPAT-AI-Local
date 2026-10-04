@@ -20,9 +20,9 @@ Copy the block below to the end of the file and fill it in. Keep it short; point
 
 Earlier work was logged in the task documents themselves; they remain the detailed record:
 
-- Kernel increments v0.3-v0.11 (Tasks E, A, B, C, K, D-scaffold, H, L): `notes` under `TASK-1` in [`instructions/instructions-egypt.yaml`](instructions/instructions-egypt.yaml) and each workbook's `Settings` version log.
-- Process semi-elasticities (Task D): [`egypt+mitigation/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`](egypt+mitigation/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md) section 4.
-- Gap list for the Egypt kernel: [`egypt+mitigation/EgyptTaskReference.md`](egypt+mitigation/EgyptTaskReference.md).
+- Kernel increments v0.3-v0.11 (Tasks E, A, B, C, K, D-scaffold, H, L): `notes` under `TASK-1` in [`egypt/instructions/instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml) and each workbook's `Settings` version log.
+- Process semi-elasticities (Task D): [`egypt/supporting/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`](egypt/supporting/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md) section 4.
+- Gap list for the Egypt kernel: [`egypt/instructions/EgyptTaskReference.md`](egypt/instructions/EgyptTaskReference.md).
 - LAMBDA/VBA distribution workbook: [`cpat_excel_new/distribution/LESSONS_LEARNED.md`](cpat_excel_new/distribution/LESSONS_LEARNED.md); Python Distribution module gaps vs Excel: [`cpat_excel_new/distribution/README.md`](cpat_excel_new/distribution/README.md).
 
 ---
@@ -281,3 +281,9 @@ Earlier work was logged in the task documents themselves; they remain the detail
 - CBAM obligation note rewritten to v1.3 (intensity-only; source `egypt+mitigation/Old/EGYPT_CBAM_ObligationNote_v1.3.md`, via pypandoc).
 - CBAM workbook, CarveOut, FinalCaveats, tracked text and kernel are all at v1.3; content is unchanged apart from version references and "scenario" terminology. Kernel v1.3 `CarveOut_Table2`: column M80:M85 stores the intensity-only O; row 71 is relabelled as the FULL deduction memo (live O is still FULL there; the workbook governs).
 - v1.0/v1.2 copies archived (FIN `Old/`, WRK `Old/Superseded/`). FIN and WRK copies are byte-identical. README, instructions and EgyptTaskReference now point to v1.3.
+
+## 2026-10-08 - Egypt folder reorganisation and doc consistency fixes
+- **Task:** merged `Egypt Final results/`, `egypt+mitigation/` and `instructions/` into a single root folder `egypt/` (`final/`, `supporting/`, `archive/`, `instructions/`); fixed documentation inconsistencies (latest kernel is v1.3 everywhere; legacy folder is `cpat_excel_original/`; methodology master is the edited `.docx`).
+- **Inputs:** the three old folders (byte-identical duplicates found by hash; the two folders held the same v1.3 deliverables and mirrored archives).
+- **Outputs:** `egypt/` (new `README.md`); duplicates removed, one copy of each file kept; tracked `__pycache__` files removed; path references updated in README, NORMS, TODO, AGENTS, the instructions yaml/context, the TASK-D/TASK-2a specs and the Python builders (`egypt/supporting/AdHocRebuild/*`, `cpat_excel_new/standalone_working_version/Old/build_v0_14-17.py`). Entries above this one still quote the old paths: map `Egypt Final results\`/`egypt+mitigation\` to `egypt\final\`, `Old\` and `Old\Superseded\` to `egypt\archive\` or `egypt\supporting\`.
+- **Caveats:** builders were not re-run (they need Excel COM on Windows); path edits are untested. Final CBAM workbook/note renamed to `..._v1.3_NeedsCarolynConfirmation` (from the `CBAM Guess - Needs Carolyn Input/` folder name). Two variants that differed were kept with `_alt1` (FinalCaveats v1.0, Methodology v1.0 md) and the pre-edit Methodology v1.3 renamed `_preedit`, all in `egypt/archive/`; the two `CAVEATS.md` copies from the old `Old/` folders are `egypt/archive/CAVEATS_snapshot_*.md`. `extract_kernel_products_2030.py` still points at the (now archived) v1.0 kernel and old Windows root. Historical versions in `egypt/archive/` were left with their original path text.

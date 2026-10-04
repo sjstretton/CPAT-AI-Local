@@ -10,7 +10,7 @@ Local workspace for the World Bank **Climate Policy Assessment Tool (CPAT)**: th
 2. [`NORMS.md`](NORMS.md) - Excel column/colour/input/versioning norms (sections 1-5) and the task-completion process (section 6).
 3. [`CAVEATS.md`](CAVEATS.md) - log of completed tasks and their caveats. Read before building on earlier work.
 4. [`TODO.md`](TODO.md) - queued kernel tasks and per-task conventions.
-5. Egypt work: [`instructions/context-egypt.md`](instructions/context-egypt.md) and [`instructions/instructions-egypt.yaml`](instructions/instructions-egypt.yaml).
+5. Egypt work: [`egypt/instructions/context-egypt.md`](egypt/instructions/context-egypt.md) and [`egypt/instructions/instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml).
 
 ## Hard rules (summary; authority is the documents above)
 - `cpat_excel_original/` (legacy workbook) is read-only ground truth.

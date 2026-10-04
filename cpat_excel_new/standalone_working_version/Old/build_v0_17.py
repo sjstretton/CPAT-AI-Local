@@ -1,6 +1,6 @@
 """Build CPAT_Industry_Kernel_Egypt_v0.17.xlsx from v0.16: adds sheet CarveOut_Table2 (final Table 2, CBAM carve-out v0.3).
 
-The sheet reproduces egypt+mitigation/Old/AdHocRebuild/make_carveout_v0_3.py line by line with live formulas for the
+The sheet reproduces egypt/supporting/AdHocRebuild/make_carveout_v0_3.py line by line with live formulas for the
 active bundle (Settings!B10), 2030 (column T): original CPAT run results everywhere, CPAT's implied CBAM-block change
 removed, block rebuilt from CPAT's fuel-intensity response + kernel output response + kernel process response (charged
 bundles only). O on FULL; NOPHASE memo. A stored 6-bundle snapshot (from make_carveout_v0_3.carve) and a Check row
@@ -16,7 +16,7 @@ import win32com.client as win32
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "Old"))
-ADHOC = os.path.join(HERE, "..", "..", "egypt+mitigation", "Old", "AdHocRebuild")
+ADHOC = os.path.join(HERE, "..", "..", "..", "egypt", "supporting", "AdHocRebuild")
 sys.path.insert(0, ADHOC)
 
 from build_v0_4 import GREEN, REVIEW, copy_formats  # noqa: E402
@@ -61,7 +61,7 @@ def write_sheet(wb):
                             "from CPAT's fuel-intensity response (fuel per t), the kernel output response and, where process "
                             "emissions are charged, the kernel process response. Each effect counted once.")
     ws.Range("B3").Value = ("Set the bundle in Settings!B10 (1A, 2A, 2B, 3A, 3B, 3C). Year 2030 = column T of the source "
-                            "sheets. Green = hard input. Reference implementation: egypt+mitigation/Old/AdHocRebuild/"
+                            "sheets. Green = hard input. Reference implementation: egypt/supporting/AdHocRebuild/"
                             "make_carveout_v0_3.py; method: EGYPT_Methodology_v1.3 section 5.0.")
 
     head(ws, 5, "A. Inputs (active bundle, 2030)")

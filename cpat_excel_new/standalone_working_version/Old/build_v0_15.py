@@ -1,6 +1,6 @@
 """Build CPAT_Industry_Kernel_Egypt_v0.15.xlsx from v0.14 (TODO T5 Egypt CBAM EFs + TODO T1 Task D semi-elasticities).
 
-T5  Manual inputs H30:K37 (S1 fc / fp / np / no) = Egypt CBAM EF v0.1 (egypt+mitigation/EmissionFactors/
+T5  Manual inputs H30:K37 (S1 fc / fp / np / no) = Egypt CBAM EF v0.1 (egypt/supporting/EmissionFactors/
     EGY_CBAM_EF_v0.1.xlsx Products!D:G, CBAM conventions). Kernel conventions kept where they differ:
       urea  np = 0 (CBAM rule: urea-bound CO2 not deducted; was -0.733), M35 embedded NH3 = 1.1255904 (chain 1.2378);
       AN    no = 0.9944125 = integrated HNO3 N2O (0.79 t HNO3/t AN x 1.2588); M36 = 0.8462122 (all embedded NH3,
@@ -43,14 +43,14 @@ EF = {30: (0.17797725, 0.39301352, 0.03790102, 0.0),
       36: (0.1122, 0.0, 0.0, 0.9944125),
       37: (0.12342, 0.0, 1.62349304, 0.774)}
 EMB = {35: 1.1255904, 36: 0.8462122}
-EF_SRC = ("v0.15 EF: Egypt CBAM EF v0.1 (egypt+mitigation/EmissionFactors/EGY_CBAM_EF_v0.1.xlsx Products; "
+EF_SRC = ("v0.15 EF: Egypt CBAM EF v0.1 (egypt/supporting/EmissionFactors/EGY_CBAM_EF_v0.1.xlsx Products; "
           "EGY_CBAM_EF_Methodology_v0.1.md). ")
 EF_NOTE = {35: "Urea np = 0 (CBAM rule: urea-bound CO2 not deducted; prototype -0.733). ",
            36: "AN no = integrated HNO3 N2O 0.79 x 1.2588 (kernel convention; EF workbook books it as precursor); "
                "50 % N2O abatement assumed (VERIFY). "}
 
 SRC_TXT = ("IPCC AR6 WGIII Table 11.3/12.3 cost-bucket MACC, central (mean 2030 & long-run), USD2019; ER at $100 "
-           "(Option A: ERmax 1, P* 100). Derivation: egypt+mitigation/ProcessEmissions_CarbonPrice_Response; "
+           "(Option A: ERmax 1, P* 100). Derivation: egypt/supporting/ProcessEmissions_CarbonPrice_Response; "
            "spec TASK-D v0.2. Lever: ")
 # row: (np ERmax, np ER*, no ERmax, no ER*, np lever, no lever, confidence)
 BETA = {53: (1, 0.3433, 0, 0, "H2/NG-DRI, scrap share, CCS on shaft", "-", "Medium"),
