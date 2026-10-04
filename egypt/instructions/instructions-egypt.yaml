@@ -150,7 +150,7 @@ tasks:
       - egypt/supporting/ProcessEmissions_CarbonPrice_Response/ProcessEmissions_CarbonPriceResponse_Report.docx
       - egypt/supporting/ProcessEmissions_CarbonPrice_Response/ProcessEmissions_CarbonPriceResponse.xlsx
     target: "cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.9.xlsx -> 'Manual inputs' rows 53-60 (np E:G, no I:K, text Q:S) + selector E50 = IPCC (spec section 2.3). Legacy v0.8 target was 'Manual inputs'!E40:F47 (readers: Mitigation_Industry rows 352-359 fuel ER, 363-370 process ER)."
-    todo: "TODO.md (root) task T1 - full procedure, acceptance checks, bookkeeping"
+    todo: "done (kernel v0.15); history in CAVEATS.md"
     recommended_values_central_ER_at_100: {DRI-EAF: 0.3433, Scrap-EAF: 0.1810, BF-BOF: 0.2803, Clinker: 0.3352, Ammonia: 0.2974, Urea: 0.1158, AN_unabated: 0.7210, Aluminium: 0.2164}
     v0_9_category_split: {steel_and_clinker: np, AN: no, Aluminium: "np 0.1282 (inert anodes) + no 0.1078 (PFC control)", Ammonia: "np = 0 in v0.9 (SMR CO2 is fp) - decision in T1", Urea: "inherits from ammonia; not applied separately"}
     notes:
@@ -182,7 +182,7 @@ tasks:
       - "VERIFY list (impact order): ammonia GJ/t, nitric-acid N2O abatement share (Abu Qir CDM), Egyptalum PFC rates, kiln fuel mix/intensity, DRI gas use, EISCO BF closure, EU default values (copied from kernel)."
       - "Research pass verified IPCC Vol.2 Table 2.2, Vol.3 Tables 2.4/3.1/3.3/4.1/4.10/4.15 from PDFs; Egypt-specific portals (UNFCCC, CDM, GNR, IEA, worldsteel) were inaccessible - follow-up with browser access."
       - "Next metrics (user): other CBAM metrics build on these EFs."
-      - "Adoption in the kernel queued as TODO.md T5 (urea/AN conventions first; combine with T1 fp routing). Summarised in the integrated methodology App. A."
+      - "Adopted in the kernel v0.15 (T5); remaining open items in TODO.md. Summarised in the integrated methodology App. A."
 
   - id: TASK-METHOD
     title: Integrated Egypt methodology document (whole thread)
@@ -206,7 +206,7 @@ tasks:
     depends_on: [TASK-1]
     description: >
       Built on a branch from v0.7 (build_stream2_v1/v2/v3.py, workbooks now in Old/) and merged
-      onto the mainline in v0.12 (TODO.md T2, build_v0_12.py). Task F: Data_EF and
+      onto the mainline in v0.12 (T2, build_v0_12.py; history in CAVEATS.md). Task F: Data_EF and
       Emissions_Industry (eco2 by sector x fuel x scenario). Task I: Rebate_Industry, net
       prices atpn into the kernel usage term (bundle 3B, theta). Task J: Fund_Industry, fund
       F = phi x pre-fund revenue, shadow price s into shp/ssc and the CBAM block o4/o5
@@ -216,18 +216,18 @@ tasks:
       - cpat_excel_new/standalone_working_version/build_v0_12.py
 
   - id: TASK-QUEUE
-    title: Queued kernel tasks (see root TODO.md)
+    title: Queued kernel tasks T1-T5 (done; open work is in root TODO.md)
     status: done_T1_T2_T3_T5_verify_open
     depends_on: [TASK-1, TASK-D]
     description: >
-      Root TODO.md holds full instructions for the queued increments: T1 apply Task D values
+      History of the queued increments (open work is in root TODO.md): T1 apply Task D values
       to the latest kernel - DONE in v0.15; T2 merge Stream 2 (Tasks F, I, J; branch
       CPAT_Industry_Kernel_Egypt_v0.7branch_Stream2_v1/v2/v3.xlsx) onto the mainline - DONE in
       v0.12; T3 move hard-coded CBAM market data (Mitigation_Industry F276:I283,
       G288:G295 and policy-block mirrors F675:I682, G687:G694) into a new 'Manual inputs'
       section with code/source/confidence: done in v1.4 (build_v1_4.py, section at rows
       98-108 because rows 62-95 are in use); T5 EF adoption done in v0.15 (VERIFY list open).
-    spec: TODO.md
+    spec: CAVEATS.md
 
 original_prompt: |
   I've created a blank folder 'instructions' for saving below instructions, and a folder

@@ -20,7 +20,7 @@ templates/             Master templates (MTInputs_template.xlsx)
 _research/             Source literature: IPCC AR6 WGIII Ch11/Ch12, CBAM regulation and guidance, sector roadmaps (PDF + extracted text)
 NORMS.md               Excel column, colour, input and versioning norms; task-completion process (section 6)
 CAVEATS.md             Append-only log of completed tasks: task, inputs, outputs, caveats
-TODO.md                Queued industry-kernel tasks (T1-T3) with full procedures and per-task conventions
+TODO.md                Open work only (checks, modelling) and the per-task conventions
 SyncRepo.bat           Local sync helper
 ```
 
@@ -45,7 +45,7 @@ Follow [`NORMS.md` section 6](NORMS.md#6-task-completion-caveats-log-and-bookkee
 | [`egypt/final/EGYPT_Methodology_v1.6.docx`](egypt/final/EGYPT_Methodology_v1.6.docx) | Integrated Egypt methodology: scenarios, scope, CPAT reading, CBAM block, parameters; App. A EFs, App. B semi-elasticities, App. C glossary |
 | [`NORMS.md`](NORMS.md) | Norms for all Excel work (sections 1-5) and the task-completion process for all work (section 6) |
 | [`CAVEATS.md`](CAVEATS.md) | Log of completed tasks - task, inputs, outputs, caveats. Read before building on earlier work |
-| [`TODO.md`](TODO.md) | Queued kernel tasks T1-T3 and the conventions every kernel increment must follow |
+| [`TODO.md`](TODO.md) | Open work and the conventions every kernel increment must follow |
 | [`egypt/instructions/instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml) | Egypt task inventory and status; `TASK-1` notes record each kernel version v0.3-v0.11 |
 | [`egypt/instructions/context-egypt.md`](egypt/instructions/context-egypt.md) | Egypt background, key-files table, structural rules |
 | [`egypt/instructions/EgyptTaskReference.md`](egypt/instructions/EgyptTaskReference.md) | Kernel gap list and Task A-M breakdown |
