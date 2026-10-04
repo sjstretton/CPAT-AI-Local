@@ -11,7 +11,7 @@ Read these before starting a task; keep them current when you finish one (sectio
 | Document | Role |
 |---|---|
 | [`README.md`](README.md) | Repo map, workflow, getting started |
-| `NORMS.md` (this file) | Column, colour, input and versioning norms (1-5); task-completion process (6) |
+| `NORMS.md` (this file) | Column, colour, input and versioning norms (1-5); task-completion process (6); methodology vs version notes (7) |
 | [`CAVEATS.md`](CAVEATS.md) | **Append-only log of completed tasks**: task, inputs, outputs, caveats. Every finished task adds an entry |
 | [`TODO.md`](TODO.md) | Queued kernel tasks (T1-T3) with full procedures, and the per-task conventions (builders, codes, version log, regression, bookkeeping) |
 | [`egypt\instructions\instructions-egypt.yaml`](egypt/instructions/instructions-egypt.yaml) | Machine-readable Egypt task inventory: TASK-0/1/2a/2b/D/QUEUE, status, and per-version `notes` for kernel increments v0.3-v0.15 (Tasks E, A, B, C, K, D-scaffold, H, L; F, I, J merged in v0.12; G in v0.13; M in v0.14; T1 Task D values + T5 EFs in v0.15) |
@@ -157,3 +157,17 @@ Applies to **every** task (Excel, Python, data, documentation). A task is not fi
 
 `CAVEATS.md` summarises and points; detail stays where it is produced - the task spec (e.g. TASK-D section 4), the yaml `notes`, the workbook version log, and `cpat_excel_new\distribution\LESSONS_LEARNED.md` for the LAMBDA/VBA workbook. The per-task conventions in `TODO.md` (builders via Excel COM, codes/source/confidence for every new input, `Settings` version-log row, `Check`-sheet regression) remain in force and are the operational version of sections 3-5 for the industry kernel.
 
+
+## 7. Methodology and version notes are always different documents
+
+A **methodology document** describes the method as it is now: equations, inputs, conventions, results and open issues. It is written for a reader who has never seen an earlier version, so it contains no change history: no "v0.3 changes (vs v0.2)", no "was X, now Y", no version log, no "superseded" commentary and no per-version result columns.
+
+Version and change history goes in **separate version notes**, never in the methodology:
+
+| What | Where |
+|---|---|
+| What changed between versions, and why | The version notes next to the document (e.g. `VersionNotes_<name>.md`), the workbook's `Settings` / `ReadMe` version log, and the `CAVEATS.md` entry |
+| Caveats and decisions still open | `CAVEATS.md` and the document's own "Open issues" section (current state only) |
+| Superseded copies | `egypt/archive/` (Egypt) or the relevant `Old/` folder |
+
+When a task changes the method, rewrite the affected methodology text to describe the new state, and put the delta in the version notes and `CAVEATS.md`. A methodology that contains a version log or before/after comparisons is non-compliant: move that content out when you next touch the document.

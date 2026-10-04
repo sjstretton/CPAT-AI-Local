@@ -2,7 +2,7 @@
 
 Minimal Markdown subset: #/##/### headings, paragraphs, '-' / 'n.' list items (with continuation lines),
 pipe tables (header + separator + rows) and `code` spans. Arial 10 throughout, tables 'Table Grid'.
-Usage:  python md_to_docx.py [note.md]   (run from egypt/supporting/AdHocRebuild; default MethodologyNote_v0.1.md;
+Usage:  python md_to_docx.py [note.md]   (run from egypt/supporting/AdHocRebuild; default MethodologyNote_v0.4.md;
         output = same stem .docx)
 """
 import re
@@ -14,7 +14,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 
 HERE = Path(__file__).resolve().parent
-SRC = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else HERE / "MethodologyNote_v0.1.md"
+SRC = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else HERE / "MethodologyNote_v0.4.md"
 DST = SRC.with_suffix(".docx")
 
 doc = Document()

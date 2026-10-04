@@ -16,6 +16,7 @@ Local workspace for the World Bank **Climate Policy Assessment Tool (CPAT)**: th
 - `cpat_excel_original/` (legacy workbook) is read-only ground truth.
 - Never edit a shipped workbook/spec version in place; copy the old one to `Old/` and create the next version (NORMS section 5).
 - Every finished task ends with a new entry appended to `CAVEATS.md` (newest at the bottom, never edit earlier entries), plus the bookkeeping in NORMS section 6.
+- Final methodology and version notes are always different documents (NORMS section 7). A methodology describes the current method only: no change history, no version log, no before/after columns. Change history goes in version notes, the workbook version log and `CAVEATS.md`.
 - Do not commit unless the user asks.
 - Excel builders run via Excel COM (`win32com`, Windows). On Linux/cloud sessions you can read and edit text/Markdown/Python but cannot rebuild or recalculate workbooks; say so rather than guessing.
 
