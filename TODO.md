@@ -112,6 +112,8 @@ Enter ERmax in `E`/`I`, P\* = 100 in `F`/`J`, ER\* in `G`/`K`; column `H`/`L` re
 
 ## ☐ T3 — Move hard‑coded CBAM market data from `Mitigation_Industry` into `Manual inputs`
 
+**Builder drafted 2026-10-04, NOT RUN: `cpat_excel_new\standalone_working_version\build_v1_4.py` (v1.3 → v1.4).** Corrections to the plan below: `Manual inputs` is no longer 60 rows long (rows 62-95 are used by the output-response, CBAM-obligation and IPPU sections), so the new section is at rows 98-108 (title 98, note 99, header 100, products 101-108); the latest workbook is v1.3, not v0.9; Settings log last row is 45. Run on Windows; it aborts without saving unless the regression diff and the literal-count Check are both 0. Then do the bookkeeping in step 7 and tick this item.
+
 **Goal.** No market/production constants in the calc sheet. All CBAM product data entered once in `Manual inputs` with code/source/confidence, and linked from both scenario blocks.
 
 **What is hard‑coded today (v0.9), duplicated verbatim in both scenario blocks.**
