@@ -39,7 +39,7 @@ DST = os.environ.get("V016_DST") or os.path.join(HERE, "CPAT_Industry_Kernel_Egy
 VER = "v0.16"
 MIS = "'Manual inputs'!"
 PSTAR = 122
-RK_JSON = os.path.join(HERE, "..", "..", "egypt+mitigation", "Old", "AdHocRebuild", "rebuild_v0_3_K2030.json")
+RK_JSON = os.path.join(HERE, "..", "..", "..", "egypt", "supporting", "AdHocRebuild", "rebuild_v0_3_K2030.json")
 REBUILD_K = (json.load(open(RK_JSON)) if os.path.exists(RK_JSON) else
              {"1A": -31.79, "2A": -27.82, "2B": -29.34, "3A": -18.15, "3B": -12.74, "3C": -22.62})
 RK_LABEL = "Rebuild v0.3 K" if os.path.exists(RK_JSON) else "Rebuild v0.2 K"

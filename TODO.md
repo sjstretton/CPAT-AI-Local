@@ -1,16 +1,16 @@
 # TODO — CPAT Industry Kernel (Egypt) — queued tasks
 
 Status key: ☐ not started · ◐ in progress · ☑ done.
-Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.0.xlsx` (final release; builder `build_v1_0.py` relabels v0.17 = v0.16 + sheet `CarveOut_Table2`, the final Table 2 in live formulas. v0.16 (builder in `Old\`): run-2 fixes on top of v0.15: P* = 122, EG3 1/kappa scaling, block fuel CO2 reallocation, 3C fund fixed point; Fund_Industry stored block rows 425-433; see CAVEATS 2026-10-03). Open: true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, T3. v0.15 uses `Manual inputs` rows up to 95 and Check rows up to ~1900 (T1/T5 section at row 1881); T3 row positions below must start after these.
+Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.3.xlsx` (latest; v1.0 was the final release, builder `build_v1_0.py` relabels v0.17 = v0.16 + sheet `CarveOut_Table2`, the final Table 2 in live formulas. v0.16 (builder in `Old\`): run-2 fixes on top of v0.15: P* = 122, EG3 1/kappa scaling, block fuel CO2 reallocation, 3C fund fixed point; Fund_Industry stored block rows 425-433; see CAVEATS 2026-10-03). Open: true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, T3. v0.15 uses `Manual inputs` rows up to 95 and Check rows up to ~1900 (T1/T5 section at row 1881); T3 row positions below must start after these.
 Stream‑2 branch: merged into v0.12 (T2) and closed; branch workbooks `…v0.7branch_Stream2_v1/v2/v3.xlsx` are in `Old\`, builders `build_stream2_v1/v2/v3.py` stay in place (imported by `build_v0_12.py`).
 
-Conventions that apply to **every** task below (see `NORMS.md`, `instructions\instructions-egypt.yaml`):
+Conventions that apply to **every** task below (see `NORMS.md`, `egypt\instructions\instructions-egypt.yaml`):
 
 - Never edit a shipped version in place. Copy the previous workbook to `Old\`, create `CPAT_Industry_Kernel_Egypt_v0.<n+1>.xlsx` with a matching `build_v0_<n+1>.py` that opens the prior file, applies changes via Excel COM (`win32com`, as the existing builders do — `from build_v0_4 import BLOCKS, DATA_COLS, REVIEW, TAN, col, copy_formats`) and saves the new file. Run builders from the `standalone_working_version` folder in a normal (non‑sandboxed) shell; Excel COM `Workbooks.Open` fails from the Copilot sandbox.
 - Every new input gets: a code (`<cty>.<module>.<var>.<sector>…` pattern already used in column C/D), a source string and a confidence rating (High/Medium/Low), coloured per the sheet legend (TAN = assumption, REVIEW = needs review).
 - Append a row to the version log in `Settings` (rows 28–36 in v0.9; v0.9 is row 36 → next is row 37). Do **not** extend the `Settings` sheet list (rows 17–25) — Stream‑1 builders assert on those row positions; add new sheets to the note text instead.
 - Regression: run every item in the `Check` sheet before/after; pre‑policy (baseline) rows must be numerically identical unless the task says otherwise; record max abs diff in the version‑log row.
-- Update `instructions\instructions-egypt.yaml` (TASK‑1 `notes` version list + the task entry), `egypt+mitigation\EgyptTaskReference.md` and `instructions\context-egypt.md` key‑files table. Tick the box here.
+- Update `egypt\instructions\instructions-egypt.yaml` (TASK‑1 `notes` version list + the task entry), `egypt\instructions\EgyptTaskReference.md` and `egypt\instructions\context-egypt.md` key‑files table. Tick the box here.
 - Do not commit unless explicitly asked.
 
 ---
@@ -22,8 +22,8 @@ Conventions that apply to **every** task below (see `NORMS.md`, `instructions\in
 **Goal.** Replace the placeholder process‑emission response parameters in `Manual inputs` rows 53–60 with the IPCC‑AR6‑derived values, and switch the model to use them.
 
 **Inputs.**
-- Central spec: `egypt+mitigation\Old\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md` (convention, table, alternatives, caveats). Note the spec was written against the v0.8 layout (`E40:F47`); the v0.9 mapping is given below and should be copied into the spec as §2.3 / v0.2.
-- Derivation: `egypt+mitigation\Old\ProcessEmissions_CarbonPrice_Response\ProcessEmissions_CarbonPriceResponse.xlsx` (sheets `Results`, `SemiElasticity`, `CPAT_v0.8_Table`) and `…_Report.md|.docx` (§7 options, Appendix D). Generator: session artifact `build_process_report.py`.
+- Central spec: `egypt\supporting\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md` (convention, table, alternatives, caveats). Note the spec was written against the v0.8 layout (`E40:F47`); the v0.9 mapping is given below and should be copied into the spec as §2.3 / v0.2.
+- Derivation: `egypt\supporting\ProcessEmissions_CarbonPrice_Response\ProcessEmissions_CarbonPriceResponse.xlsx` (sheets `Results`, `SemiElasticity`, `CPAT_v0.8_Table`) and `…_Report.md|.docx` (§7 options, Appendix D). Generator: session artifact `build_process_report.py`.
 - Target: `Manual inputs` sheet of v0.9 (or later).
 
 **v0.9 layout (what you are filling).**
@@ -54,7 +54,7 @@ Model: `ER(P) = ERmax · (1 − exp(−β·P))`, P = process‑emission carbon p
 | 59 | Ammonium nitrate | 0 / 100 / 0 | 1 / 100 / **0.7210** | HNO₃ N₂O (unabated plant baseline). If `Manual inputs!K36` (existing N₂O abatement share) > 0, use the abated‑baseline value **0.3292** instead (TASK‑D §2.2). β = 0.012765 / 0.003993 |
 | 60 | Primary aluminium | 1 / 100 / **0.1282** | 1 / 100 / **0.1078** | Split of the combined 0.2164: anode CO₂ via inert anodes (np) and PFC via anode‑effect control (no). Derivation: option‑level ER at $100, mean of 2030 & LR: inert anodes 0.0109/0.2455 → 0.1282; PFC control 0.0588/0.1568 → 0.1078. Check the kernel's aluminium `no` EF covers PFCs only. |
 
-Text for `Q`/`R`: `"IPCC AR6 WGIII Table 11.3/12.3 cost‑bucket MACC, central (mean 2030 & LR), USD2019. Derivation: egypt+mitigation/Old/ProcessEmissions_CarbonPrice_Response; drop‑in spec TASK‑D v0.1. Lever: <lever>."` `S`: `Medium` (steel, clinker, AN‑unabated), `Low` (aluminium split, ammonia/urea, Scrap‑EAF).
+Text for `Q`/`R`: `"IPCC AR6 WGIII Table 11.3/12.3 cost‑bucket MACC, central (mean 2030 & LR), USD2019. Derivation: egypt/supporting/ProcessEmissions_CarbonPrice_Response; drop‑in spec TASK‑D v0.1. Lever: <lever>."` `S`: `Medium` (steel, clinker, AN‑unabated), `Low` (aluminium split, ammonia/urea, Scrap‑EAF).
 
 **Option B — saturating form (recommended as a sensitivity, optionally default).** Uses the model's ERmax properly: ERmax = A, β = 1/τs fitted to a($100) and a($200) (report §Results, saturating block). P\* and ER\* then are P\* = 100, ER\* = central a(100), ERmax = A:
 
@@ -137,7 +137,7 @@ Surrounding formulas to preserve: `N276 = IF(UPPER(Settings!$B$3)="EGY",F276,0)`
 
 ---
 
-## ☐ T4 — Follow-ups from the TASK-2b ad hoc rebuild (`egypt+mitigation\Old\AdHocRebuild\`)
+## ☐ T4 — Follow-ups from the TASK-2b ad hoc rebuild (`egypt\supporting\AdHocRebuild\`)
 
 Source: `AdHocCalculations_Rebuild_v0.1.xlsx` (ReadMe / Issues resolved / Checks) and `MethodologyNote_v0.1.md` §6. Not kernel work by themselves; listed so they are not lost.
 
@@ -151,7 +151,7 @@ Source: `AdHocCalculations_Rebuild_v0.1.xlsx` (ReadMe / Issues resolved / Checks
 
 ## ◐ T5 — Adopt the Egypt emission factors (Task EF v0.1) in the kernel
 
-Source: `egypt+mitigation\Old\EmissionFactors\EGY_CBAM_EF_Methodology_v0.1.md` §5/§10 (`Products!D:G` → `'Manual inputs'!H30:K37`); integrated method `egypt+mitigation\Old\EGYPT_Methodology_v1.0.md` App. A, App. B.5.
+Source: `egypt\supporting\EmissionFactors\EGY_CBAM_EF_Methodology_v0.1.md` §5/§10 (`Products!D:G` → `'Manual inputs'!H30:K37`); integrated method `egypt\archive\EGYPT_Methodology_v1.0.md` App. A, App. B.5.
 
 - ☑ Conventions decided (v0.15, provisional): urea np = 0 (CBAM rule); AN N₂O folded into own no = 0.9944.
 - ☑ New kernel increment v0.15 (`build_v0_15.py`): H30:K37 from the EF workbook with sources/tiers in AD/AE; S:V memo restated. Regression explained in the Settings log row 42 and CAVEATS.
@@ -170,7 +170,7 @@ T5 (EF v0.1 adoption) ── alongside T1 (β routed to fp) ──►  T4 (rebui
 T1→T2→T3 was the recommended order; T2 ran first (v0.12), so T1 and T3 now build on v0.12. T3's `Manual inputs` additions do not touch the Stream‑2 row assumptions.
 
 ## Cross‑references
-- Task D spec: `egypt+mitigation\Old\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`
-- TASK-2b rebuild: `egypt+mitigation\Old\AdHocRebuild\` (workbook, builder, verifier, methodology note)
-- Task inventory: `instructions\instructions-egypt.yaml`, `egypt+mitigation\EgyptTaskReference.md`
+- Task D spec: `egypt\supporting\TASK-D_ProcessHalfElasticities_DropIn_v0.1.md`
+- TASK-2b rebuild: `egypt\supporting\AdHocRebuild\` (workbook, builder, verifier, methodology note)
+- Task inventory: `egypt\instructions\instructions-egypt.yaml`, `egypt\instructions\EgyptTaskReference.md`
 - Norms: `NORMS.md`
