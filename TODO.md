@@ -1,7 +1,7 @@
 # TODO — CPAT Industry Kernel (Egypt) — queued tasks
 
 Status key: ☐ not started · ◐ in progress · ☑ done.
-Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.3.xlsx` (identical copy in `egypt\final\`); the final Table 2 is its sheet `CarveOut_Table2`. Done: T1, T2, T5 adoption (kernel v0.15-v0.16). Open: T3 (`build_v1_4.py`) and kernel v1.5 (`build_v1_5.py`: 3B decision and `Table2_Final`), both drafted and not run; true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, EF VERIFY list; see Final steps at the end of this file. `Manual inputs` uses rows up to 95 and `Check` rows up to ~1920, so T3 rows start at 98.
+Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.3.xlsx` (identical copy in `egypt\final\`); the final Table 2 is its sheet `CarveOut_Table2`. Done: T1, T2, T5 adoption (kernel v0.15-v0.16). Open: T3 (v1.4) and the 3B decision with `Table2_Final` (v1.5) are done; open: true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, EF VERIFY list; see Final steps at the end of this file. `Manual inputs` uses rows up to 95 and `Check` rows up to ~1920, so T3 rows start at 98.
 Stream‑2 branch: merged into v0.12 (T2) and closed; branch workbooks `…v0.7branch_Stream2_v1/v2/v3.xlsx` are in `Old\`, builders `build_stream2_v1/v2/v3.py` stay in place (imported by `build_v0_12.py`).
 
 Conventions that apply to **every** task below (see `NORMS.md`, `egypt\instructions\instructions-egypt.yaml`):
@@ -110,9 +110,9 @@ Enter ERmax in `E`/`I`, P\* = 100 in `F`/`J`, ER\* in `G`/`K`; column `H`/`L` re
 
 ---
 
-## ☐ T3 — Move hard‑coded CBAM market data from `Mitigation_Industry` into `Manual inputs`
+## ☑ T3 — Move hard‑coded CBAM market data from `Mitigation_Industry` into `Manual inputs`
 
-**Builder drafted 2026-10-04, NOT RUN: `cpat_excel_new\standalone_working_version\build_v1_4.py` (v1.3 → v1.4).** Corrections to the plan below: `Manual inputs` is no longer 60 rows long (rows 62-95 are used by the output-response, CBAM-obligation and IPPU sections), so the new section is at rows 98-108 (title 98, note 99, header 100, products 101-108); the latest workbook is v1.3, not v0.9; Settings log last row is 45. Run on Windows; it aborts without saving unless the regression diff and the literal-count Check are both 0. Then do the bookkeeping in step 7 and tick this item.
+**Done 2026-10-04 in kernel v1.4 (`build_v1_4.py`, run on Windows; regression 0, Check literal count 0, Settings row v1.4).** Corrections to the plan below: `Manual inputs` is no longer 60 rows long (rows 62-95 are used by the output-response, CBAM-obligation and IPPU sections), so the new section is at rows 98-108 (title 98, note 99, header 100, products 101-108); the latest workbook is v1.3, not v0.9; Settings log last row is 45. Run on Windows; it aborts without saving unless the regression diff and the literal-count Check are both 0. Then do the bookkeeping in step 7 and tick this item.
 
 **Goal.** No market/production constants in the calc sheet. All CBAM product data entered once in `Manual inputs` with code/source/confidence, and linked from both scenario blocks.
 
@@ -186,7 +186,7 @@ Decisions: **D1** the 3B rebate to all covered industry applies everywhere (fina
 
 Result of applying D1: final 3B = revenue 0.3 $bn (was 0.6), K -12.0 Mt (was -19.1), deaths 330 (was 491); nothing else changes. Method: `make_carveout_v0_4.py` (3B rule), documented in Methodology section 4.7 and carve-out note.
 
-1. ☐ **Run `build_v1_4.py` (T3) on Windows.** Gate: regression diff 0 and literal-count Check 0. Then bookkeeping (tick T3).
-2. ☐ **Run `build_v1_5.py` on Windows** (needs kernel v1.4 in `standalone_working_version`). It applies the 3B rule in `CarveOut_Table2` (section G, `Manual inputs` E112), adds `Table2_Final`, loops the six scenarios, and saves only if: live 3B = Python mirror (`carveout_v1_5_results.json`), live = stored for the other five, live row O = stored, regression over all other cells = 0, printed-vs-workbook mismatches = 0. It then copies the kernel to `egypt/final/` and moves kernel v1.3 to `egypt/archive/`. Then CAVEATS entry (result), yaml (builders run), commit.
+1. ☑ **`build_v1_4.py` (T3) run on Windows.** Gate: regression diff 0 and literal-count Check 0. Then bookkeeping (tick T3).
+2. ☑ **`build_v1_5.py` run on Windows** (kernel v1.5 in `egypt/final/`; `Table2_Final` mismatch count 0) (needs kernel v1.4 in `standalone_working_version`). It applies the 3B rule in `CarveOut_Table2` (section G, `Manual inputs` E112), adds `Table2_Final`, loops the six scenarios, and saves only if: live 3B = Python mirror (`carveout_v1_5_results.json`), live = stored for the other five, live row O = stored, regression over all other cells = 0, printed-vs-workbook mismatches = 0. It then copies the kernel to `egypt/final/` and moves kernel v1.3 to `egypt/archive/`. Then CAVEATS entry (result), yaml (builders run), commit.
 3. ☑ **Documents v1.5** generated from the same mirror: carve-out note, final caveats, CBAM obligation note, tracked results text (`make_results_page_v1_5.py`), methodology (`edit_methodology_v1_5.py`: 3B scope, section 4.7, history removed), `EGYPT_VersionNotes_v1.5`. `check_final_documents.py` confirms the printed Table 2 figures equal the mirror (15 rows, 0 failures). The v1.3 set and the retired CBAM-calc workbook are in `egypt/archive/`.
 4. ☐ **Open after the run:** open the new .docx files in Word (not done here); Carolyn's confirmation of the row O definition; the kernel's own prototype composition (`Table2_Industry`, `Rebate_Industry`) still rebates the CBAM block only and is reference material, not the final Table 2; EG3 full-coverage CPAT run; EF VERIFY list.

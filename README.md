@@ -67,7 +67,7 @@ The source workbook (`CPAT 1.0pre_456_NoPropData.xlsb`). Read-only reference; do
 
 ### `egypt/` - Egypt case
 One folder holds all Egypt material (details in [`egypt/README.md`](egypt/README.md)); **the final model is the kernel `CPAT_Industry_Kernel_Egypt_v1.5.xlsx`** (the ad hoc rebuild is supporting material only):
-- `final/` - final deliverables, all v1.5 (kernel v1.5 once `build_v1_5.py` has been run; until then `final/` still holds kernel v1.3):
+- `final/` - final deliverables, all v1.5:
   - `CPAT_Industry_Kernel_Egypt_v1.5.xlsx` - **the one workbook that confirms the final numbers** (identical to `cpat_excel_new/standalone_working_version/`); sheet `CarveOut_Table2` computes the final Table 2 line by line (live for the scenario in Settings!B10, plus a stored 6-scenario snapshot and check); sheet `Table2_Final` holds the six-scenario Table 2, the figures printed in the documents, their differences (zero) and a live recomputation of row O
   - **`EGYPT_Methodology_v1.5.docx` - main methodology document for the Egypt thread (start here)**; section 4.5 = CBAM block and obligations, 4.7 = composition of the final Table 2. Current method only, no change history. Edited Word master, no Markdown source
   - `EGYPT_VersionNotes_v1.5.docx` - change history of the final set and the kernel (kept out of the methodology, `NORMS.md` section 7)

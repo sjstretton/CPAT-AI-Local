@@ -15,7 +15,7 @@ The sections below are the original gap list, written when the kernel was v0.3. 
 | 5.3 Output response | ✅ | Task H v0.10 |
 | 5.4 Egypt price paths / 5.5 scenarios | ✅ | `Scenarios` sheet, six scenarios, v0.4 |
 | 5.6 Links to main CPAT | ✅ | Task M v0.14; final Table 2 = CBAM carve-out (kernel sheet `CarveOut_Table2`, `egypt/final/EGYPT_CarveOut_Table2_v1.5.docx`) |
-| T3 hard-coded CBAM market data into `Manual inputs` | ◐ | Builder `build_v1_4.py` drafted, not run |
+| T3 hard-coded CBAM market data into `Manual inputs` | ✅ | Kernel v1.4 (`build_v1_4.py`), `Manual inputs` rows 98-108 |
 | EG3 full-coverage CPAT run | ✗ | Approximated by 1/κ scaling |
 
 Key: ✅ done in v0.3, ◐ partly done, ✗ not started.

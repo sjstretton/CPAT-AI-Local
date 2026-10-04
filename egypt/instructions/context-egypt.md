@@ -25,7 +25,7 @@ Companion to `instructions-egypt.yaml` (task codes TASK-0, TASK-1, TASK-2a, TASK
 | Process half-elasticities (Task D) | `egypt/supporting/TASK-D_ProcessHalfElasticities_DropIn_v0.1.md` | Paste-ready IPCC-based values + steps; applied in kernel v0.15 (`'Manual inputs'` rows 53–60 / `E50`; legacy v0.8: `E40:F47`); derivation in `egypt/supporting/ProcessEmissions_CarbonPrice_Response/` |
 | Ad hoc pseudocode (TASK-2a) | `egypt/supporting/TASK-2a_AdHocCalculations_Pseudocode_v0.1.md` | What `AdHocCalculations.xlsb` does as-is, mapped to MajorIssues |
 | Ad hoc rebuild (TASK-2b) | `egypt/supporting/AdHocRebuild/AdHocCalculations_Rebuild_v0.4.xlsx` + `MethodologyNote_v0.4.md/.docx` | Live rebuild of Table 2 in the original PolicyMatrix format; Inputs tab, Mode switch REBUILD/PROTOTYPE (v0.11 reproduced exactly), Comparison, Issues resolved, Checks. Defaults `Conv` = FULL, `ThetaOther` = 1. Builder `build_adhoc_rebuild_v0_4.py`, verifier `recalc_and_check_adhoc_v0_4.py`; change history in `VersionNotes_AdHocRebuild.md`; v0.1–v0.2 in `egypt/archive/AdHocRebuild/` |
-| Queued kernel tasks | `TODO.md` (repo root) | T1, T2, T5 done; T3 (move hard-coded CBAM market data from `Mitigation_Industry` into `Manual inputs`) builder drafted (`build_v1_4.py`), not yet run; T4 follow-ups open |
+| Queued kernel tasks | `TODO.md` (repo root) | T1, T2, T5 done; T3 (CBAM market data into `Manual inputs`, kernel v1.4) done; T4 follow-ups open |
 | Instructions | `egypt/instructions/` | This file, `instructions-egypt.yaml` and `EgyptTaskReference.md` |
 | Repo conventions | `NORMS.md`, `README.md` | Follow these |
 
@@ -41,4 +41,4 @@ Companion to `instructions-egypt.yaml` (task codes TASK-0, TASK-1, TASK-2a, TASK
 - Results comparison (`AdHocRebuild/ResultsComparison_Table2_v0.4.md/.docx`): Table 2 of `EgyptResultsInitial.docx` vs rebuild v0.4 vs the prototype kernel's own composition (2030). Not the final Table 2, which is the CBAM carve-out (`egypt/final/EGYPT_CarveOut_Table2_v1.3.docx`).
 
 ## Sequencing
-- TASK-0, TASK-1, TASK-2a, TASK-2b (rebuild v0.4) are done; kernel final v1.5 (final Table 2 = carve-out sheet `CarveOut_Table2`). T1, T2, T5 done; T3 builder drafted (v1.4), not run. Next: finish T3, then the final confirmation workbook (see TODO.md, "Final steps").
+- TASK-0, TASK-1, TASK-2a, TASK-2b (rebuild v0.4) are done; kernel final v1.5 (final Table 2 = carve-out sheet `CarveOut_Table2`). T1, T2, T5 done; T3 done (v1.4); kernel v1.5 holds the single confirmation workbook (sheet `Table2_Final`).
