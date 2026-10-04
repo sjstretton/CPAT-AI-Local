@@ -4,7 +4,7 @@ Change history for the final Egypt deliverables and the kernel. The methodology 
 
 ## Final set v1.6 (2026-10-08)
 
-- **Product-specific output elasticities.** `Manual inputs` E66:E73 change from the uniform −0.5 placeholder to cement −0.10, steel −0.40, ammonia / urea / ammonium nitrate −0.40, aluminium −0.50 (`OutputElasticity_Note_v0.1`). Only cement matters (carbon cost 15% of its price). 2030 emission cut (Mt), old to new: 1A −37.4 to −34.7; 2A −33.1 to −31.9; 2B −34.8 to −33.7; 3A −22.8 to −20.0; 3B unchanged −12.0; 3C −33.0 to −30.8. Deaths avoided, old to new: 1A 1,501 to 1,440; 2A 1,456 to 1,431; 2B 1,517 to 1,492; 3A 552 to 509; 3C 646 to 606. Revenue changes by less than USD 0.1bn. Obligations (row O) are unchanged.
+- **Product-specific output elasticities.** `Manual inputs` E66:E73 change from the uniform −0.5 placeholder to cement −0.10, steel −0.40, ammonia / urea / ammonium nitrate −0.40, aluminium −0.50 (`OutputElasticity_Note_v0.2`). Only cement matters (carbon cost 15% of its price). 2030 emission cut (Mt), old to new: 1A −37.4 to −34.7; 2A −33.1 to −31.9; 2B −34.8 to −33.7; 3A −22.8 to −20.0; 3B unchanged −12.0; 3C −33.0 to −30.8. Deaths avoided, old to new: 1A 1,501 to 1,440; 2A 1,456 to 1,431; 2B 1,517 to 1,492; 3A 552 to 509; 3C 646 to 606. Revenue changes by less than USD 0.1bn. Obligations (row O) are unchanged.
 - Rebuild v0.5 (per-product elasticities) and kernel v1.6 are the supporting models.
 
 ## Final set v1.5 (2026-10-08)

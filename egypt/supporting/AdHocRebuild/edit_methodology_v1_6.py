@@ -1,4 +1,4 @@
-"""EGYPT_Methodology_v1.6.docx from v1.5: product-specific output elasticity (OutputElasticity_Note_v0.1). Current method only."""
+"""EGYPT_Methodology_v1.6.docx from v1.5: product-specific output elasticity (OutputElasticity_Note_v0.2). Current method only."""
 import os
 
 import docx
@@ -42,13 +42,26 @@ for p in [Paragraph(x, d) for x in d.element.body.iter(qn("w:p"))]:
         break
 else:
     raise AssertionError("4.3 not found")
+for old, new in (("This is the proportional IPPU row that this method removes.",
+                  "For the CBAM block this proportional response is removed and replaced by the block calculation (Section 4); for non-block IPPU CPAT's response is kept."),
+                 ("(the scenario's own scenario, 2030)", "(the scenario's own CPAT run, 2030)")):
+    for p in [Paragraph(x, d) for x in d.element.body.iter(qn("w:p"))]:
+        if old in p.text:
+            assert replace_in(p, old, new)
+            break
+    else:
+        raise AssertionError(old[:40])
+for t in d.tables:
+    for r in t.rows:
+        if r.cells[0].text.strip() == "CPAT's IPPU row":
+            set_cell(r.cells[2], "removed for the CBAM block; kept for non-block IPPU")
 done = False
 for t in d.tables:
     for r in t.rows:
         if r.cells[0].text.strip() == "ε_Q (output)":
             set_cell(r.cells[1], "Cement −0.10; steel, fertilisers −0.40; aluminium −0.50")
             set_cell(r.cells[2], "Product demand × pass-through × trade exposure. Cement demand −0.02 to −0.16 with pass-through 0.2–0.4 "
-                                 "(EC / CE Delft–Oeko 2016); steel demand −0.2 to −0.3, pass-through about 0.5; Armington elasticities about 3–4 "
+                                 "(EC / CE Delft–Oeko 2016); steel pass-through 0.55–0.85 (no steel demand study located); Armington elasticities about 3–4 "
                                  "(GTAP); EU ETS firm studies find no detectable fall in output (Colmer et al. 2025). Only cement matters at "
                                  "USD 20/t: its carbon cost is 15% of its price, against 1–3% for the other goods.")
             set_cell(r.cells[3], "Low–Medium")

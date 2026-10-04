@@ -6,17 +6,15 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 
 - ☐ Open the new `.docx` files in Word (`egypt/final/`, `egypt-final/`): layout, tables, tracked changes. They were generated with pandoc / python-docx and never opened in Word.
 - ☐ Get Carolyn's confirmation of the definition of Table 2 row O (CBAM-product intensity change, no deduction); then drop `_NeedsCarolynConfirmation` from the CBAM note file name.
-- ☐ Check the citations in `egypt/supporting/OutputElasticity_Note_v0.1.md` against the papers (they came from search summaries; the papers could not be opened).
+- ◐ Citations in `egypt/supporting/OutputElasticity_Note_v0.2.md`: checked by search summaries (EC/CE Delft–Oeko pass-through, Ganapati et al., Colmer et al., cement elasticity range); GTAP values and the steel demand range remain single-source / not found. To finish, allow the publisher hosts in the environment's network settings (or check by hand).
 
 ## 2. Modelling
 
-- ☐ **True full-coverage EG3 CPAT run** (the run prices only κ = 0.54 of industrial energy CO₂; the final Table 2 uses EG3 as run, 3A–3C are lower bounds). After the run: replace `CPAT_Outputs` (`cpat_outputs_egypt_2022_2041.csv`), set `Inputs!KappaMode = ONE` in the rebuild, rebuild, rerun the kernel carve-out and regenerate the documents.
+- ◐ **Full-coverage EG3 CPAT run** (you run CPAT; everything else is ready). Spec: `egypt/supporting/EG3_FullCoverage_RunSpec_v0.1.md` (settings, acceptance check κ ≈ 1, export, regeneration steps, statements to rewrite). Tools: `cpat_run_constants.py`, `make_carveout_v0_6.py` (preview), `build_v1_7.py` (kernel refresh). Indicative effect: 3A −20.0 → about −29 Mt, 3B −12.0 → −15, 3C −30.8 → −40.
 - ☐ **Emission-factor VERIFY list** (`EGY_CBAM_EF_Methodology_v0.1.md` App. A.6; methodology App. A): ammonia GJ/t, nitric-acid N₂O abatement, Egyptalum PFC rates, kiln fuel mix, DRI gas use, EISCO BF closure. Values are not final until done.
-- ☐ **Route the ammonia / urea CCS β to fp** (App. B.5): ammonia and urea process response is 0 today, which understates fertiliser response.
-- ☐ **Block fuel-intensity channel in the kernel** (the prototype holds block fuel intensity fixed; the final Table 2 takes CPAT's response instead).
-- ☐ **Fuel-CO₂ reconciliation** (cement block fuel 19.05 Mt against CPAT sector 10.91 Mt in 2030; Egypt clinker fuel factor 0.314).
-- ☐ **Align the kernel's own composition** (`Table2_Industry`, `Rebate_Industry`) with the 3B decision (rebate to all covered industry); today it rebates the CBAM block only and is reference material.
-- ☐ Keep under review: β set (IPCC central), shadow price σ = 20 $/t, output elasticities (judgements, Low–Medium confidence), and the 3C fund outlay bound (0.2 $bn) against the budget.
+- ☐ Optional, small: fp routing of the ammonia / DRI CCS response (about −0.3 Mt in 1A, 3A–3C); decide whether to build it. Block fuel-intensity channel and the 3B alignment of the kernel's own composition: recommended not to build (see `egypt/supporting/KernelIncrements_Spec_v0.1.md`); label the composition sheet "block-only 3B rebate; reference" at the next kernel rebuild.
+- ☐ Fuel-CO₂ reconciliation (cement block fuel 19.05 Mt against CPAT sector 10.91 Mt in 2030; Egypt clinker fuel factor 0.314).
+- ☐ Keep under review: β set (IPCC central), shadow price σ = 20 $/t, output elasticities (judgements, Low–Medium confidence), the 3C fund outlay bound (0.2 $bn) against the budget, and the text of `Manual inputs` F66:F68 (says steel pass-through about 0.5; the evidence note says 0.55–0.85).
 
 ## Conventions for every kernel task
 

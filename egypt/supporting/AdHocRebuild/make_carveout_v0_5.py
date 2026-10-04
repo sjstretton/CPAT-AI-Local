@@ -1,5 +1,5 @@
 """CBAM carve-out of Table 2 (2030), final v1.6: carve-out v0.4 with product-specific output elasticities
-(OutputElasticity_Note_v0.1: cement -0.10, steel -0.40, fertilisers -0.40, aluminium -0.50; was -0.5 for all).
+(OutputElasticity_Note_v0.2: cement -0.10, steel -0.40, fertilisers -0.40, aluminium -0.50; was -0.5 for all).
 
 The kernel stores 2030 product outputs and sector emissions computed with eps = -0.5. Because emissions scale linearly with
 output, the response to a different eps is exact per product: ratio_i = (1 + dp_i)^(eps_new) / (1 + dp_i)^(-0.5), with

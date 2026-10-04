@@ -128,7 +128,7 @@ def main():
         for r in t.rows:
             if r.cells[0].text.strip() == "Output response":
                 set_text(r.cells[1].paragraphs[0], "−0.1 to −0.5")
-                set_text(r.cells[2].paragraphs[0], "Literature: cement demand −0.02 to −0.16 with 20–40% pass-through; steel −0.2 to −0.3; "
+                set_text(r.cells[2].paragraphs[0], "Literature: cement industry demand −0.02 to −0.16 with 20–40% pass-through; steel pass-through 55–85%; "
                                                      "world-priced goods higher. Only cement matters")
                 set_text(r.cells[3].paragraphs[0], "Low–Medium")
     d.save(f)

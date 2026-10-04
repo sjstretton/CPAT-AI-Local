@@ -106,7 +106,7 @@ def carve_md():
     assert a in s
     s = s.replace(a, "- **Output response.** Output falls with the net carbon cost: Q = Q₀(1 + Δp)^ε, where Δp is the carbon cost as a share of the "
                        "product price. ε is by product: cement −0.10, steel and fertilisers −0.40, aluminium −0.50 (kernel `Manual inputs` "
-                       "E66:E73; basis in `OutputElasticity_Note_v0.1`). At USD 20/t only cement matters: its carbon cost is 15% of its price, against "
+                       "E66:E73; basis in `OutputElasticity_Note_v0.2`). At USD 20/t only cement matters: its carbon cost is 15% of its price, against "
                        "1–3% for the other goods.\n" + a, 1)
     open(os.path.join(MD, "EGYPT_CarveOut_Table2_v1.6.md"), "w", encoding="utf8").write(s)
 
@@ -154,7 +154,7 @@ def versionnotes_md():
     s = open(os.path.join(ARCH, "EGYPT_VersionNotes_v1.5.md"), encoding="utf8").read()
     s = s.replace("(final v1.5)", "(final v1.6)").replace("EGYPT_Methodology_v1.5", "EGYPT_Methodology_v1.6")
     new = ("## Final set v1.6 (2026-10-08)\n\n- **Product-specific output elasticities.** `Manual inputs` E66:E73 change from the uniform −0.5 placeholder to "
-           "cement −0.10, steel −0.40, ammonia / urea / ammonium nitrate −0.40, aluminium −0.50 (`OutputElasticity_Note_v0.1`). Only cement matters "
+           "cement −0.10, steel −0.40, ammonia / urea / ammonium nitrate −0.40, aluminium −0.50 (`OutputElasticity_Note_v0.2`). Only cement matters "
            "(carbon cost 15%% of its price). 2030 emission cut (Mt), old to new: 1A %s to %s; 2A %s to %s; 2B %s to %s; 3A %s to %s; 3B unchanged %s; "
            "3C %s to %s. Deaths avoided, old to new: 1A %s to %s; 2A %s to %s; 2B %s to %s; 3A %s to %s; 3C %s to %s. Revenue changes by "
            "less than USD 0.1bn. Obligations (row O) are unchanged.\n- Rebuild v0.5 (per-product elasticities) and kernel v1.6 are the supporting models.\n\n"
