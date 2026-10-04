@@ -1,7 +1,7 @@
 # TODO — CPAT Industry Kernel (Egypt) — queued tasks
 
 Status key: ☐ not started · ◐ in progress · ☑ done.
-Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.3.xlsx` (identical copy in `egypt\final\`); the final Table 2 is its sheet `CarveOut_Table2`. Done: T1, T2, T5 adoption (kernel v0.15-v0.16). Open: T3 (builder `build_v1_4.py` drafted, not run), true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, EF VERIFY list, and the Final steps at the end of this file. `Manual inputs` uses rows up to 95 and `Check` rows up to ~1920, so T3 rows start at 98.
+Latest mainline workbook: `cpat_excel_new\standalone_working_version\CPAT_Industry_Kernel_Egypt_v1.3.xlsx` (identical copy in `egypt\final\`); the final Table 2 is its sheet `CarveOut_Table2`. Done: T1, T2, T5 adoption (kernel v0.15-v0.16). Open: T3 (`build_v1_4.py`) and kernel v1.5 (`build_v1_5.py`: 3B decision and `Table2_Final`), both drafted and not run; true full-coverage EG3 CPAT run, fp routing, block fuel-intensity channel, EF VERIFY list; see Final steps at the end of this file. `Manual inputs` uses rows up to 95 and `Check` rows up to ~1920, so T3 rows start at 98.
 Stream‑2 branch: merged into v0.12 (T2) and closed; branch workbooks `…v0.7branch_Stream2_v1/v2/v3.xlsx` are in `Old\`, builders `build_stream2_v1/v2/v3.py` stay in place (imported by `build_v0_12.py`).
 
 Conventions that apply to **every** task below (see `NORMS.md`, `egypt\instructions\instructions-egypt.yaml`):
@@ -180,22 +180,13 @@ T1→T2→T3 was the recommended order; T2 ran first (v0.12), so T1 and T3 now b
 
 ---
 
-## Final steps (plan, 2026-10-04): one workbook that confirms the final numbers
+## Final steps (decisions taken 2026-10-04; one workbook that confirms the final numbers)
 
-Housekeeping done first (see CAVEATS 2026-10-04 reconciliation entry). Do not start the workbook before D1-D3 are decided.
+Decisions: **D1** the 3B rebate to all covered industry applies everywhere (final Table 2, documents, rebuild, kernel). **D2** one CBAM convention everywhere: Table 2 row O is the CBAM-product intensity change (no deduction); the deduction-based memo obligation is reported on FULL (2030 phase-in, factor 0.485) with NOPHASE (no phase-in, factor 1) as the other memo, under those names only. **D3** the single workbook is the kernel (v1.5, sheet `Table2_Final`). **D4** 3A-3C use EG3 as run (J = 14 %) until a true full-coverage EG3 run exists.
 
-### Decisions needed
+Result of applying D1: final 3B = revenue 0.3 $bn (was 0.6), K -12.0 Mt (was -19.1), deaths 330 (was 491); nothing else changes. Method: `make_carveout_v0_4.py` (3B rule), documented in Methodology section 4.7 and carve-out note.
 
-- **D1. 3B in the final Table 2.** The 2026-10-04 decision (rebate to all covered industry, `ThetaOther` = 1) is in the AdHoc rebuild but not in the final Table 2. The final 3B (carve-out v1.3) uses the kernel's block-only rebate: K −19.1 Mt, P 0.64 $bn, Q 491. Under the decision P would be about 0 (the original Table 2 had 0.0) and K smaller in magnitude (the rebuild gives −12.3 Mt). Apply it to the final Table 2, or keep the block-only rebate and state the scope?
-- **D2. Which "O".** Final Table 2 row O is the intensity-only measure (since 2026-10-06; −5.4/−2.6/−2.7/−5.4/−5.4/−20.7). The FULL decision applies to the kernel/rebuild deduction-based obligation, which is a memo. Confirm. Also resolve a naming collision: in `EGYPT_Table2_Final_CBAMcalc` "Full implementation" means CBF = 1, which the kernel and rebuild call NOPHASE; the kernel's FULL is the 2030 phase-in (CBF 0.485).
-- **D3. What the one workbook is.** Recommended: kernel v1.5 holds it (new sheet `Table2_Final`: all six scenarios in columns, every cell a formula from stored CPAT inputs and the stored per-scenario kernel block snapshot, plus a Check section that compares each number with the figure printed in each final document). The stored snapshot is refreshed by a script that loops `Settings!B10` over the six scenarios and checks live = stored. The hard-coded `EGYPT_Table2_Final_CBAMcalc` workbook is then retired. Alternative: a separate standalone workbook.
-- **D4. EG3 coverage.** The final Table 2 uses EG3 as run (J = 14 %), the rebuild and prototype scale by 1/κ (J = 20.8 %/18.5 %). Keep as run, and say so, until a true full-coverage EG3 run exists?
-
-### Steps
-
-1. **Run T3 (`build_v1_4.py`) on Windows.** Gate: regression diff 0 and literal-count Check 0. Then bookkeeping (yaml, `EgyptTaskReference.md`, `context-egypt.md`, tick T3). Note Settings: the v1.3 file's title and last log row still say v1.0, with no v1.1-v1.3 rows; add the missing rows when versioning the next file.
-2. **Apply D1 / D2 / D4 in the carve-out calculation** (`make_carveout_v0_3.py` logic, kernel sheet `CarveOut_Table2`) if the decisions change any number. Record deltas in version notes, not in the methodology.
-3. **Build the one workbook (D3)** with the checks above; run on Windows; recalculation cannot be done in the Linux session (LibreOffice is installed but fails to open files here).
-4. **Reconcile every document to the workbook.** Items found stale: `EGYPT_FinalCaveats_v1.3` (background models still name rebuild v0.3; F4 on the 3B rebate and 3C fund); `EGYPT_CarveOut_Table2_v1.3`; the tracked results text; `EGYPT_CBAM_ObligationNote_v1.3`; `EGYPT_Methodology_v1.3.docx` (kernel/rebuild version mentions in §5 and App. A; see step 5); `extract_kernel_products_2030.py` (still points at the archived v1.0 kernel and the old Windows root).
-5. **Remove history from the methodology (NORMS section 7).** `EGYPT_Methodology_v1.3.docx` contains before/after material: the App. A section "Why the results differ from the pre-T5 kernel (v0.13)", the "earlier Egypt value β = 0.00104" remark and kernel-version asides. Move them to a separate `EGYPT_VersionNotes` document (new, Egypt-wide change history) and leave the methodology as the current method only. Edit the Word master directly (no Markdown source).
-6. **Release.** New version label for the set, kernel and deliverables copied to `egypt/final/`, previous versions moved to `egypt/archive/`, `README`/`context-egypt.md`/yaml updated, `CAVEATS.md` entry, hash-check final folder against the standalone copy.
+1. ☐ **Run `build_v1_4.py` (T3) on Windows.** Gate: regression diff 0 and literal-count Check 0. Then bookkeeping (tick T3).
+2. ☐ **Run `build_v1_5.py` on Windows** (needs kernel v1.4 in `standalone_working_version`). It applies the 3B rule in `CarveOut_Table2` (section G, `Manual inputs` E112), adds `Table2_Final`, loops the six scenarios, and saves only if: live 3B = Python mirror (`carveout_v1_5_results.json`), live = stored for the other five, live row O = stored, regression over all other cells = 0, printed-vs-workbook mismatches = 0. It then copies the kernel to `egypt/final/` and moves kernel v1.3 to `egypt/archive/`. Then CAVEATS entry (result), yaml (builders run), commit.
+3. ☑ **Documents v1.5** generated from the same mirror: carve-out note, final caveats, CBAM obligation note, tracked results text (`make_results_page_v1_5.py`), methodology (`edit_methodology_v1_5.py`: 3B scope, section 4.7, history removed), `EGYPT_VersionNotes_v1.5`. `check_final_documents.py` confirms the printed Table 2 figures equal the mirror (15 rows, 0 failures). The v1.3 set and the retired CBAM-calc workbook are in `egypt/archive/`.
+4. ☐ **Open after the run:** open the new .docx files in Word (not done here); Carolyn's confirmation of the row O definition; the kernel's own prototype composition (`Table2_Industry`, `Rebate_Industry`) still rebates the CBAM block only and is reference material, not the final Table 2; EG3 full-coverage CPAT run; EF VERIFY list.

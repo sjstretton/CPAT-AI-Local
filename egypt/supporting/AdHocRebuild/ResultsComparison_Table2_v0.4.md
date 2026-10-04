@@ -4,9 +4,9 @@
 
 - (i) Table 2 and the narrative of `EgyptResultsInitial.docx`.
 - (ii) Rebuild v0.4: `AdHocCalculations_Rebuild_v0.4.xlsx`, `Mode` = REBUILD, `Conv` = FULL, `ThetaOther` = 1, `EFSet` = EGY_EF_V01, `KappaMode` = SCALE, `Yr` = 2030 (see `MethodologyNote_v0.4.md`).
-- (iii) Prototype kernel: `CPAT_Industry_Kernel_Egypt_v1.3.xlsx`, sheet `Table2_Industry` (stored 2030 snapshot, kernel composition), with `Manual inputs` at default and the CBAM convention FULL. NOPHASE values of O are obtained by switching `Manual inputs` E76.
+- (iii) Prototype kernel: `CPAT_Industry_Kernel_Egypt_v1.5.xlsx`, sheet `Table2_Industry` (stored 2030 snapshot, kernel composition), with `Manual inputs` at default and the CBAM convention FULL. NOPHASE values of O are obtained by switching `Manual inputs` E76.
 
-This note compares the rebuild with the prototype's own composition. It is not the final Table 2: the final Table 2 is the CBAM carve-out (`EGYPT_CarveOut_Table2_v1.3`), whose row O is the intensity-only measure (EGYPT_Methodology section 4.5).
+This note compares the rebuild with the prototype's own composition. It is not the final Table 2: the final Table 2 is the CBAM carve-out (`EGYPT_CarveOut_Table2_v1.5`), whose row O is the intensity-only measure (EGYPT_Methodology section 4.5).
 
 All values are for 2030, at a carbon price of USD 20/t in every bundle.
 
@@ -144,7 +144,7 @@ These are deduction-based obligations. Row O of the final Table 2 is the intensi
 4. **3A revenue:** 1.1 $bn (gross block payments) vs 2.38 in the workbook cell.
 5. **Coverage:** 72/65 % is typed in; the workbook's own columns imply 59/53 % and 24.3 %.
 
-The final Table 2 and the tracked results text use the CBAM carve-out (`EGYPT_CarveOut_Table2_v1.3`): original CPAT runs, with only the CBAM block replaced.
+The final Table 2 and the tracked results text use the CBAM carve-out (`EGYPT_CarveOut_Table2_v1.5`): original CPAT runs, with only the CBAM block replaced.
 
 ## 5. Remaining caveats that matter for this comparison
 

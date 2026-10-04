@@ -9,7 +9,7 @@ working_folder: egypt/
 goals:
   - Redo off-CPAT (ad hoc) Egypt calculations that contain substantial errors.
   - In parallel, build an AI-coded prototype of CPAT, starting ONLY with the CBAM-related industrial modules.
-  - Prototype location: cpat_excel_new/standalone_working_version/ (final version CPAT_Industry_Kernel_Egypt_v1.3.xlsx, sheet CarveOut_Table2 = final Table 2; older versions in Old/).
+  - Prototype location: cpat_excel_new/standalone_working_version/ (final version CPAT_Industry_Kernel_Egypt_v1.5.xlsx (build_v1_5.py), sheets CarveOut_Table2 = final Table 2 and Table2_Final = confirmation of the final numbers; older versions in Old/).
 
 global_constraints:
   - Scope is limited to CBAM-related industrial modules of CPAT for the prototype.
@@ -73,6 +73,8 @@ tasks:
       - "v0.15 (T1 + T5, build_v0_15.py): Egypt CBAM EF v0.1 in Manual inputs H30:K37 (urea np 0, AN no 0.9944 incl. HNO3 N2O; M35/M36 embedded NH3); Task D applied (E50 IPCC; rows 53-60 ER at $100 IPCC central: DRI 0.3433, scrap 0.1810, BF 0.2803, clinker 0.3352, AN no 0.6179 blend, Al 0.2164 np+no, NH3/urea 0; P* 100). Bug fix o15/o16 (no used np beta, ERmax ignored). Task J v2 table and Table 2 snapshot refilled. Check T1/T5 row 1881. 2030 K (Mt) 1A -29.8, 2A -25.8, 2B -27.1, 3A -11.8, 3B -8.6, 3C -23.9 (rebuild v0.2 -31.8/-27.8/-29.3/-18.2/-12.7/-22.6). v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
       - "v0.16 (run-2 fixes, build_v0_16.py): P* 122 (USD2024); Table2_Industry kappa row 54, EG3 1/kappa full-coverage approximation (rows 64, 84, 91, 94, 96), block fuel CO2 above sector reallocated from non-kernel industry (rows 59-60); Fund_Industry stored fund rows 425-433 = post-abatement block payments (fixed point). 2030 K (Mt) 1A -29.0, 2A -25.5, 2B -26.7, 3A -21.1, 3B -17.4, 3C -32.9 (rebuild v0.3 -31.4/-27.8/-29.3/-25.1/-19.6/-30.6). Final deliverables in 'egypt/final/'. See CAVEATS.md 2026-10-03."
       - "FINAL v1.0 (2026-10-04): Table 2 = CBAM carve-out (egypt/supporting/AdHocRebuild/make_carveout_v0_3.py): original CPAT runs, CPAT implied block change removed, block = kernel output/process response + CPAT fuel-intensity response (1+r)^(1/3)-1; O = export-weighted CBAM-product embedded-intensity change (no domestic-price deduction; 2026-10-06): 1A -5.4, 2A -2.6, 2B -2.7, 3A -5.4, 3B -5.4, 3C -20.7%. 2030 K 1A -37.4, 2A -33.1, 2B -34.8, 3A -22.8, 3B -19.1, 3C -33.0. Text: EgyptResultsInitial_UpdatedResults_v1.3_tracked.docx. v1.3 (2026-10-07): all docs aligned at v1.3; methodology = author-edited master; CBAM workbook/note in egypt/final/CBAM Guess - Needs Carolyn Input/. See CAVEATS.md."
+      - "v1.4 (T3, build_v1_4.py, drafted not run): CBAM 2024 production, growth, EU exports and pre-policy prices moved from Mitigation_Industry to Manual inputs rows 98-108 and linked; Check literal count; regression 0."
+      - "v1.5 (build_v1_5.py, drafted not run): 3B rebate to all covered industry (Manual inputs E112; CarveOut_Table2 section G rows 92-98; K, P, Q for 3B only: -12.0 Mt, 0.3 $bn, 330 deaths); new sheet Table2_Final (final Table 2, figures printed in the documents, differences, deduction memo FULL/NOPHASE, live row O); gates on mirror (make_carveout_v0_4.py) and regression."
   - id: TASK-2a
     title: Pseudocode of existing ad hoc (off-CPAT) calculations
     status: done_v0.1
@@ -192,7 +194,8 @@ tasks:
       (TASK-2b), kernel v0.1-v0.13, parameters, open issues. App. A four-way EFs (Task EF);
       App. B process semi-elasticities (Task D) incl. recommended fp routing; App. C file map.
     outputs:
-      - egypt/final/EGYPT_Methodology_v1.3.docx
+      - egypt/final/EGYPT_Methodology_v1.5.docx
+      - egypt/final/EGYPT_VersionNotes_v1.5.docx (change history; always a separate document from the methodology, NORMS section 7)
     notes:
       - "Update (new version) whenever a task changes the method; README, NORMS key documents and context-egypt point to it."
 
