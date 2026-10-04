@@ -13,7 +13,7 @@ goals:
 
 global_constraints:
   - Scope is limited to CBAM-related industrial modules of CPAT for the prototype.
-  - Legacy CPAT workbook is the reference: "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb".
+  - "Legacy CPAT workbook is the reference: cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb."
   - Do not modify files in cpat_excel_original/ or egypt/supporting/InitialResultsAndIssues/ (source/reference material).
   - Working outputs for Egypt go in egypt/.
   - Follow repo NORMS.md.
