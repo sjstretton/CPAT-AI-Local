@@ -15,6 +15,7 @@ cpat_coded/            Coded CPAT: Python reimplementation of the model
 cpat_excel_original/   Legacy CPAT workbook (CPAT 1.0pre_456_NoPropData.xlsb) - the reference (older docs: original_cpat_excel/)
 cpat_excel_new/        Excel-AI: new Excel prototypes replicating legacy CPAT modules
 egypt/                 Egypt case (single root): final/ deliverables, supporting/ work, archive/ superseded versions, instructions/ task inventory and context (see egypt/README.md)
+egypt-final/           Simplified, version-free hand-over of the final Egypt results: 2-page summary, results table, methodology, and the two supporting Excel files
 templates/             Master templates (MTInputs_template.xlsx)
 _research/             Source literature: IPCC AR6 WGIII Ch11/Ch12, CBAM regulation and guidance, sector roadmaps (PDF + extracted text)
 NORMS.md               Excel column, colour, input and versioning norms; task-completion process (section 6)
