@@ -293,3 +293,9 @@ Earlier work was logged in the task documents themselves; they remain the detail
 - **Inputs:** `TODO.md` T4; `build_v0_11.py` / `build_v0_17.py` convention definitions; CAVEATS 2026-10-03 kernel v0.17 entry (kernel already reports O on FULL).
 - **Outputs:** `TODO.md` T4 item updated; this entry. No workbook, builder or yaml changes.
 - **Caveats:** decisions only, not yet applied. The AdHoc rebuild defaults (`ThetaOther`, convention) must be set to these values in a new builder version and re-verified with `recalc_and_check_adhoc.py` (Windows/Excel COM). Any Table 2 numbers built under `ThetaOther` = 0 or NOPHASE are superseded once that is done.
+
+## 2026-10-04 - AdHoc rebuild v0.4 builder and verifier drafted (not built, not run)
+- **Task:** applied the 2026-10-04 decisions to the AdHoc rebuild defaults: `Conv` = FULL (NOPHASE kept as a memo) and `ThetaOther` = 1. `ThetaOther` is forced to 0 in PROTOTYPE mode so the v0.11 reproduction is unchanged. No formula changes.
+- **Inputs:** `build_adhoc_rebuild_v0_3.py`, `recalc_and_check_adhoc_v0_3.py`; CAVEATS 2026-10-04 decisions entry.
+- **Outputs:** `egypt/supporting/AdHocRebuild/build_adhoc_rebuild_v0_4.py` and `recalc_and_check_adhoc_v0_4.py` (docstrings, defaults, ReadMe version log; the verifier now saves with Conv = FULL). v0.3 files untouched. Both compile (`py_compile`).
+- **Caveats:** drafted on Linux. `AdHocCalculations_Rebuild_v0.4.xlsx` has NOT been built, and the verifier (Excel COM, Windows) has NOT been run. Run `python build_adhoc_rebuild_v0_4.py` then `python recalc_and_check_adhoc_v0_4.py` and check the report. Still to do after a clean run: MethodologyNote v0.4 and ResultsComparison_Table2 v0.4 (results change with ThetaOther = 1 and FULL), the yaml / `EgyptTaskReference.md` / `context-egypt.md` bookkeeping, and whether the final Table 2 deliverables need regenerating.
