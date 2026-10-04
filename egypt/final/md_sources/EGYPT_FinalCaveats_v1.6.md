@@ -5,7 +5,7 @@
 - `EGYPT_CarveOut_Table2_v1.6` (final Table 2);
 - `EgyptResultsInitial_UpdatedResults_v1.6_tracked.docx` (results text);
 - `EGYPT_Methodology_v1.6` (section 4.5); `EGYPT_CBAM_ObligationNote_v1.6`;
-- background models: kernel `CPAT_Industry_Kernel_Egypt_v1.6.xlsx` (sheet `CarveOut_Table2` computes the final Table 2 line by line; sheet `Table2_Final` confirms the final numbers against the figures printed in these documents) and ad hoc rebuild `AdHocCalculations_Rebuild_v0.4.xlsx`.
+- background models: kernel `CPAT_Industry_Kernel_Egypt_v1.6.xlsx` (sheet `CarveOut_Table2` computes the final Table 2 line by line; sheet `Table2_Final` confirms the final numbers against the figures printed in these documents) and ad hoc rebuild `AdHocCalculations_Rebuild_v0.5.xlsx`.
 
 All figures are for 2030 at a carbon price of USD 20/t. This list covers only the material caveats, most important first. The full log is `CAVEATS.md`.
 
@@ -33,15 +33,15 @@ F7. **Deaths** are CPAT deaths scaled by the block fuel-CO₂ adjustment. The or
    - The CPAT run behind them (EG3) prices only 54% of industrial fuel use (κ = 0.537).
    - Both models now divide EG3's industry energy-CO₂ change, receipts and deaths by κ. This gives:
      - coverage of 20.8% (rebuild) or 18.5% (prototype);
-     - reductions of −25.1 / −19.6 / −30.6 Mt (rebuild) and −21.1 / −17.4 / −32.9 Mt (prototype);
-     - deaths avoided of 850 / 714 / 997.
-   - These replace the previous figures of −18.2 / −12.7 / −22.6 Mt, which were lower bounds.
+     - reductions of −23.4 / −12.3 / −29.0 Mt (rebuild) and −19.4 / −17.5 / −31.6 Mt (prototype);
+     - deaths avoided of 850 / 412 / 997 (rebuild).
+   - Without the scaling, as in the final Table 2, these scenarios are lower bounds.
    - The approximation assumes that the sectors left out of EG3 (mainly aluminium and other manufacturing) respond like the average priced industry.
    - **A true full-coverage EG3 CPAT run is still needed to confirm 3A–3C.**
 2. **The 3C fund convention differs between the two models.**
-   - The prototype's fund equals the CBAM block's own carbon payments after abatement (USD 0.93bn), solved as a fixed point. The other industrial carbon revenue (USD 0.73bn) stays with the budget.
+   - The prototype's fund equals the CBAM block's own carbon payments after abatement (USD 0.97bn), solved as a fixed point. The other industrial carbon revenue (USD 0.71bn) stays with the budget.
    - The rebuild sends all industrial carbon revenue to the fund (net revenue 0) and abates at a fixed USD 20/t.
-   - As a result, the prototype's 3C reduction (−32.9 Mt) exceeds the rebuild's (−30.6 Mt).
+   - As a result, the prototype's 3C reduction (−31.6 Mt) exceeds the rebuild's (−29.0 Mt).
    - **Which convention is intended changes 3C revenue by about USD 0.7bn.**
 3. **The prototype still mixes two CPAT data vintages.**
    - Industrial energy CO₂ is 75.4 Mt (stored CPAT) vs 89.0 Mt (new Egypt runs). The prototype combines only changes within each source.
@@ -77,7 +77,7 @@ F7. **Deaths** are CPAT deaths scaled by the block fuel-CO₂ adjustment. The or
 ## C. Structural limitations
 
 8. **Some response channels are missing.**
-   - The prototype holds the block's fuel intensity fixed. Its CBAM intensity change for 2A/2B is therefore 0 (rebuild −2.2%), and its obligation cuts and deaths avoided are slightly smaller.
+   - The prototype holds the block's fuel intensity fixed. Its CBAM intensity change for 2A/2B is therefore 0 (rebuild −2.1%), and its obligation cuts and deaths avoided are slightly smaller.
    - The 3B rebate covers all covered industry in the final Table 2 and the rebuild; the kernel's own composition (`Table2_Industry`) rebates the CBAM block only.
 9. **CBAM obligation convention.**
    - The final Table 2 uses the embedded-intensity change only (no domestic-price deduction). The kernel and the rebuild report the deduction-based obligation on FULL (2030 phase-in, CBAM factor 0.485); NOPHASE (no phase-in, factor 1, as in the original Table 2) is a memo only.
@@ -93,12 +93,12 @@ F7. **Deaths** are CPAT deaths scaled by the block fuel-CO₂ adjustment. The or
 ## D. Relation to the initial results
 
 11. **The initial results (Table 2) overstated reductions for the economy-wide scenarios.**
-    - The rebuild gives 8–29% smaller reductions for these scenarios and about USD 1bn more revenue.
+    - The rebuild gives about 29–30% smaller reductions for these scenarios and about USD 1bn more revenue.
     - The main causes:
       - CPAT scaled all industrial process emissions with fuel CO₂;
       - coverage was typed in by hand;
       - 1A was built on the wrong run;
       - the 3B figures were stale.
-    - Under the full-coverage approximation, the industry-only scenarios are now *larger* than Table 2 (3A −25.1 vs −21.5 Mt).
+    - Under the full-coverage approximation, the industry-only scenarios are now *larger* than Table 2 (3A −23.4 vs −21.5 Mt).
 
-    The initial document is also internally inconsistent. For 3B the table says −18.1 Mt and the text says 13.6 Mt, and the emission bases are mixed. See `ResultsComparison_Table2_v0.4`, section 4.
+    The initial document is also internally inconsistent. For 3B the table says −18.1 Mt and the text says 13.6 Mt, and the emission bases are mixed. See `ResultsComparison_Table2_v0.5`, section 4.

@@ -63,6 +63,11 @@ def carve_md():
     s = open(os.path.join(ARCH, "EGYPT_CarveOut_Table2_v1.5.md"), encoding="utf8").read()
     s = s.replace("(final v1.5)", "(final v1.6)").replace("Methodology v1.5", "Methodology v1.6").replace(
         "CPAT_Industry_Kernel_Egypt_v1.5.xlsx", "CPAT_Industry_Kernel_Egypt_v1.6.xlsx")
+    s = s.replace("CPAT_Industry_Kernel_Egypt_v1.3.xlsx", "CPAT_Industry_Kernel_Egypt_v1.6.xlsx")
+    s = s.replace("**3B rebate (decision 2026-10-04).**", "**3B rebate.**")
+    old = "The earlier prototype (kernel v0.16) held non-CBAM IPPU fixed, which is most of why its 1A cut was lower."
+    assert old in s
+    s = s.replace(old, "The kernel's own composition holds non-CBAM IPPU fixed, which is most of why its 1A cut is lower.")
     spec = {
         "| Coverage, % of GHG (J) |": [fmt(R[b]["J"], 0) for b in B],
         "| Revenue, $bn (P) |": [fmt(R[b]["P"], 1) for b in B],
@@ -106,6 +111,21 @@ def carve_md():
     open(os.path.join(MD, "EGYPT_CarveOut_Table2_v1.6.md"), "w", encoding="utf8").write(s)
 
 
+CAVEAT_EDITS = [
+    ("ad hoc rebuild `AdHocCalculations_Rebuild_v0.4.xlsx`", "ad hoc rebuild `AdHocCalculations_Rebuild_v0.5.xlsx`"),
+    ("     - reductions of \u221225.1 / \u221219.6 / \u221230.6 Mt (rebuild) and \u221221.1 / \u221217.4 / \u221232.9 Mt (prototype);\n     - deaths avoided of 850 / 714 / 997.\n   - These replace the previous figures of \u221218.2 / \u221212.7 / \u221222.6 Mt, which were lower bounds.\n",
+     "     - reductions of \u221223.4 / \u221212.3 / \u221229.0 Mt (rebuild) and \u221219.4 / \u221217.5 / \u221231.6 Mt (prototype);\n     - deaths avoided of 850 / 412 / 997 (rebuild).\n   - Without the scaling, as in the final Table 2, these scenarios are lower bounds.\n"),
+    ("(USD 0.93bn), solved as a fixed point. The other industrial carbon revenue (USD 0.73bn) stays with the budget.",
+     "(USD 0.97bn), solved as a fixed point. The other industrial carbon revenue (USD 0.71bn) stays with the budget."),
+    ("the prototype's 3C reduction (\u221232.9 Mt) exceeds the rebuild's (\u221230.6 Mt).", "the prototype's 3C reduction (\u221231.6 Mt) exceeds the rebuild's (\u221229.0 Mt)."),
+    ("(rebuild \u22122.2%)", "(rebuild \u22122.1%)"),
+    ("The rebuild gives 8\u201329% smaller reductions for these scenarios and about USD 1bn more revenue.",
+     "The rebuild gives about 29\u201330% smaller reductions for these scenarios and about USD 1bn more revenue."),
+    ("(3A \u221225.1 vs \u221221.5 Mt)", "(3A \u221223.4 vs \u221221.5 Mt)"),
+    ("`ResultsComparison_Table2_v0.4`", "`ResultsComparison_Table2_v0.5`"),
+]
+
+
 def caveats_md():
     s = open(os.path.join(ARCH, "EGYPT_FinalCaveats_v1.5.md"), encoding="utf8").read()
     s = s.replace("(final v1.5)", "(final v1.6)").replace("_v1.5", "_v1.6")
@@ -115,6 +135,9 @@ def caveats_md():
                      "Low–Medium confidence; only cement matters, and with the old uniform −0.5 the 1A cut would be about 2.7 Mt larger);")
     a = "F3. **Output and process responses come from the kernel,**"
     assert a in s
+    for old, new in CAVEAT_EDITS:
+        assert old in s, old[:70]
+        s = s.replace(old, new)
     open(os.path.join(MD, "EGYPT_FinalCaveats_v1.6.md"), "w", encoding="utf8").write(s)
 
 
@@ -129,7 +152,7 @@ def obligation_md():
 
 def versionnotes_md():
     s = open(os.path.join(ARCH, "EGYPT_VersionNotes_v1.5.md"), encoding="utf8").read()
-    s = s.replace("(final v1.5)", "(final v1.6)")
+    s = s.replace("(final v1.5)", "(final v1.6)").replace("EGYPT_Methodology_v1.5", "EGYPT_Methodology_v1.6")
     new = ("## Final set v1.6 (2026-10-08)\n\n- **Product-specific output elasticities.** `Manual inputs` E66:E73 change from the uniform −0.5 placeholder to "
            "cement −0.10, steel −0.40, ammonia / urea / ammonium nitrate −0.40, aluminium −0.50 (`OutputElasticity_Note_v0.1`). Only cement matters "
            "(carbon cost 15%% of its price). 2030 emission cut (Mt), old to new: 1A %s to %s; 2A %s to %s; 2B %s to %s; 3A %s to %s; 3B unchanged %s; "

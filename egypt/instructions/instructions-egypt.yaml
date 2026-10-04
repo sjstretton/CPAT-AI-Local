@@ -99,7 +99,7 @@ tasks:
 
   - id: TASK-2b
     title: Corrected ad hoc calculations (rebuild of AdHocCalculations.xlsb) + concise methodology note
-    status: done_v0.4
+    status: done_v0.5
     depends_on: [TASK-2a]
     description: >
       Rebuild of the flawed AdHocCalculations.xlsb behind Table 2 of the Egypt results, as a
@@ -116,10 +116,10 @@ tasks:
       - cpat_excel_new/standalone_working_version/CPAT_Industry_Kernel_Egypt_v0.11.xlsx (product inputs, block equations)
       - "cpat_excel_original/CPAT 1.0pre_456_NoPropData.xlsb (Outputs sheet, Egypt EG1-EG4, 2022-2041)"
     outputs:
-      - egypt/supporting/AdHocRebuild/AdHocCalculations_Rebuild_v0.4.xlsx (current; v0.3 kept for the example-results builder; v0.1-v0.2 in egypt/archive/AdHocRebuild/) (sheets ReadMe, Inputs, CPAT_Outputs, CBAM_Products, Results, PolicyMatrix, Comparison, Issues resolved, Checks)
-      - egypt/supporting/AdHocRebuild/build_adhoc_rebuild_v0_4.py (openpyxl builder) + recalc_and_check_adhoc_v0_4.py (Excel COM verifier) + recalc_and_check_adhoc_v0_4_report.txt
-      - egypt/supporting/AdHocRebuild/MethodologyNote_v0.4.md / .docx (md_to_docx.py [note.md]) and VersionNotes_AdHocRebuild.md (change history; methodology and version notes are separate documents, NORMS section 7)
-      - egypt/supporting/AdHocRebuild/ResultsComparison_Table2_v0.4.md / .docx (Table 2 of EgyptResultsInitial.docx vs rebuild v0.4 vs prototype kernel composition, 2030, with K decomposition and docx text/table inconsistencies; not the final Table 2)
+      - egypt/supporting/AdHocRebuild/AdHocCalculations_Rebuild_v0.5.xlsx (current; v0.3 kept for the example-results builder; v0.1-v0.2 in egypt/archive/AdHocRebuild/) (sheets ReadMe, Inputs, CPAT_Outputs, CBAM_Products, Results, PolicyMatrix, Comparison, Issues resolved, Checks)
+      - egypt/supporting/AdHocRebuild/build_adhoc_rebuild_v0_5.py (openpyxl builder) + recalc_and_check_adhoc_v0_5.py (Excel COM verifier) + recalc_and_check_adhoc_v0_5_report.txt
+      - egypt/supporting/AdHocRebuild/MethodologyNote_v0.5.md / .docx (md_to_docx.py [note.md]) and VersionNotes_AdHocRebuild.md (change history; methodology and version notes are separate documents, NORMS section 7)
+      - egypt/supporting/AdHocRebuild/ResultsComparison_Table2_v0.5.md / .docx (Table 2 of EgyptResultsInitial.docx vs rebuild v0.5 vs prototype kernel composition, 2030, with K decomposition and docx text/table inconsistencies; not the final Table 2)
       - egypt/supporting/AdHocRebuild/cpat_outputs_egypt_2022_2041.csv, prototype_v0_11_results.json, original_PolicyMatrix_cells.txt (provenance)
     acceptance_criteria:
       - PolicyMatrix keeps the original layout; rows 7-12 (1A, 2A, 2B, 3A, 3B, 3C) fully live; no typed numbers outside Inputs.

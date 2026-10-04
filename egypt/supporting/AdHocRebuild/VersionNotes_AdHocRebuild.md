@@ -2,10 +2,11 @@
 
 Change history only. The method itself is in `MethodologyNote_v0.4.md` (current state, no history); numbers compared with the final Table 2 are in `ResultsComparison_Table2_v0.4.md`. Per `NORMS.md` section 7, history does not go in the methodology.
 
-## v0.5 (builder and verifier drafted 2026-10-08, not run)
+## v0.5 (2026-10-08)
 
 - Output elasticity by product (`EpsQ1`..`EpsQ8` on `Inputs`: cement -0.10, steel and fertilisers -0.40, aluminium -0.50), from `egypt/supporting/OutputElasticity_Note_v0.1.md`. `PROTOTYPE` mode keeps the uniform `EpsQ` = -0.5, so the reproduction of kernel v0.11 is unchanged. No other change.
-- Files: `build_adhoc_rebuild_v0_5.py`, `recalc_and_check_adhoc_v0_5.py`. Results and notes (`MethodologyNote_v0.5`, `ResultsComparison_Table2_v0.5`) to be written after the verifier has run.
+- Files: `build_adhoc_rebuild_v0_5.py`, `recalc_and_check_adhoc_v0_5.py`; report `recalc_and_check_adhoc_v0_5_report.txt` (ALL PASSED: PROTOTYPE 132/132 for FULL and NOPHASE, REBUILD 588/588 against the Python mirror). Notes: `MethodologyNote_v0.5`, `ResultsComparison_Table2_v0.5`.
+- **Effect on 2030 results (v0.5 vs v0.4).** K, Mt: 1A -31.35 to -29.66; 2A -27.82 to -27.11; 2B -29.34 to -28.62; 3A -25.07 to -23.38; 3B -12.31 unchanged; 3C -30.60 to -29.03. Block output change (U) -6.1% to -1.5% in the priced scenarios; block emissions (T) 1A -11.6% to -7.2%. Revenue 3A 2.34 to 2.37 $bn; deaths unchanged.
 
 ## v0.4 (2026-10-04)
 
