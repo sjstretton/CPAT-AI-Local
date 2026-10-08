@@ -84,7 +84,9 @@ MT_SCENARIO_INPUTS = {
     1: {'CPIntro': 2027, 'CPLevelStart': 0, 'CPLevelTarget': 0, 'CPOutro': 2030, 'MCovOen': False},
     2: {'CPIntro': 2027, 'CPLevelStart': 20, 'CPLevelTarget': 20, 'CPOutro': 2030, 'MCovOen': False},
 }
-MT_TEMPLATE = os.path.join(HERE, '..', '..', 'templates', 'MTInputs_template.xlsx')
+MT_TEMPLATE = next(os.path.join(d, 'templates', 'MTInputs_template.xlsx')      # repo templates folder,
+                   for d in [os.path.abspath(os.path.join(HERE, *['..'] * k)) for k in range(2, 5)]   # also from Old/
+                   if os.path.exists(os.path.join(d, 'templates', 'MTInputs_template.xlsx')))
 MT_COL0 = 10                            # J: first scenario column on MTInputs
 MT_ROW_SCEN, MT_ROW_NAME = 5, 6         # scenario number and name at the top of each scenario column
 MT_LAST = 'AZ'                          # lookup ranges cover scenario columns J:AZ

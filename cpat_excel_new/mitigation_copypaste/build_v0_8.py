@@ -1,4 +1,4 @@
-"""Build CPAT_Mitigation_CopyPaste_v0.7.xlsx (design 2: time across, scenarios as column groups).
+"""Build CPAT_Mitigation_CopyPaste_v0.8.xlsx (design 2: time across, scenarios as column groups).
 
 Price -> fuel-use prototype of the CPAT mitigation module with fully copy-pasteable formulas.
 
@@ -6,7 +6,11 @@ v0.7 layout follows the legacy CPAT Mitigation sheet: numbered sections (1 Polic
 6 Buildings, 7 Industrial, 8 Other energy use, 11 Results). Within a sector section each subsector has a heading
 line (its total fuel use) and its variables, each over the 8 fuels:
     sp (pre-tax price), ctxnew (new carbon tax), ntx (new excise: fuel price reform), nce (total new policy),
-    tax (base tax + nce), atp (after-tax price), shp (feebate shadow price, not yet used), ener (fuel use).
+    tax (base tax + nce), atp (after-tax price), shp (shadow price on the efficiency margin), ener (fuel use).
+v0.8: the shadow price enters the efficiency margin of the fuel-use equation (legacy / cpat_coded ec.py):
+    ((atp + shp) / (atp_prev + shp_prev)) ^ eps_F, with shp = sector shadow price x EF x share impacting
+    efficiency (ssc = feebate coverage x efficiency-margin adjustment, 1.0 for feebates). All policy paths
+    continue linearly after their target year (one default; the carbon price keeps its MTInputs switch).
 The distance between variables is the same in every subsector, so every variable has one formula everywhere.
 
 - Data input is a separate step: sheet Inputs (one row per fuel|subsector) holds the mappings and parameter
@@ -20,7 +24,7 @@ The distance between variables is the same in every subsector, so every variable
 
 Reads data/*.csv (extract_data_v0_1.py) and templates/MTInputs_template.xlsx. Writes formulas only.
 
-    python build_v0_7.py
+    python build_v0_8.py
 """
 import csv
 import os
@@ -31,7 +35,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter as L
 from openpyxl.workbook.defined_name import DefinedName
 
-VERSION = '0.7'
+VERSION = '0.8'
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, 'data')
 OUT = os.path.join(HERE, f'CPAT_Mitigation_CopyPaste_v{VERSION}.xlsx')
@@ -98,7 +102,9 @@ MT_SCENARIO_INPUTS = {
     1: {'CPIntro': 2027, 'CPLevelStart': 0, 'CPLevelTarget': 0, 'CPOutro': 2030, 'MCovOen': False},
     2: {'CPIntro': 2027, 'CPLevelStart': 20, 'CPLevelTarget': 20, 'CPOutro': 2030, 'MCovOen': False},
 }
-MT_TEMPLATE = os.path.join(HERE, '..', '..', 'templates', 'MTInputs_template.xlsx')
+MT_TEMPLATE = next(os.path.join(d, 'templates', 'MTInputs_template.xlsx')      # repo templates folder,
+                   for d in [os.path.abspath(os.path.join(HERE, *['..'] * k)) for k in range(2, 5)]   # also from Old/
+                   if os.path.exists(os.path.join(d, 'templates', 'MTInputs_template.xlsx')))
 MT_COL0 = 10                            # J: first scenario column on MTInputs
 MT_ROW_SCEN, MT_ROW_NAME = 5, 6
 MT_LAST = 'AZ'
@@ -161,7 +167,7 @@ for p in CP_PARAMS:
     _pol(p, p, mt=MT_NAMES[p])
 for f, *_ in FUELS:
     if f == 'bio':
-        _pol('fc.bio', 'ctcov', 'bio', 'all', kind='const')
+        _pol('fc.bio', 'ctcov', 'bio', 'all', kind='const')                # no MTInputs switch: TRUE
     else:
         _pol(f'fc.{f}', 'ctcov', f, 'all', mt=MT_NAMES['MCov' + f.capitalize()])
 for s in COV_SECTORS:
@@ -184,12 +190,20 @@ for s, *_ in FEEBATE_SECTORS:
     _pol(f'fb.{s}', 'fb', 'all', s, kind='calc')
 for k, s in enumerate(COV_SECTORS):
     _pol(f'fbc.{s}', 'fbcov', 'all', s, mt=MT_ROWS_FIXED['fbcov0'] + k)
+_pol('ssc.adj', 'ssc.adj', kind='const')                                   # feebates: 1.0 (cpat_coded default)
+for s, *_ in FEEBATE_SECTORS:
+    _pol(f'shps.{s}', 'shps', 'all', s, kind='calc')                        # shadow price by sector, $/tCO2
+for s in COV_SECTORS:
+    _pol(f'ssc.{s}', 'ssc', 'all', s, kind='calc')                          # share impacting efficiency
+CONST_VALUES = {'fc.bio': True, 'ssc.adj': 1}
 SUBHEADS = {'cptraj': None, CP_PARAMS[0]: 'Carbon tax (MTInputs rows 18-21, 265)',
             'fc.coa': 'Carbon tax coverage: fuels (MTInputs rows 23-29)',
             'sc.pow': 'Carbon tax coverage: sectors (MTInputs rows 31-47)',
             'fpr.yr0': 'Fuel price reform (MTInputs rows 140-169; increases in price units)',
             'fb.yr0': 'Feebates (MTInputs rows 53-64; rates in USD/tCO2)',
-            'fbc.pow': 'Feebates sector coverage (MTInputs rows 66-82)'}
+            'fbc.pow': 'Feebates sector coverage (MTInputs rows 66-82)',
+            'ssc.adj': 'Shadow prices: by sector ($/tCO2, legacy rows 2345-2349) and share impacting efficiency '
+                       '(legacy rows 2402-2419)'}
 
 B_POL = 9                               # band: 1. Policies
 R_POL = {}                              # key -> row
@@ -261,6 +275,12 @@ VARIABLES = [
     ('fb', 'Feebates: rate path', 'USD/tCO2', '', 'Calculation (assumed linear)', 'legacy rows 2000-2004'),
     ('fbcov', 'Feebates sector coverage (Apply?)', 'switch', '', 'MTInputs (scenario column)',
      'MTInputs rows 66-82'),
+    ('ssc.adj', 'Efficiency-margin adjustment, feebates', 'share', '', 'cpat_coded default (feebates 1.0)',
+     'MTInputs rows 247-250 hold the adjustments for regulations (not yet used)'),
+    ('shps', 'Shadow price by sector (feebates; later + non-auctioned ETS, regulations)', 'USD/tCO2', '',
+     'Calculation', 'legacy Mitigation rows 2345-2349'),
+    ('ssc', 'Share of shadow price impacting efficiency', 'share', '', 'Feebate coverage x adjustment',
+     'legacy Mitigation rows 2403-2419: egy.mit.ssc.rod.1'),
     ('sp', 'Pre-tax price (supply cost)', '$/GJ', 'a', 'Inputs (base year), then growth',
      'legacy Mitigation row 2498: egy.mit.sp.ind.coa.a.1', 'growth'),
     ('ctxnew', 'New carbon tax', '$/GJ', 'a', 'Carbon price x EF x fuel and sector coverage',
@@ -273,7 +293,7 @@ VARIABLES = [
      'new: legacy splits taxes into txo, vat, ctx, ets, nce', 'base tax'),
     ('atp', 'After-tax price', '$/GJ', 'e', 'Pre-tax price + tax',
      'legacy Mitigation row 5416: egy.mit.atp.rod.gso.e.1 (legacy unit $/liter for liquids)'),
-    ('shp', 'Shadow price, feebates (not yet used in fuel use)', '$/GJ', '', 'Feebate rate x EF x coverage',
+    ('shp', 'Shadow price on the efficiency margin', '$/GJ', '', 'Sector shadow price x EF x share',
      'legacy Mitigation row 2377: egy.mit.shp.coa.pow.1', 'feebate sector position', 'EF', 'sector position'),
     ('ener', 'Fuel use', 'ktoe', 'e', 'Inputs (base year), CPAT eq. 3.3.3',
      'legacy Mitigation row 5430: egy.mit.ener.rod.gso.e.1', 'eps_Y', 'eps_U', 'eps_F', 'alpha'),
@@ -289,15 +309,15 @@ LAMBDAS = {
     'PRETAX': (['prev', 'growth'], 'prev*(1+growth)'),
     'TAX': (['base_tax', 'new_policy'], 'base_tax+new_policy'),
     'POSTTAX': (['pre_tax_p', 'tax_p'], 'pre_tax_p+tax_p'),
-    'FUELUSE': (['f_prev', 'p_now', 'p_prev', 'gdp_g', 'eps_y', 'eps_u', 'eps_f', 'alpha'],
+    'FUELUSE': (['f_prev', 'p_now', 'p_prev', 'shp_now', 'shp_prev', 'gdp_g', 'eps_y', 'eps_u', 'eps_f', 'alpha'],
                 'f_prev*(1/(1+alpha))^(1+eps_u)*(1+gdp_g)^eps_y*(p_now/p_prev)^eps_u'
-                '*(p_now/p_prev)^(eps_f*(1+eps_u))'),
+                '*((p_now+shp_now)/(p_prev+shp_prev))^(eps_f*(1+eps_u))'),
 }
 LAMBDA_NOTES = {
     'PRETAX': 'Pre-tax price: previous year x (1 + growth)',
     'TAX': 'Tax ($/GJ): base tax + total new policy (new carbon tax + new excise tax)',
     'POSTTAX': 'After-tax price: pre-tax price + tax',
-    'FUELUSE': 'Fuel use, CPAT documentation 3.3.3 (no Covid factor, no shadow price yet)',
+    'FUELUSE': 'Fuel use, CPAT documentation 3.3.3, shadow price on the efficiency margin (no Covid factor)',
 }
 
 
@@ -547,7 +567,10 @@ def build_settings(wb):
         ('0.7', '2026-10-08', 'Legacy CPAT section layout (1 Policies, 3 Power, 5-8 sectors, 11 Results; subsector > '
                               'variable > fuel); policy wedges: new carbon tax with MTInputs coverage, new excise '
                               '(fuel price reform), total new policy; feebate shadow price (not yet used).',
-         '0 (common codes vs v0.6)')]
+         '0 (common codes vs v0.6)'),
+        ('0.8', '2026-10-08', 'Shadow price on the efficiency margin of fuel use; shadow prices by sector and '
+                              'share impacting efficiency in section 1; all policy paths continue linearly; '
+                              'biomass carbon-tax coverage TRUE.', '0 (common codes vs v0.7, no feebate)')]
     for i, row in enumerate(log, 12):
         for j, v in enumerate(row, 2):
             put(ws, f'{L(j)}{i}', v)
@@ -689,16 +712,18 @@ def calc_formula(var, r, col, prev, is_base, use_lambda):
     if var == 'atp':
         return f'=POSTTAX({o("sp")},{o("tax")})' if use_lambda else f'={o("sp")}+{o("tax")}'
     if var == 'shp':
-        return (f'=INDEX({pol_range(col, "fb." + FEEBATE_SECTORS[0][0], len(FEEBATE_SECTORS))},$D{r})*$E{r}'
-                f'*INDEX({pol_range(col, "fbc.pow", len(COV_SECTORS))},$F{r})')
+        return (f'=INDEX({pol_range(col, "shps." + FEEBATE_SECTORS[0][0], len(FEEBATE_SECTORS))},$D{r})*$E{r}'
+                f'*INDEX({pol_range(col, "ssc.pow", len(COV_SECTORS))},$F{r})')
     if var == 'ener':
         if is_base:
             return '=' + inputs_lookup('f0', r)
         if use_lambda:
-            return f'=FUELUSE({prev}{r},{o("atp")},{op("atp")},{col}${R_GDP},$D{r},$E{r},$F{r},$G{r})'
+            return (f'=FUELUSE({prev}{r},{o("atp")},{op("atp")},{o("shp")},{op("shp")},{col}${R_GDP},'
+                    f'$D{r},$E{r},$F{r},$G{r})')
         ratio = f'({o("atp")}/{op("atp")})'
+        eff = f'(({o("atp")}+{o("shp")})/({op("atp")}+{op("shp")}))'
         return (f'={prev}{r}*(1/(1+$G{r}))^(1+$E{r})*(1+{col}${R_GDP})^$D{r}'
-                f'*{ratio}^$E{r}*{ratio}^($F{r}*(1+$E{r}))')
+                f'*{ratio}^$E{r}*{eff}^($F{r}*(1+$E{r}))')
     raise ValueError(var)
 
 
@@ -712,12 +737,15 @@ def mt_lookup(r, col):
 
 
 def path_formula(col, y0, y1, start, target, linear_ext=None):
-    """0 before y0; linear from start (at y0) to target (at y1); after y1 flat at target, or linear
-    continuation when linear_ext (a cell) = "Linear*" (legacy carbon price rule)."""
+    """0 before y0; linear from start (at y0) to target (at y1). After y1: linear continuation (the one
+    default for all paths); the carbon price keeps its MTInputs switch (linear_ext cell, "Linear*" = continue,
+    otherwise flat at the target, as legacy)."""
     y = f'{col}${R_YEAR}'
-    cont = f'OR({y}<={y1},{linear_ext}="Linear*")' if linear_ext else f'{y}<={y1}'
-    return (f'=IF({y}<{y0},0,{start}+({target}-{start})/MAX({y1}-{y0},1)'
-            f'*IF({cont},{y}-{y0},{y1}-{y0}))')
+    slope = f'({target}-{start})/MAX({y1}-{y0},1)'
+    if linear_ext is None:
+        return f'=IF({y}<{y0},0,{start}+{slope}*({y}-{y0}))'
+    return (f'=IF({y}<{y0},0,{start}+{slope}'
+            f'*IF(OR({y}<={y1},{linear_ext}="Linear*"),{y}-{y0},{y1}-{y0}))')
 
 
 def pol_calc(key, col):
@@ -732,6 +760,10 @@ def pol_calc(key, col):
     if key.startswith('fb.') and key not in ('fb.yr0', 'fb.yr1'):
         s = key[3:]
         return path_formula(col, c('fb.yr0'), c('fb.yr1'), rel('fbs.' + s), rel('fbt.' + s))
+    if key.startswith('shps.'):
+        return f'={rel("fb." + key[5:])}'                       # feebates only, for now
+    if key.startswith('ssc.'):
+        return f'={rel("fbc." + key[4:])}*{c("ssc.adj")}'
     raise ValueError(key)
 
 
@@ -822,8 +854,10 @@ def build_mitigation(wb):
             elif kind == 'calc':
                 val = pol_calc(key, col)
             else:
-                val = False
+                val = CONST_VALUES[key]
             fmt = '0' if var in ('CPIntro', 'CPOutro', 'fpr.yr0', 'fpr.yr1', 'fb.yr0', 'fb.yr1') else '0.00'
+            if var in ('ctcov', 'fbcov') and kind == 'const':
+                fmt = 'General'
             put(ws, f'{col}{r}', val, fnt, F_INPUT if kind == 'const' else bf, fmt)
         each_col(pcell)
     ws.row_dimensions[R_CP].collapsed = True
@@ -980,9 +1014,9 @@ def build_readme(wb):
                     f'{NF} fuels with one blank row ({SB} rows per subsector).'),
         ('Variables', 'sp pre-tax price; ctxnew new carbon tax = carbon price x EF x fuel coverage x sector '
                       'coverage; ntx new excise = fuel price reform path / GJ per unit; nce total new policy = '
-                      'ctxnew + ntx; tax = base tax + nce; atp after-tax price = sp + tax; shp feebate shadow '
-                      'price = feebate rate x EF x feebate coverage (calculated, not yet used in fuel use: CPAT '
-                      'applies it to the efficiency margin only); ener fuel use (CPAT eq. 3.3.3).'),
+                      'ctxnew + ntx; tax = base tax + nce; atp after-tax price = sp + tax; shp shadow price = '
+                      'sector shadow price x EF x share impacting efficiency; ener fuel use (CPAT eq. 3.3.3): the '
+                      'usage term uses atp, the efficiency term (atp + shp), as legacy CPAT.'),
         ('Roll-up', 'Sector sections show their total and the subsector heading lines; click + on a heading to '
                     'see its variables (outline level 2). Section 1 shows the carbon price; its inputs and paths '
                     'are rolled up. Buttons 1 / 2 / 3 at the top left set all levels.'),
@@ -990,7 +1024,9 @@ def build_readme(wb):
                                  f'scenario number (row {R_SCEN}). Paths: carbon price as legacy (0 before '
                                  'CPIntro, linear to CPLevelTarget by CPOutro, linear continuation if Linear*); '
                                  'fuel price reform and feebates: 0 before the start year, linear from the '
-                                 'starting to the final/target value, flat afterwards (assumption).'),
+                                 'starting to the final/target value, continuing linearly afterwards (one default). '
+                                 'Shadow prices: by sector ($/tCO2) = feebate path (later + non-auctioned ETS, '
+                                 'regulations); share impacting efficiency = feebate coverage x adjustment (1.0).'),
         ('Data step vs formulas', 'Lookups happen in Inputs (one row per fuel|subsector), in Mitigation D:G '
                                   '(hidden; labels per variable in Variables G:J), the base-year column and the '
                                   'Section-1 input rows. Calculation cells contain no searching lookups; ctxnew, '
