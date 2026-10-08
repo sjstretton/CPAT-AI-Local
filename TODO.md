@@ -18,8 +18,8 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 
 ## 3. Mitigation copy-paste prototype (`cpat_excel_new/mitigation_copypaste/`)
 
-- ☐ **Decide (v0.9):** other oil products: keep the legacy rule (retail price falls to the 0.01 floor; fuel use 10x by 2030) or treat them like the other oil products (bucketed pass-through, here 0 -> price held at 2024). Also open: food & forestry elasticities (industry vs buildings).
-- ◐ Review v0.9 in Excel (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
+- ☐ Open: food & forestry elasticities (industry vs buildings).
+- ◐ Review v0.10 in Excel (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
 
 ## Conventions for every kernel task
 

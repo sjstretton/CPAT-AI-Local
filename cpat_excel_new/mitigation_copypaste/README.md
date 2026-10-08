@@ -2,7 +2,7 @@
 
 Replacement for the CPAT mitigation module whose formulas are **fully copy-pasteable**: one formula per block, valid across (years) and down (subsectors x fuels), and a whole scenario group can be copied to a new scenario. Goal: auditable equations that a model builder can extend by dragging.
 
-Current version: `CPAT_Mitigation_CopyPaste_v0.9.xlsx` (policies, domestic price projection, price -> fuel use). Earlier versions in `Old/`. Price method and the explicit real/nominal assumptions: `PriceProjection_Method_v0.2.md`.
+Current version: `CPAT_Mitigation_CopyPaste_v0.10.xlsx` (policies, domestic price projection, price -> fuel use). Earlier versions in `Old/`. Price method and the explicit real/nominal assumptions: `PriceProjection_Method_v0.3.md`. Data changed by assumption (other oil products, VAT rate) is bright yellow with red text in `Inputs_prices`.
 
 ## Design (agreed)
 
@@ -19,7 +19,7 @@ Layout follows the legacy CPAT Mitigation sheet: numbered sections **1. Policies
 
 - **Section 1 (policies)** reads the scenario inputs from `MTInputs` (one *Used for calculation* column per scenario from column J; rows A:H = legacy template) by MTInputs row (hidden column D) and scenario number (row 5): carbon tax (`CPIntro`..`CPOutro`, `ExtendCarbonPriceBeyondOutro`), carbon-tax coverage by fuel and sector (`MCov*`), fuel price reform (rows 140-169), feebates (rows 53-64, coverage 66-82). It computes the carbon price (legacy rule), the fuel price reform paths (14 price fuels) and the feebate rate paths (power, transport, residential, industry). One default for all paths: 0 before the start year, linear to the target, continuing linearly afterwards (the carbon price keeps its MTInputs switch). Shadow prices: by sector ($/tCO2, legacy rows 2345-2349) = feebate path (later + non-auctioned ETS, regulations); share impacting efficiency by subsector (`ssc`, legacy rows 2403-2419) = feebate coverage x adjustment (1.0 for feebates).
 - **Real terms (v0.9):** everything is in real USD of `ResultsYear` (2026) per GJ. Row `infl` (US CPI index) converts nominal domestic data and nominal policy inputs; row `defl` (US GDP deflator index) converts international prices. The two differ by up to 1.2% before 2030, so both are kept. MTInputs policy values are real, except a carbon price marked `NomorReal` = Nominal. Values after 2030 are not a legacy target.
-- **Section 2 (prices, by 12 price fuels):** `gp` international prices (MTInputs source and High/Low adjustment; country gas market); `sp` = data up to 2024, then fixsp + floating part x gp(t)/gp(t-1); `txo` = data, then the legacy pass-through rule; `rpb` = (sp + txo) x (1 + VAT rate). Data step: sheet `Inputs_prices`.
+- **Section 2 (prices, by 12 price fuels):** `gp` international prices (MTInputs source and High/Low adjustment; country gas market); `sp` = data up to 2024, then fixsp + floating part x gp(t)/gp(t-1); `txo` = data, then the legacy pass-through rule; `rpb` = (sp + txo) x (1 + VAT rate). VAT rate: dataset where filled, else VAT_WEO (Egypt 14%) for residential coal/gas and oil products, 0 for power, industry, biomass (v0.10 assumption). Data step: sheet `Inputs_prices`.
 - **Wedges:** `ctxnew` = carbon price x EF x fuel coverage x sector coverage; `ntx` = fuel price reform path / GJ per price unit; `nce` = `ctxnew` + `ntx`; `atp` = max(`rpb` of the price fuel + `nce` x (1 + VAT rate), 0.01); `shp` = sector shadow price x EF x `ssc`. Fuel use: the usage term uses `atp`, the efficiency term `(atp + shp)` (legacy / `cpat_coded` `ec.py`). No ETS yet.
 - **Data step separate from formulas.** Sheet `Inputs` (one row per fuel|subsector) holds every lookup; `Mitigation` reads it in the hidden parameter columns D:G (labels in `Variables` G:J) and the base-year column. Calculation cells hold no searching lookups; `ctxnew`, `ntx` and `shp` pick a Section-1 row by position with `INDEX(range, position)`.
 - **Copy-pasteable:** every variable has one formula (relative R1C1) across all subsectors, fuels, years and scenarios; 2035 calls named LAMBDAs (`SUPPLYCOST`, `OTHERTAX`, `POSTTAX`, `FUELUSE`) for `sp`, `txo`, `atp`, `ener`.
@@ -31,16 +31,16 @@ Layout follows the legacy CPAT Mitigation sheet: numbered sections **1. Policies
 
 | File | Role |
 |---|---|
-| `CPAT_Mitigation_CopyPaste_v0.9.xlsx` | Workbook (formulas only; recalculates on open) |
-| `build_v0_9.py` | Builder (reads `templates/MTInputs_template.xlsx`) (openpyxl; no Excel COM needed) |
+| `CPAT_Mitigation_CopyPaste_v0.10.xlsx` | Workbook (formulas only; recalculates on open) |
+| `build_v0_10.py` | Builder (reads `templates/MTInputs_template.xlsx`) (openpyxl; no Excel COM needed) |
 | `extract_data_v0_2.py` | Writes `data/*.csv` from the legacy workbook, the price-module data and kernel v1.6 (needs `pyxlsb`); v0.2 adds international prices by source, US CPI and GDP deflator, regional price assumptions |
-| `PriceProjection_Method_v0.2.md` | Price projection method as implemented, with the holistic real/nominal assumptions (A1-A10) |
-| `check_v0_9.py` | LibreOffice checks: errors only in the LAMBDA column, one R1C1 formula per block and per label/code column, LAMBDA encoding, LAMBDA expansion and drag-forward vs an independent Python recomputation, scenario-copy test with auto-numbering, expected CPAT codes, row outline, band format and summary lines, MTInputs = template, carbon price vs legacy trajectory, fuel price reform and feebate test scenarios (feebates lower fuel use only where covered), price chain (gp, sp, txo, rpb) vs an independent Python recomputation from the CSVs incl. price source IMF-WB*/High, nominal carbon price and price controls None/Manual, regression vs v0.8 on shared non-price output codes |
-| `check_report_v0.9.md` | Output of the last check run |
+| `PriceProjection_Method_v0.3.md` | Price projection method as implemented, with the holistic real/nominal assumptions (A1-A11) |
+| `check_v0_10.py` | LibreOffice checks: errors only in the LAMBDA column, one R1C1 formula per block and per label/code column, LAMBDA encoding, LAMBDA expansion and drag-forward vs an independent Python recomputation, scenario-copy test with auto-numbering, expected CPAT codes, row outline, band format and summary lines, MTInputs = template, carbon price vs legacy trajectory, fuel price reform and feebate test scenarios (feebates lower fuel use only where covered), price chain (gp, sp, txo, rpb) vs an independent Python recomputation from the CSVs incl. price source IMF-WB*/High, nominal carbon price and price controls None/Manual, regression vs v0.9 on shared unaffected output codes, bright marking of changed data |
+| `check_report_v0.10.md` | Output of the last check run |
 | `data/` | Extracted source data (non-proprietary) |
-| `Old/` | v0.1-v0.8 workbooks, builders, check scripts and reports; method note v0.1; extract_data_v0_1 |
+| `Old/` | v0.1-v0.9 workbooks, builders, check scripts and reports; method notes v0.1-v0.2; extract_data_v0_1 |
 
-Rebuild: `python extract_data_v0_2.py` (only if sources change), `python build_v0_9.py`, `python check_v0_9.py`.
+Rebuild: `python extract_data_v0_2.py` (only if sources change), `python build_v0_10.py`, `python check_v0_10.py`.
 
 ## Add a scenario
 
@@ -51,6 +51,6 @@ Copy the last scenario column on `MTInputs` one column to the right and edit its
 1. Goal and spec (done, 2026-10-08).
 2. Skeleton with working equations, Egypt data: v0.1, revised to v0.2-v0.5 after review - **awaiting review in Excel**.
 3. Copy-paste stress test: add a fuel, a subsector and a scenario by dragging; fix what breaks.
-4. Policies (bucket 6): 6a MTInputs and the carbon price (v0.6, done); 6b policy wedges and legacy section layout (v0.7, done); shadow price on the efficiency margin (v0.8, done); domestic price projection in real terms (v0.9, done). Next: ETS, regulations as shadow prices, subsidy phase-out.
+4. Policies (bucket 6): 6a MTInputs and the carbon price (v0.6, done); 6b policy wedges and legacy section layout (v0.7, done); shadow price on the efficiency margin (v0.8, done); domestic price projection in real terms (v0.9, done); other oil products and VAT assumption (v0.10, done). Next: ETS, regulations as shadow prices, subsidy phase-out.
 5. Numerical check against legacy CPAT for Egypt.
 6. Later: emissions, power, revenue/macro links, Python port.

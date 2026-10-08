@@ -461,3 +461,22 @@ Earlier work was logged in the task documents themselves; they remain the detail
   6. Scenario 1 takes the template's *Used for calculation* source `IMF` (the legacy default is `IMF-WB*`).
   7. The legacy NoPropData price forecasts are #N/A, and data vintages differ, so the projected prices cannot yet be validated against legacy numbers.
   8. Still not opened in Excel.
+
+## 2026-10-08 - Mitigation copy-paste prototype (v0.10: other oil products, VAT assumption)
+- **Task (user decisions):** (1) Treat other oil products like the other oil products. (2) Make an assumption for Egypt's VAT rate. (3) Mark changed data clearly in a bright colour.
+- **Changes:**
+  - Other oil products: pass-through and margin now come from the IMF dataset (Egypt: 0 and 7.95 $/bbl) instead of the legacy hardcodes 1 and 0.
+  - VAT rate: the dataset rate where filled; otherwise the general rate `VAT_WEO` (Egypt 14%) for residential coal and gas and the all-sector oil products, and 0 for power, industry (credited to firms) and biomass (informal).
+  - The changed cells in `Inputs_prices` (VAT consumer flag, VAT assumption, oop pass-through and margin) are bright yellow with red bold text; the ReadMe and the method note (A10, A11) say so.
+- **Evidence for the VAT assumption:** the Egypt dataset's own retail prices imply it: rp = (sp + txo) x 1.14 for residential gas, gasoline, diesel, LPG, kerosene and other oil products, and rp = sp + txo for power and industry.
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.10.xlsx`, `build_v0_10.py`, `check_v0_10.py`, `check_report_v0.10.md`, `PriceProjection_Method_v0.3.md`, README. v0.9 files and method note v0.2 moved to `Old/`.
+- **Checks:** PASS. The price chain and fuel use match the independent Python recomputation (5e-15), and the bright marking is checked. Regression vs v0.9: 1,300 unaffected codes diff 0; 646 price and fuel-use codes change by intent.
+- **Results (Egypt):**
+  - Other oil products: retail price held at 4.32 $/GJ from 2024 (v0.9: 0.23 in 2030). Their fuel use is 4.9 Mtoe in 2030 (v0.9: 29.2).
+  - Gasoline retail price 9.58 $/GJ (v0.9: 8.40, without VAT).
+  - Baseline total 74.1 Mtoe (2027) and 81.0 (2030).
+  - $20/t from 2027: -15.1% in 2027 and 2030.
+- **Caveats:**
+  1. The VAT rule is an assumption. It reproduces Egypt's data but is not a statement of Egyptian tax law: petroleum products may be under a schedule tax rather than standard VAT. The fiscal split between VAT and excise does not affect fuel use, but it will matter for revenue.
+  2. The VAT assumption applies to any country with blank dataset rates. Check it per country.
+  3. The legacy `txo` jump at pass-through 0.5 or 0.8 is still copied.
