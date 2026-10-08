@@ -425,3 +425,39 @@ Earlier work was logged in the task documents themselves; they remain the detail
 - **Inputs:** v0.7 (`Old/`); `cpat_coded/cpat_model/components/energy_consumption/ec.py` and `policies/shadow_prices.py`; legacy Mitigation rows 2345-2420.
 - **Outputs:** `CPAT_Mitigation_CopyPaste_v0.8.xlsx`, `build_v0_8.py`, `check_v0_8.py`, `check_report_v0.8.md`, README; v0.7 files moved to `Old/`; the MTInputs template path in `Old/build_v0_6.py`, `Old/build_v0_7.py` and `build_v0_8.py` now searches upward (archived builders run from `Old/`; output unchanged). Checks: all v0.7 checks; shadow-price paths uniform; feebate test: fuel use matches Python (5e-15) and falls only in subsectors with feebate coverage and a non-zero rate (road -11.1 %, iron & steel -12.3 % in 2035 at 10 -> 50 / 5 -> 25 USD/tCO2 from 2027 to 2030, continuing linearly); regression vs v0.7 on 2,322 shared codes diff 0 (intended change: biomass coverage switch).
 - **Caveats:** (1) The scenario columns copy the template's feebate coverage switches (TRUE for most industrial subsectors and other energy use); with zero feebate rates they have no effect. (2) Other energy use takes the industry feebate rate (legacy groups it under 'oth'). (3) Elasticity grouping unchanged: food & forestry uses industry elasticities (as `cpat_coded` EC_SECTORS) although it sits in the buildings section - open question for the user. (4) Regulations (MTInputs rows 247-250 adjustments) and ETS are not yet shadow-price sources; additional policy-induced efficiency gains (rows 242-245) not yet in the fuel-use equation. (5) Still not opened in Excel.
+
+## 2026-10-08 - Mitigation copy-paste prototype (v0.9: domestic price projection in real terms)
+- **Task:** Implement in one step the legacy domestic price projection, and write out the real/nominal assumptions explicitly. The user decided not to track values after 2030, and to keep one index only if it matches legacy up to 2030.
+- **Changes:**
+  - New section 2 (12 price fuels) with:
+    - `gp` (international prices: MTInputs source and High/Low adjustment, country gas market);
+    - `sp` (data to 2024, then fixsp + floating part x gp ratio);
+    - `txo` (data, then the legacy pass-through rule);
+    - `rpb` = (sp + txo)(1 + VAT).
+  - Top rows `infl` (US CPI index) and `defl` (US GDP deflator index), both = 1 in ResultsYear 2026.
+  - `NomorReal` in section 1: a nominal carbon price is multiplied by `infl`.
+  - Per subsector: `atp` = max(rpb + nce(1 + VAT), 0.01); `sp` and `tax` removed.
+  - New sheets `Inputs_prices` (data step), `Prices_int` and `PriceAssump`; Settings C8-C12.
+  - LAMBDAs `SUPPLYCOST` and `OTHERTAX` replace `PRETAX` and `TAX`; `POSTTAX` now takes the VAT rate.
+- **Index decision:** The CPI and deflator indices differ before 2030 by up to 1.2% (2022: 1.137 vs 1.124; 2030: 0.918 vs 0.929). One index would not reproduce legacy, so both are kept: CPI for domestic data and nominal inputs, deflator for international prices (as legacy).
+- **Inputs:** v0.8 (`Old/`); `cpat_coded/cpat_model/components/prices/prices.py`, `domestic_prices.py` and `international_prices.py`; legacy Mitigation rows 452/455/456/467/725 and 633-695; legacy `Prices_int` regional assumptions; `extract_data_v0_2.py` -> `data/prices_int.csv`, `weo_us.csv`, `price_assumptions.csv`.
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.9.xlsx`, `build_v0_9.py`, `check_v0_9.py`, `check_report_v0.9.md`, `extract_data_v0_2.py`, `PriceProjection_Method_v0.2.md` (assumptions A1-A10), README. v0.8 files, method note v0.1 and `extract_data_v0_1.py` moved to `Old/`.
+- **Checks:**
+  - Every new block has one R1C1 formula, with history and projection in the same formula.
+  - gp, sp, txo, rpb and all subsector variables match an independent Python recomputation from the CSVs (max relative diff 1e-14). This covers scenarios 1-2; price source IMF-WB* with High adjustment and a nominal carbon price; and global price controls None and Manual.
+  - Pass-through 0 keeps rpb at its 2024 value.
+  - Regression vs v0.8: 1,286 shared non-price codes diff 0. atp, ener and sp change by intent.
+- **Results (Egypt):**
+  - Baseline fuel use: 49.7 Mtoe (2022), 62.5 (2023), 68.9 (2024), 78.8 (2027), 105.3 (2030). In v0.8 it was 55.4 (2027) and 60.7 (2030).
+  - $20/t from 2027: -17.5% (2027) and -30.1% (2030) against the baseline. In v0.8 it was -10.7% in 2027.
+- **Caveats:**
+  1. Legacy rules are copied as they are, including two quirks:
+     - (a) pass-through 0.5 or 0.8 makes `txo` jump in the first projected year;
+     - (b) other oil products have pass-through 1 hardcoded but keep their negative fixed tax. Their retail price falls with the oil price: 3.79 $/GJ (2024), 0.23 (2030), 0.01 floor from 2031. Baseline oop fuel use therefore rises 10x by 2030 (3.0 to 29.2 Mtoe) and explodes after it. This drives most of the higher baseline and the large carbon-price effects (other manufacturing, fuel transformation, navigation). Proposed fix pending user decision.
+  2. Real prices fall sharply from 2022 to 2024 in the data (devaluation; gasoline 15.1 to 8.4 $/GJ real), so modelled fuel use jumps +26% in 2023 and +10% in 2024. Legacy also models from the 2022 base year.
+  3. Historical oil-product retail prices follow legacy (sp + txo; Egypt VAT rate on oil products is blank = 0), so they are 14% below the dataset `rp`, which includes VAT.
+  4. Margins and production costs (2022 nominal) are converted with `infl(2022)`; `cpat_coded` applies no conversion. To check in bucket 5.
+  5. ResultsYear and price controls are global (scenario 1 column). Source, adjustment and NomorReal are per scenario.
+  6. Scenario 1 takes the template's *Used for calculation* source `IMF` (the legacy default is `IMF-WB*`).
+  7. The legacy NoPropData price forecasts are #N/A, and data vintages differ, so the projected prices cannot yet be validated against legacy numbers.
+  8. Still not opened in Excel.
