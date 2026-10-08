@@ -16,6 +16,10 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 - ☐ Fuel-CO₂ reconciliation (cement block fuel 19.05 Mt against CPAT sector 10.91 Mt in 2030; Egypt clinker fuel factor 0.314).
 - ☐ Keep under review: β set (IPCC central), shadow price σ = 20 $/t, output elasticities (judgements, Low–Medium confidence), the 3C fund outlay bound (0.2 $bn) against the budget, and the text of `Manual inputs` F66:F68 (says steel pass-through about 0.5; the evidence note says 0.55–0.85).
 
+## 3. Mitigation copy-paste prototype (`cpat_excel_new/mitigation_copypaste/`)
+
+- ◐ Review v0.1 in Excel (layout, formulas, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
+
 ## Conventions for every kernel task
 
 See `NORMS.md` and `egypt/instructions/instructions-egypt.yaml`.
