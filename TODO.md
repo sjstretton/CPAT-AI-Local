@@ -18,7 +18,7 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 
 ## 3. Mitigation copy-paste prototype (`cpat_excel_new/mitigation_copypaste/`)
 
-- ◐ Review v0.1 in Excel (layout, formulas, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
+- ◐ Review v0.2 in Excel (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
 
 ## Conventions for every kernel task
 
