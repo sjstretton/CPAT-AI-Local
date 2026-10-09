@@ -641,3 +641,21 @@ Earlier work was logged in the task documents themselves; they remain the detail
   1. The 2022-2024 jump in fuel use and CO2 remains: the corrected block has the same large real price falls. The gap to the legacy run in industry and transport therefore has other causes (to investigate in bucket 5).
   2. Other oil products keep the legacy retail-price rule (sp + txo); the dataset rp is 14% higher for them.
   3. 2019-2020 are stored but not used (history starts 2021).
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.15: layout)
+- **Task (user):**
+  - Group columns B:C and I:K.
+  - Row grouping at the bottom rather than the top.
+  - Mitigation as the first tab, at 75% zoom.
+  - Open rolled up.
+- **Changes:**
+  - Columns: B:C (fuel, sector) and I:K (unit, source, scenario-1 code column) at outline level 1, hidden. The parameter columns D:G sit between them and are nested at level 2, so expanding level 1 shows B:C and I:K and level 2 adds D:G. Adjacent same-level groups would merge in Excel.
+  - Rows: summaryBelow, so the + button sits below each group. Every grouped row is hidden on open, and the collapsed flag is on the row after each group.
+  - Mitigation is the first and active tab, at zoom 75%.
+  - ReadMe roll-up text and version log updated.
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.15.xlsx`, `build_v0_15.py`, `check_v0_15.py`, `check_report_v0.15.md`, README. v0.14 files moved to `Old/`.
+- **Checks:** PASS, including the scenario-copy tests. Regression vs v0.14: 3,484 codes diff 0. New layout checks: column levels, rolled-up rows and collapsed flags, first tab, zoom.
+- **Caveats:**
+  1. Grouping I:K also hides scenario 1's output-code column (K) when rolled up. Scenario 2's code column (Z) stays visible.
+  2. With the + buttons below, a subsector's variables expand from the button on the next subsector's heading line (Excel convention for summary rows below).
+  3. Not yet opened in Excel.
