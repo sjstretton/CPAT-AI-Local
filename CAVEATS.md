@@ -611,3 +611,33 @@ Earlier work was logged in the task documents themselves; they remain the detail
   2. Sector groupings may differ: legacy industry may exclude fuel transformation; v0.13 industry includes it.
   3. Legacy transport may include dynamics not modelled here.
   4. To confirm in bucket 5 with the legacy price inputs.
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.14: corrected Egypt price block)
+- **Task (user):** The user supplied "the whole price block for Egypt, with correct data" (`Egypt_Price_Data.xlsx`, legacy Prices_dom layout, 2019-2024, plus info columns on sources, reliability and last data year).
+- **Changes:**
+  - File stored as `data/source/Egypt_Price_Data_2026-10-09.xlsx`.
+  - `update_prices_egypt_v0_1.py` replaces the Egypt rows of `data/prices_dom.csv` for the shared columns and adds 2019-2020. Non-Egypt rows are byte-identical; the extra info columns are not used.
+  - 291 changed or added cells are listed in `data/prices_dom_changes.csv` and marked bright yellow with red text in the `Prices_dom` sheet.
+  - VAT rule: the dataset rate wherever the cell is filled (explicit 0 included); the v0.10 VAT_WEO assumption applies only to blank cells.
+  - LegacyDiff gains an "Egypt price data" row (24 rows).
+- **What the correction changes:**
+  1. Supply costs and retail prices: changes within rounding, except 2024 gas (-1%) and some coal values.
+  2. Excise and other taxes of gas and oil products: retail price = supply cost + txo, with VAT rates explicitly 0 (only residential coal 14%). Any VAT sits inside txo, so the v0.10 VAT assumption would have counted VAT twice; under the new rule it no longer applies to Egypt.
+  3. Electricity supply costs are now filled (not used yet).
+- **Checks:** PASS.
+  - Prices, taxes, fuel use, revenue and CO2 match the independent Python recomputation from the updated CSV, including the VAT blank/explicit rule.
+  - All 291 changed cells are marked with the new values; no other country is marked.
+  - Regression vs v0.13: 1,648 codes that do not depend on Egypt prices diff 0; 1,836 price-dependent codes change by intent.
+- **Results (Egypt):**
+
+  | | v0.13 | v0.14 |
+  |---|---|---|
+  | Baseline CO2 2022 / 2024 / 2030 (Mt) | 134.8 / 188.9 / 222.3 | 134.8 / 187.5 / 220.7 |
+  | $20/t effect on CO2 | -15.2% | -13.9% (no VAT on new policies for gas and oil products) |
+  | Existing tax revenue 2022 (USD m) | 1,952 (mostly assumed VAT) | 25 |
+  | Existing subsidies 2022 (USD m) | 27,875 | 26,077 |
+  | $20/t fiscal effect 2030 (USD m) | +8,568 | +7,683 |
+- **Caveats:**
+  1. The 2022-2024 jump in fuel use and CO2 remains: the corrected block has the same large real price falls. The gap to the legacy run in industry and transport therefore has other causes (to investigate in bucket 5).
+  2. Other oil products keep the legacy retail-price rule (sp + txo); the dataset rp is 14% higher for them.
+  3. 2019-2020 are stored but not used (history starts 2021).
