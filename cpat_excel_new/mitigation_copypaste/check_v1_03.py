@@ -1259,7 +1259,7 @@ def main():
         results.append(compare(ws_c, g, exp, f'C. LAMBDA copied back over the whole row, scenario {g}'))
     log('\n## 5. Scenario tests (copied MTInputs column + Mitigation group)')
     results.append(check_scenarios())
-    log('\n## 5b. ETS goal seek (ets_goalseek_v0_1.py)')
+    log('\n## 5b. ETS goal seek (ets_goalseek_v0_2.py)')
     results.append(check_goalseek())
     log('\n## 6. Regression vs v1.02 (shared output codes)')
     results.append(check_regression(ws_a))

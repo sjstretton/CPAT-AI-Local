@@ -300,7 +300,7 @@
 - price controls Manual (global), scenario 2 vs Python: carbon price, ETS rows (price, tax-equivalent, cap, estimate, baseline, semi-elasticity, baseline CO2 and OBR share by sector), revenue, CO2 and covered CO2 totals, gp, 7 price-fuel and 11 subsector variables, 29317 cells, max relative diff 5.45e-15 (at AY849) OK
 - MTOutputs with blocks 3-10 added by copying (scenario tests): 10 scenario blocks x 25 indicators, 4750 cells equal the Mitigation cell of their output code (max abs diff 0); block numbers 1..10 OK
 
-## 5b. ETS goal seek (ets_goalseek_v0_1.py)
+## 5b. ETS goal seek (ets_goalseek_v0_2.py)
   iteration 1, scenario 3: worst |covered/cap - 1| = 0.0286, alpha 1.000, price 2030 26.55, 2035 54.27
   iteration 2, scenario 3: worst |covered/cap - 1| = 0.0186, alpha 1.000, price 2030 25.61, 2035 53.42
   iteration 3, scenario 3: worst |covered/cap - 1| = 0.0172, alpha 1.000, price 2030 25.54, 2035 53.36

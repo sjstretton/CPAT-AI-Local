@@ -18,7 +18,7 @@ Local workspace for the World Bank **Climate Policy Assessment Tool (CPAT)**: th
 - Every finished task ends with a new entry appended to `CAVEATS.md` (newest at the bottom, never edit earlier entries), plus the bookkeeping in NORMS section 6.
 - Final methodology and version notes are always different documents (NORMS section 7). A methodology describes the current method only: no change history, no version log, no before/after columns. Change history goes in version notes, the workbook version log and `CAVEATS.md`.
 - Do not commit unless the user asks.
-- Excel builders run via Excel COM (`win32com`, Windows). On Linux/cloud sessions you can read and edit text/Markdown/Python but cannot rebuild or recalculate workbooks; say so rather than guessing.
+- Excel builders run via Excel COM (`win32com`, Windows). On Linux/cloud sessions you can read and edit text/Markdown/Python but cannot rebuild or recalculate those workbooks; say so rather than guessing. Exception: the mitigation MVP (`cpat_excel_new/mitigation_copypaste/`) builds with openpyxl and is checked in LibreOffice, so it can be rebuilt on Linux (see its README).
 
 ## Keeping this file useful
 Add new generic, tool-agnostic guidance to the documents above (or here, if it is routing only). Tool-specific files (`CLAUDE.md` etc.) must stay thin pointers to this file.

@@ -23,6 +23,7 @@ Read these before starting a task; keep them current when you finish one (sectio
 | `cpat_excel_original\CPAT 1.0pre_456_NoPropData.xlsb` | Legacy CPAT - the reference for columns, rows, colours and values. Read-only |
 | [`templates\MTInputs_template.xlsx`](templates/MTInputs_template.xlsx) | Master `MTInputs` template (section 4). Copy, never edit |
 | `cpat_excel_new\standalone_working_version\` | Current industry kernel (`CPAT_Industry_Kernel_Egypt_v1.6.xlsx`, the final Egypt prototype and the single workbook that confirms the final numbers) and its `build_v0_<n>.py` builders; earlier versions in `Old\` (section 5) |
+| [`cpat_excel_new\mitigation_copypaste\README.md`](cpat_excel_new/mitigation_copypaste/README.md) | CPAT-AI-Mitigation-MVP: copy-pasteable mitigation module (openpyxl builder, LibreOffice checks, VBA project written without Excel); method notes and Word documentation listed there |
 | [`cpat_excel_new\distribution\README.md`](cpat_excel_new/distribution/README.md), [`LESSONS_LEARNED.md`](cpat_excel_new/distribution/LESSONS_LEARNED.md), [`REGENERATING_THE_DISTRIBUTIONAL_WORKBOOK.md`](cpat_excel_new/distribution/REGENERATING_THE_DISTRIBUTIONAL_WORKBOOK.md) | Distribution module: spec/status and known gaps vs Excel; rules for LAMBDA/VBA workbooks; how to regenerate the distributional workbook |
 
 ## 1. Column norms

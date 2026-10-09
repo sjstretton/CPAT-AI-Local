@@ -807,3 +807,39 @@ Earlier work was logged in the task documents themselves; they remain the detail
   - The batch runs one policy scenario at a time through Mitigation group 2. Stored indicators are the MTOutputs rows.
   - The Package A result is driven by assumptions: the carbon price continues linearly after 2030 (template switch) and feebates continue linearly. CO2 is −31% vs baseline in 2030.
   - LibreOffice saves booleans as `=TRUE()` in .xlsx, which affects only the test's comparison.
+
+## 2026-10-09 - CPAT-AI-Mitigation-MVP: documentation completed, advanced-features deck, hand-over folder
+- **Task (user):**
+  - Complete the documentation.
+  - Adjust the team deck on AI and the MVP if visible; otherwise write a short 4-slide deck on the MVP's advanced features.
+  - Update the reference .md files, then commit and push everything to main.
+- **Deck:**
+  - The only deck in the repo is the generated v1.0 overview; `cpat_excel_new/working_version/` holds an identical copy. No separate team deck is visible.
+  - New 4-slide deck written: `presentation/CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.0.pptx`. Slides:
+    1. what is new in v1.01-v1.03;
+    2. the cap-based ETS and its two channels, with the Package B price path;
+    3. the scenario table and the RunAllScenarios macro;
+    4. ScenarioCompare, CO2 by scenario in 2030, quality numbers and next steps.
+  - Screenshots and chart data come from the v1.03 workbook (`make_screenshots_advanced_v1_0.py`); the deck is built by `build_deck_advanced_v1_0.js` (pptxgenjs).
+  - Validation passed; visual check in LibreOffice.
+- **Documentation:**
+  - `CPAT-AI-Mitigation-MVP_Documentation_v1.03.docx` (25 pages) now has appendices:
+    - A: differences with legacy CPAT, read from sheet LegacyDiff;
+    - B: version log, from Settings;
+    - C: verification summary, from `check_report_v1.03.md` (all sections, Overall PASS);
+    - D: presentations.
+  - Reference .md files updated:
+    - folder README: deck and appendices;
+    - root README: key documents, the mitigation line and the new `working_version/` line;
+    - NORMS key documents: MVP row;
+    - AGENTS: the MVP builds on Linux with openpyxl + LibreOffice, an exception to the Excel COM rule.
+  - `make_screenshots_v1_0.py` now finds the archived v1.00 builder in `Old/`.
+  - The check report's goal-seek heading now names `ets_goalseek_v0_2.py` (label only).
+- **Hand-over folder** `cpat_excel_new/working_version/`:
+  - added the v1.03 .xlsm, the Word documentation, the advanced-features deck and the .bas module;
+  - kept the v1.0 overview deck;
+  - moved v1.00 to `working_version/Old/`.
+- **Caveats:**
+  - The decks' screenshots are LibreOffice renders, so fonts may differ slightly from Excel.
+  - If a separate team deck on AI exists outside the repo, it was not updated. Share it to have the new slides merged in.
+  - The VBA project still needs its first run in Excel (see the v1.03 entry).

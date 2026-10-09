@@ -19,6 +19,7 @@ from PIL import Image, ImageChops
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'Old'))   # v1.00 builder and checker (archived)
 import build_v1_00 as B                      # noqa: E402
 import check_v1_00 as C                      # noqa: E402
 
