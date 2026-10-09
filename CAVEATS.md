@@ -733,3 +733,9 @@ Earlier work was logged in the task documents themselves; they remain the detail
   1. Which price vintage and last historical year to use. The corrected data imply the jump is a real consequence of the devaluation under CPAT's method.
   2. Whether to add legacy's 2023 calibration to emission estimates.
   3. Which ETS option to build.
+
+## 2026-10-09 - Check: legacy treatment of regulated prices (no model change)
+- **Question (user):** Does legacy have functionality that keeps regulated prices flat for an economy like Egypt's, based on the pass-through numbers, which would explain the difference?
+- **Answer:** No extra mechanism. Legacy uses the same rule as the MVP: chosen = bucketed pass-through, with Egypt values coal 1, gas 0, gasoline/diesel/LPG/kerosene 0, other oil products 1 (MVP 0 by user decision), biomass 1. The floating subsidy is set at its 2024 level, so with pass-through 0 the retail price stays at its 2024 value from 2025 (legacy gasoline 0.6036 $/liter flat). Price-control phase-out is off; there is no fuel subsidy override.
+- **The difference is the historical price data.** Legacy's block has no devaluation fall: gasoline 0.612 / 0.612 / 0.604 $/liter real in 2022-2024, against the corrected 0.600 / 0.411 / 0.335. Residential gas 6.24 / 5.81 / 5.54 against 4.63 / 3.21 / 2.33 $/GJ. The MVP's fuel use responds to that 2022-2024 fall; legacy's prices barely move (and legacy calibrates 2023 emissions to estimates).
+- **Details and options:** appended to `cpat_excel_new/mitigation_copypaste/legacy_comparison_v0_1.md`.

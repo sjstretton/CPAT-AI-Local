@@ -68,3 +68,29 @@ Legacy codes not found: none.
 | MVP, prices to 2024 | 45.6% | +41.3% |
 | MVP, prices to 2022 | 17.3% | +8.0% |
 
+
+## Regulated prices: how legacy handles them (check of 2026-10-09)
+
+Read from the cached legacy Mitigation sheet: forecasting coefficients (rows 745-760), historical prices (rows 763-799), and the gasoline price block (rows 2589-2604).
+
+1. **Same pass-through rule and values.**
+   - Chosen = bucketed (default). Egypt: coal 1; gas (power, residential, industry) 0; gasoline, diesel, LPG, kerosene 0; other oil products 1 (the MVP uses 0 since v0.10, user decision); biomass 1.
+   - The floating subsidy is set at its **2024 level** (legacy labels "2024 level"), so legacy's last historical year is also 2024.
+   - With pass-through 0, the retail price stays at its 2024 value and the floating subsidy absorbs supply-cost changes. Legacy gasoline: rp 0.6036 $/liter from 2024 to 2040, cs -0.154 -> -0.048 ... as sp moves. This is the MVP's `txo` rule.
+2. **No other flattening mechanism for Egypt.** Price-control phase-out (MTInputs 191-195) is off; the "override subsidy" column is empty for fuels; domestic production cost enters the fixed supply cost of gas (flag "produced domestically" = 1), as in the MVP.
+3. **The difference is the historical price data (2021-2024).** Legacy's real 2026 USD values:
+
+   | Price | Source | 2021 | 2022 | 2023 | 2024 |
+   |---|---|---|---|---|---|
+   | Gasoline retail ($/liter) | legacy data | 0.671 | 0.612 | 0.612 | 0.604 |
+   | Gasoline retail ($/liter) | corrected block (MVP) | 0.69 | 0.600 | 0.411 | 0.335 |
+   | Residential gas retail ($/GJ) | legacy data | 6.46 | 6.24 | 5.81 | 5.54 |
+   | Residential gas retail ($/GJ) | corrected block (MVP) | 5.83 | 4.63 | 3.21 | 2.33 |
+
+   Legacy's price block has no devaluation fall: its 2024 gasoline price is about 0.57 $/liter nominal, against 0.316 in the corrected block. The fall in the corrected block matches the EGP devaluation of 2023-2024.
+4. **Consequence.** From 2025 both models hold prices flat, so neither keeps reacting to prices. The MVP's extra fuel use comes from responding to the 2022-2024 price fall, which legacy's data do not have. Legacy also calibrates 2023 emissions to estimates (the dip of about -20%).
+5. **Options:**
+   - (a) Keep the corrected data and accept the 2023-2024 response.
+   - (b) Rebase fuel use to observed 2023/2024 energy data when available, and let the price response start from 2024.
+   - (c) Add legacy's 2023 emissions calibration.
+   - (d) Hold prices at 2022 (Settings C10 = 2022). This is closest to legacy but ignores the observed devaluation.
