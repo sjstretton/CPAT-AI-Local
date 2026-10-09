@@ -480,3 +480,53 @@ Earlier work was logged in the task documents themselves; they remain the detail
   1. The VAT rule is an assumption. It reproduces Egypt's data but is not a statement of Egyptian tax law: petroleum products may be under a schedule tax rather than standard VAT. The fiscal split between VAT and excise does not affect fuel use, but it will matter for revenue.
   2. The VAT assumption applies to any country with blank dataset rates. Check it per country.
   3. The legacy `txo` jump at pass-through 0.5 or 0.8 is still copied.
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.11: ETS, shadow prices, existing taxes and subsidies, 2040, LAMBDA right column)
+- **Task (user decisions):**
+  1. Food & forestry takes the buildings elasticities. Services is used, because legacy groups food & forestry with services as Commercial.
+  2. Differences with legacy go in a new tab.
+  3. Existing taxes and subsidies, (a) ready for revenue and (b) as an input for a later per-fuel policy.
+  4. ETS and feebates with sectoral shadow prices; the ETS is as effective as a carbon tax.
+  5. Complete the prices section and prepare revenues.
+  6. Separate column blocks for history and projection. The LAMBDA (which may hold the IF) goes in the right column of every calculated row.
+  7. Extend to 2040 with LAMBDAs for the baseline and the policy scenario.
+- **Changes:**
+  - Horizon 2022-2040.
+  - Section 1:
+    - New ETS inputs: MTInputs rows 84-92 and coverage rows 99-115.
+    - Effective ETS coverage `etsc`.
+    - ETS permit price `ets.p` = the carbon price path once the ETS applies.
+    - Auctioned share `ets.a`: linear, constant after the target year.
+    - Regulation shadow prices `reg`: placeholder 0.
+    - `shps` = feebates + regulations.
+  - Subsectors:
+    - New variable `ets` = permit price x EF x effective coverage.
+    - `ctxnew` x (1 - ETS coverage), so there is no double pricing.
+    - `nce` = ctxnew + ets + ntx.
+  - Section 2 adds, per price fuel:
+    - `vat`: VAT payment before new policies;
+    - `etx` = max(txo, 0): existing tax;
+    - `esub` = max(-txo, 0): existing consumer subsidy;
+    - `esubpu`: the subsidy per MTInputs price unit.
+  - Section 12 Revenues: band with the revenue recipe and the rows it uses.
+  - Sheet `LegacyDiff` (second tab, 21 rows).
+  - 19 named LAMBDAs; every calculated row calls one in 2040. `SUPPLYCOST` and `OTHERTAX` hold the history/projection IF. Plain blocks: history 2022-2024 and projection 2025-2039, with no switch.
+  - Method note v0.4.
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.11.xlsx`, `build_v0_11.py`, `check_v0_11.py`, `check_report_v0.11.md`, `PriceProjection_Method_v0.4.md`, README. v0.10 files and method note v0.3 moved to `Old/`.
+- **Checks:** PASS.
+  - One R1C1 formula per variable and column block.
+  - The right column has a LAMBDA on exactly the calculated rows (data lookups and sums stay plain).
+  - Python recomputation matches for three variants (LAMBDA expanded; 2039 dragged; LAMBDA copied back over whole rows) and for test scenarios 5-9 and price controls None/Manual.
+  - ETS test (scenario 9: power and industry in the ETS, same price): nce, atp and fuel use equal the carbon-tax scenario exactly, and the cement carbon tax is 0.
+  - Regression vs v0.10, 2022-2035: 1,902 codes diff 0. Only food & forestry fuel use and its aggregates change (food & forestry 2027: 1,740 to 1,441 ktoe).
+- **Results (Egypt):**
+  - Baseline 73.8 Mtoe (2027), 92.1 (2035), 104.4 (2040).
+  - $20/t: -14.9% throughout.
+  - Existing consumer subsidies, 2024 ($/GJ real): gas power 6.2, residential 12.4, industry 4.6; gasoline 13.4 (0.47 $/liter); diesel 15.0 (0.56 $/liter); LPG 18.2; kerosene 12.6; other oil products 11.2 (68 $/bbl).
+- **Caveats:**
+  1. ETS price is not cap-based: the cap needs emissions (next buckets). Users set the expected permit price through the carbon price inputs.
+  2. The full permit price enters the price whatever the auction share: free allocation keeps the marginal incentive.
+  3. The existing tax/subsidy split is by sign of txo. Legacy splits into fixed tax, fixed subsidy and floating part, with the same totals.
+  4. Changing the last historical year (Settings C10) now also needs the history/projection blocks re-dragged; the LAMBDA column adapts by itself.
+  5. 2031-2040 compute but are not a legacy target.
+  6. Feebates are revenue-neutral; revenue is not yet calculated.
