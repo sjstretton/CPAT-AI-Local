@@ -94,3 +94,22 @@ Read from the cached legacy Mitigation sheet: forecasting coefficients (rows 745
    - (b) Rebase fuel use to observed 2023/2024 energy data when available, and let the price response start from 2024.
    - (c) Add legacy's 2023 emissions calibration.
    - (d) Hold prices at 2022 (Settings C10 = 2022). This is closest to legacy but ignores the observed devaluation.
+
+## Reality check: Egypt pump prices 2022-2024 (2026-10-09)
+
+92-octane gasoline, official prices (EGP/liter), time-weighted annual averages from the fuel pricing committee decisions:
+- 2022: 8.50 (Jan), 8.75 (Apr), 9.25 (Jul; held in Oct) -> about 8.94.
+- 2023: 9.25, then 10.25 (2 Mar), then 11.50 (3 Nov) -> about 10.29.
+- 2024: 11.50, then 12.50 (22 Mar), 13.75 (Jul), 15.25 (18 Oct) -> about 13.1.
+
+Average EGP per USD: 19.2 (2022), 30.7 (2023), 45.4 (2024) (secondary compilers, e.g. FocusEconomics and Penn World Table via FRED; the official IMF/World Bank series is still to be pulled).
+
+| $/liter | 2022 | 2023 | 2024 | 2024 vs 2022 |
+|---|---|---|---|---|
+| 92-octane, nominal (computed) | 0.465 | 0.336 | 0.289 | -38% |
+| Corrected block, nominal (all grades) | 0.528 | 0.376 | 0.316 | -40% |
+| Legacy block, nominal (0.612/0.612/0.604 real / CPI index) | 0.538 | 0.560 | 0.570 | +6% |
+
+The corrected block follows reality: the EGP price rose about 47%, but the pound lost about 58% against the dollar. Legacy's block does not have the fall; its USD prices even rise. The corrected block's level is a little higher than 92-octane alone, consistent with an average over grades (95-octane is about 10% dearer).
+
+Sources: egyptianstreets.com (2022-07-13, 2024-10-18), cairo.gov.eg (2022, 2024), businesstodayegypt.com, enterpriseam.com (2022-10-23), focus-economics.com, fred.stlouisfed.org (XRNCUSEGA618NRUG).

@@ -739,3 +739,12 @@ Earlier work was logged in the task documents themselves; they remain the detail
 - **Answer:** No extra mechanism. Legacy uses the same rule as the MVP: chosen = bucketed pass-through, with Egypt values coal 1, gas 0, gasoline/diesel/LPG/kerosene 0, other oil products 1 (MVP 0 by user decision), biomass 1. The floating subsidy is set at its 2024 level, so with pass-through 0 the retail price stays at its 2024 value from 2025 (legacy gasoline 0.6036 $/liter flat). Price-control phase-out is off; there is no fuel subsidy override.
 - **The difference is the historical price data.** Legacy's block has no devaluation fall: gasoline 0.612 / 0.612 / 0.604 $/liter real in 2022-2024, against the corrected 0.600 / 0.411 / 0.335. Residential gas 6.24 / 5.81 / 5.54 against 4.63 / 3.21 / 2.33 $/GJ. The MVP's fuel use responds to that 2022-2024 fall; legacy's prices barely move (and legacy calibrates 2023 emissions to estimates).
 - **Details and options:** appended to `cpat_excel_new/mitigation_copypaste/legacy_comparison_v0_1.md`.
+
+## 2026-10-09 - Reality check: Egypt gasoline prices 2022-2024 (no model change)
+- **Question (user):** Did Egypt's gasoline prices really fall like that?
+- **Answer:** Yes, in US dollars.
+  - The official 92-octane price rose from about EGP 8.9/liter (2022 average) to 10.3 (2023) and 13.1 (2024).
+  - The pound averaged about 19.2, 30.7 and 45.4 per USD over the same years.
+  - So the USD price fell from about 0.47 to 0.34 and 0.29 $/liter nominal (-38%). The corrected block falls 0.528 -> 0.376 -> 0.316 (-40%, average over grades).
+  - Legacy's block rises (0.54 -> 0.57). The corrected data are right; legacy's price vintage is stale.
+- **Details and sources:** `cpat_excel_new/mitigation_copypaste/legacy_comparison_v0_1.md`. Exchange rates are from secondary compilers; the official IMF/World Bank series is still to be pulled.
