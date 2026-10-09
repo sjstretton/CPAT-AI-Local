@@ -674,3 +674,26 @@ Earlier work was logged in the task documents themselves; they remain the detail
 - **Outputs:** `CPAT_Mitigation_CopyPaste_v0.16.xlsx`, `build_v0_16.py`, `check_v0_16.py`, `check_report_v0.16.md`, README. v0.15 files moved to `Old/`.
 - **Checks:** PASS, including the scenario-copy tests with the spacer column (groups 3-9). Regression vs v0.15: 3,484 codes diff 0. New layout checks: one outline level; the 20 grouped year columns; spacer columns empty; light-beige LAMBDA and history blocks (base year darker, projection white).
 - **Caveat:** Not yet opened in Excel.
+
+## 2026-10-09 - CPAT-AI-Mitigation-MVP v1.00 (rename) and overview deck
+- **Task (user):**
+  - A very short PowerPoint (about 7 slides, pitch and user guide combined) explaining in simple terms the purpose, scope and definition of the Excel. Styled like the Excise Diagnostic user guide and the Excise-Fiscal proposal; screenshots from the workbook where possible.
+  - Rename the prototype CPAT-AI-Mitigation-MVP-vX.XX and upgrade to v1.0.
+- **Changes:**
+  - Workbook renamed `CPAT-AI-Mitigation-MVP-v1.00.xlsx`. `build_v1_00.py` (NAME, VERSION 1.00; sheet titles and version log), `check_v1_00.py`, `check_report_v1.00.md`. Content as v0.16.
+  - The uploaded v0.16 was byte-identical to ours (no user edits to merge).
+  - The folder name `mitigation_copypaste/` and the v0.x file names in `Old/` are kept.
+- **Deck:** `presentation/CPAT-AI-Mitigation-MVP_Overview_v1.0.pptx`, 7 slides:
+  1. Title, with the rolled-up overview.
+  2. Purpose and scope: AI-generated Excel; main mitigation equations; more readable. Definition, in scope, not yet, and the section chain.
+  3. Four problems and four fixes: readability; fixed rows -> scenarios left to right; sector/fuel-specific quantities -> left parameter section; scenarios -> copy a block plus an MTInputs lookup.
+  4. Scenarios side by side, with three steps to add one and the MTInputs screenshot.
+  5. The left section (B:C, D:G).
+  6. Two formula styles: direct formulas vs LAMBDA with IF, both draggable.
+  7. Next steps: store data, charts and scenario settings in CPAT; collect outputs for many scenarios in an updated MTOutputs (outputs, not inputs, for now); power, other gases, legacy check. Also a "getting started" box.
+- **Built by:** `presentation/build_deck_v1_0.js` (pptxgenjs; theme navy 1E2761 / teal 0F7B6C / amber E08A1E / gold D4A24C, Cambria headings, Calibri body, 13.33 x 7.5 in as the Excise decks). Screenshots are rendered from the real workbook by `presentation/make_screenshots_v1_0.py`: LibreOffice recalculation with LAMBDAs expanded, values copy of one sheet, selected cells showing formula text, PDF -> PNG.
+- **Checks:** workbook PASS; regression vs v0.16: 3,484 codes diff 0. Deck passes `validate.py`; every slide rendered and inspected (no overflow or overlap).
+- **Caveats:**
+  1. Screenshots come from LibreOffice, not Excel (fonts and gridlines differ slightly).
+  2. The formula screenshot shows the road-gasoline rows only.
+  3. pptxgenjs is not a repo dependency: install it (`npm install pptxgenjs`) to rebuild the deck.

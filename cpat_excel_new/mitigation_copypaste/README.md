@@ -1,8 +1,8 @@
-# Mitigation module - copy-pasteable prototype
+# CPAT-AI-Mitigation-MVP (mitigation module, copy-pasteable)
 
 Replacement for the CPAT mitigation module whose formulas are **fully copy-pasteable**: one formula per block, valid across (years) and down (subsectors x fuels), and a whole scenario group can be copied to a new scenario. Goal: auditable equations that a model builder can extend by dragging.
 
-Current version: `CPAT_Mitigation_CopyPaste_v0.16.xlsx` (policies incl. new ETS and feebates with sectoral shadow prices, domestic prices with existing taxes and subsidies, price -> fuel use, revenues, CO2 emissions, 2022-2040). Earlier versions in `Old/`. Price method and the explicit real/nominal assumptions: `PriceProjection_Method_v0.4.md`. Differences with legacy CPAT: workbook sheet `LegacyDiff`. Data changed by assumption (other oil products, VAT rate) is bright yellow with red text in `Inputs_prices`.
+Current version: `CPAT-AI-Mitigation-MVP-v1.00.xlsx` (renamed from CPAT_Mitigation_CopyPaste at v1.00; policies incl. new ETS and feebates with sectoral shadow prices, domestic prices with existing taxes and subsidies, price -> fuel use, revenues, CO2 emissions, 2022-2040). Earlier versions in `Old/`. Price method and the explicit real/nominal assumptions: `PriceProjection_Method_v0.4.md`. Differences with legacy CPAT: workbook sheet `LegacyDiff`. Data changed by assumption (other oil products, VAT rate) is bright yellow with red text in `Inputs_prices`.
 
 ## Design (agreed)
 
@@ -35,17 +35,18 @@ Layout follows the legacy CPAT Mitigation sheet: numbered sections **1. Policies
 
 | File | Role |
 |---|---|
-| `CPAT_Mitigation_CopyPaste_v0.16.xlsx` | Workbook (formulas only; recalculates on open) |
-| `build_v0_16.py` | Builder (reads `templates/MTInputs_template.xlsx`) (openpyxl; no Excel COM needed) |
+| `CPAT-AI-Mitigation-MVP-v1.00.xlsx` | Workbook (formulas only; recalculates on open) |
+| `build_v1_00.py` | Builder (reads `templates/MTInputs_template.xlsx`) (openpyxl; no Excel COM needed) |
 | `extract_data_v0_2.py` | Writes `data/*.csv` from the legacy workbook, the price-module data and kernel v1.6 (needs `pyxlsb`); v0.2 adds international prices by source, US CPI and GDP deflator, regional price assumptions |
 | `update_prices_egypt_v0_1.py` | Applies the corrected Egypt price block (`data/source/Egypt_Price_Data_2026-10-09.xlsx`, user) to `data/prices_dom.csv` (Egypt rows only; 2019-2020 added) and lists every changed cell in `data/prices_dom_changes.csv` (marked bright yellow in the workbook) |
+| `presentation/CPAT-AI-Mitigation-MVP_Overview_v1.0.pptx` | 7-slide pitch + user guide (purpose, scope, problems and fixes, scenarios, left section, two formula styles, next steps); built by `presentation/build_deck_v1_0.js` (pptxgenjs) from screenshots that `presentation/make_screenshots_v1_0.py` renders from the workbook (`presentation/img/`) |
 | `PriceProjection_Method_v0.4.md` | Price projection method as implemented, with the holistic real/nominal assumptions (A1-A11) and existing taxes and subsidies |
-| `check_v0_16.py` | LibreOffice checks: errors only in the LAMBDA column, one R1C1 formula per block and per label/code column, LAMBDA encoding, LAMBDA expansion and drag-forward vs an independent Python recomputation, scenario-copy test with auto-numbering, expected CPAT codes, row outline, band format and summary lines, MTInputs = template, carbon price vs legacy trajectory, fuel price reform and feebate test scenarios (feebates lower fuel use only where covered), price chain (gp, sp, txo, rpb) vs an independent Python recomputation from the CSVs incl. price source IMF-WB*/High, nominal carbon price and price controls None/Manual, revenues and CO2 (per subsector and fuel, section 12 and 13 totals) vs Python, regression vs v0.15 on all shared codes, column/row grouping, spacer column, light-beige blocks, rolled-up start, first tab and zoom, changed Egypt price cells marked, bright marking of changed data, column blocks (history / projection / LAMBDA), LAMBDA in the right column of every calculated row, LAMBDA copied back over whole rows, ETS = carbon tax test, LegacyDiff sheet |
-| `check_report_v0.16.md` | Output of the last check run |
+| `check_v1_00.py` | LibreOffice checks: errors only in the LAMBDA column, one R1C1 formula per block and per label/code column, LAMBDA encoding, LAMBDA expansion and drag-forward vs an independent Python recomputation, scenario-copy test with auto-numbering, expected CPAT codes, row outline, band format and summary lines, MTInputs = template, carbon price vs legacy trajectory, fuel price reform and feebate test scenarios (feebates lower fuel use only where covered), price chain (gp, sp, txo, rpb) vs an independent Python recomputation from the CSVs incl. price source IMF-WB*/High, nominal carbon price and price controls None/Manual, revenues and CO2 (per subsector and fuel, section 12 and 13 totals) vs Python, regression vs v0.16 on all shared codes, column/row grouping, spacer column, light-beige blocks, rolled-up start, first tab and zoom, changed Egypt price cells marked, bright marking of changed data, column blocks (history / projection / LAMBDA), LAMBDA in the right column of every calculated row, LAMBDA copied back over whole rows, ETS = carbon tax test, LegacyDiff sheet |
+| `check_report_v1.00.md` | Output of the last check run |
 | `data/` | Extracted source data (non-proprietary) |
-| `Old/` | v0.1-v0.15 workbooks, builders, check scripts and reports; method notes v0.1-v0.3; extract_data_v0_1 |
+| `Old/` | v0.1-v0.16 workbooks (CPAT_Mitigation_CopyPaste_v0.x), builders, check scripts and reports; method notes v0.1-v0.3; extract_data_v0_1 |
 
-Rebuild: `python extract_data_v0_2.py` (only if sources change), `python update_prices_egypt_v0_1.py` (only if the Egypt block changes), `python build_v0_16.py`, `python check_v0_16.py`.
+Rebuild: `python extract_data_v0_2.py` (only if sources change), `python update_prices_egypt_v0_1.py` (only if the Egypt block changes), `python build_v1_00.py`, `python check_v1_00.py`.
 
 ## Add a scenario
 
@@ -56,6 +57,6 @@ Copy the last scenario column on `MTInputs` one column to the right and edit its
 1. Goal and spec (done, 2026-10-08).
 2. Skeleton with working equations, Egypt data: v0.1, revised to v0.2-v0.5 after review - **awaiting review in Excel**.
 3. Copy-paste stress test: add a fuel, a subsector and a scenario by dragging; fix what breaks.
-4. Policies (bucket 6): 6a MTInputs and the carbon price (v0.6, done); 6b policy wedges and legacy section layout (v0.7, done); shadow price on the efficiency margin (v0.8, done); domestic price projection in real terms (v0.9, done); other oil products and VAT assumption (v0.10, done); ETS, sectoral shadow prices, existing taxes and subsidies, 2040 horizon (v0.11, done). Revenues (v0.12, done); CO2 from fuel combustion (v0.13, done); corrected Egypt price block (v0.14, done); layout: rolled up, Mitigation first at 75% (v0.15); one-level column groups incl. 2030-2039, spacer column between scenarios, light beige for LAMBDA and history blocks (v0.16). Next: cap-based ETS price, other GHGs and local pollutants, power sector. Next: ETS, regulations as shadow prices, subsidy phase-out.
+4. Policies (bucket 6): 6a MTInputs and the carbon price (v0.6, done); 6b policy wedges and legacy section layout (v0.7, done); shadow price on the efficiency margin (v0.8, done); domestic price projection in real terms (v0.9, done); other oil products and VAT assumption (v0.10, done); ETS, sectoral shadow prices, existing taxes and subsidies, 2040 horizon (v0.11, done). Revenues (v0.12, done); CO2 from fuel combustion (v0.13, done); corrected Egypt price block (v0.14, done); layout: rolled up, Mitigation first at 75% (v0.15); one-level column groups incl. 2030-2039, spacer column between scenarios, light beige for LAMBDA and history blocks (v0.16); renamed CPAT-AI-Mitigation-MVP, v1.00, with a 7-slide overview deck (presentation/). Next: cap-based ETS price, other GHGs and local pollutants, power sector. Next: ETS, regulations as shadow prices, subsidy phase-out.
 5. Numerical check against legacy CPAT for Egypt.
 6. Later: emissions, power, revenue/macro links, Python port.
