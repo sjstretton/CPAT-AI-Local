@@ -697,3 +697,24 @@ Earlier work was logged in the task documents themselves; they remain the detail
   1. Screenshots come from LibreOffice, not Excel (fonts and gridlines differ slightly).
   2. The formula screenshot shows the road-gasoline rows only.
   3. pptxgenjs is not a repo dependency: install it (`npm install pptxgenjs`) to rebuild the deck.
+
+## 2026-10-09 - CPAT-AI-Mitigation-MVP v1.01: MTOutputs and Charts
+- **Task:** User offline, "press on". First item of the agreed next steps: store results per scenario (slide 7 of the overview deck).
+- **Changes:**
+  - New sheet `MTOutputs` (second tab): 23 key indicators per scenario block, read from Mitigation by output code.
+    - Indicators: fuel use total and by sector, CO2 total and by sector with change vs scenario 1, the revenue components and fiscal effect, carbon and ETS price, retail prices of gasoline, diesel and residential gas, and road-gasoline after-tax price.
+    - Lookup: the scenario's code column is the first cell of Mitigation row 5 holding the scenario number; the year columns are read by offset.
+    - Adding a scenario: copy the last block below (its number = previous + 1). Adding an indicator: a code stem in column B plus the row formulas.
+  - New sheet `Charts`: 4 line charts (CO2, fuel use, fiscal effect, carbon price), one series per scenario block.
+  - ReadMe, README and version log updated.
+- **Outputs:** `CPAT-AI-Mitigation-MVP-v1.01.xlsx`, `build_v1_01.py`, `check_v1_01.py`, `check_report_v1.01.md`. v1.00 files moved to `Old/`.
+- **Checks:** PASS.
+  - MTOutputs as shipped: 874 cells equal the Mitigation cell of their code.
+  - With blocks 3-9 added by copying alongside the scenario-copy tests: 3,933 cells equal, block numbers 1-9.
+  - Charts reference the right rows.
+  - Regression vs v1.00: 3,484 Mitigation codes diff 0.
+- **Caveats:**
+  1. Charts need a new series added by hand after adding a scenario block.
+  2. MTOutputs search area on Mitigation is A1:ZZ5000 (room for about 30 scenario groups).
+  3. The overview deck still shows v1.00 screenshots (no MTOutputs slide).
+  4. Not yet opened in Excel.
