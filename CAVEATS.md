@@ -729,6 +729,7 @@ Earlier work was logged in the task documents themselves; they remain the detail
   4. Legacy has a 2023 dip of about -20% in every sector, which matches its note "sets baseline 2022 and 2023 emissions to equal estimates" (legacy Mitigation row 475). The MVP has no such calibration.
   5. Remaining price differences: legacy residential gas 5.5-6.2 vs 2.3-4.6 $/GJ; coal; legacy other oil products 15 $/bbl from 2025.
 - **ETS cap:** `ETS_Cap_Design_Options_v0_1.md`. The legacy method is semi-elasticity based with iteration. In the MVP it would create a circular reference through scenario 1. Four options; recommended A: baseline covered emissions as a refreshed data row, with the current rule kept as override.
+- **ETS algorithm (legacy):** `ETS_Legacy_Algorithm_v0_1.md`. Legacy has a fast closed-form price estimate (reduction left / (covered semi-elasticity × effectiveness), effectiveness auctioned 1.0, OBA 0.5) plus a VBA damped log-space goal seek on an override row. The auctioned part acts as a price wedge; the OBA part acts as a shadow price on efficiency only. The cached legacy run is not converged (max error 0.33). The MVP still treats the ETS as fully effective. The proposed benchmark design (OBR share from benchmarks, same split afterwards) is not built yet.
 - **Decisions for the user:**
   1. Which price vintage and last historical year to use. The corrected data imply the jump is a real consequence of the devaluation under CPAT's method.
   2. Whether to add legacy's 2023 calibration to emission estimates.
