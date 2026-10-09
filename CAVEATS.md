@@ -749,3 +749,31 @@ Earlier work was logged in the task documents themselves; they remain the detail
   - So the USD price fell from about 0.47 to 0.34 and 0.29 $/liter nominal (-38%). The corrected block falls 0.528 -> 0.376 -> 0.316 (-40%, average over grades).
   - Legacy's block rises (0.54 -> 0.57). The corrected data are right; legacy's price vintage is stale.
 - **Details and sources:** `cpat_excel_new/mitigation_copypaste/legacy_comparison_v0_1.md`. Exchange rates are from secondary compilers; the official IMF/World Bank series is still to be pulled.
+
+## 2026-10-09 - CPAT-AI-Mitigation-MVP v1.02: new ETS with cap, benchmarks, volatility, goal seek
+- **Task (user):** "The ETS is split into a shadow price and a carbon tax near equivalent piece. We can update old model with a volatility dependent effectiveness. Anyway, implement ETS then as you wish."
+- **Built** (`cpat_excel_new/mitigation_copypaste/build_v1_02.py`, method `ETS_Method_v0_1.md`):
+  - **Cap.** Baseline covered emissions use option A of `ETS_Cap_Design_Options_v0_1.md`. The data rows `bco2` hold scenario 1's CO2 by ETS sector; the build fills them from a LibreOffice recalculation, and check row `bco2.chk` = 0. The cap follows MTInputs 85-87. There is no circular reference.
+  - **Price.**
+    - Fast estimate: LN(cap/baseline) / (effective semi-elasticity × volatility adjustment). This is the log form; legacy's is linear.
+    - Or the override row `ets.ovr` (MTInputs `D_ETSPriceOverride` = Yes; a blank cell takes the carbon price path, the v1.01 behaviour).
+    - `ets_goalseek_v0_1.py` replaces the legacy VBA. It uses the same damped log-space step on the workbook's `ets.next` proposal and writes a CSV for pasting into `ets.ovr`.
+  - **Benchmarks** by sector group (pow, tra, res, ind; typed rows, assumption 1.0 → 0.8) replace the auction share. OBR share = benchmark.
+    - The permit price splits into a tax-equivalent wedge in `atp`, × (1 − OBR).
+    - The OBR part, × OBR, is a shadow price on the efficiency margin, like feebates.
+    - Revenue is the permit price on the auctioned part.
+  - **Volatility adjustment** = (1 + policy risk × impact) / (1 + volatility × impact), from MTInputs 95-97 and a Settings table (legacy ETS+LTS). It equals legacy's 1/1.1 at Medium and scales the tax-equivalent price and the fast estimate.
+  - Section 13 adds CO2 by ETS sector, covered emissions, cap, gap and next price. MTOutputs adds covered CO2 and the cap. LegacyDiff is updated.
+- **Checks** (`check_report_v1.02.md`, PASS):
+  - Scenarios 1-2 are unchanged against v1.01 (3,476 codes, diff 0).
+  - The cap-based ETS test matches Python to 1e-14.
+  - ETS with a blank override, volatility Zero, policy risk 0 and benchmarks 0 equals the carbon tax exactly.
+  - Goal seek: the fast estimate misses the cap by at most 2.9%. After 12 iterations the gap is 0.46%. Prices go 2030 26.6 → 24.6 and 2035 54.3 → 52.5 $/tCO2 (cap −2% → −15% on iron & steel and cement).
+- **Caveats:**
+  - Power is not modelled, so covered power emissions are 0.
+  - Benchmarks are relative to current intensity, with output proxied by fuel use (OBR share = benchmark).
+  - Semi-elasticities are legacy's Egypt sector values (fast estimate only).
+  - VAT on new policies applies to the tax-equivalent ETS cost.
+  - The `bco2` data must be refreshed (rebuild, or paste scenario 1's `co2.sec`) when the baseline changes; `bco2.chk` shows it.
+  - Goal-seek convergence is slow (about 12% error reduction per iteration), as with legacy's damping.
+  - MTInputs rows 90-92 (auction proportion) are no longer read.

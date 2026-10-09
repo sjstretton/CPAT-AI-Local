@@ -17,8 +17,8 @@ import os
 import openpyxl
 from openpyxl.utils import get_column_letter as L
 
-import build_v1_01 as B
-import check_v1_01 as C
+import build_v1_02 as B
+import check_v1_02 as C
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEGACY = os.path.join(HERE, '..', '..', 'cpat_excel_original', 'CPAT 1.0pre_456_NoPropData.xlsb')
