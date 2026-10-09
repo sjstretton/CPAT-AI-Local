@@ -588,3 +588,26 @@ Earlier work was logged in the task documents themselves; they remain the detail
   3. No power sector (gas and oil to power are a large share of Egypt's CO2).
   4. No process emissions, CH4, N2O or local pollutants yet.
   5. The ETS price is still not cap-based. Emissions now exist, so a cap can be added next.
+
+## 2026-10-09 - Check: does legacy CPAT show the 2022-2024 jump? (no model change)
+- **Source:** a real legacy CPAT run for Egypt, `egypt/supporting/AdHocRebuild/cpat_outputs_egypt_2022_2041.csv` (EG1 baseline, CPAT Outputs sheet, proprietary data), compared with v0.13 scenario 1 (MtCO2, energy-related).
+- **Findings:**
+
+  | Sector | Run | 2022 | 2023 | 2024 | 2027 | 2030 |
+  |---|---|---|---|---|---|---|
+  | Residential | legacy | 15.8 | 17.4 | 22.3 | 23.3 | 24.7 |
+  | Residential | v0.13 | 13.9 | 19.0 | 22.3 | 23.3 | 24.6 |
+  | Industry | legacy | 59.6 | 58.9 | 69.8 | 80.2 | 89.0 |
+  | Industry | v0.13 | 64.3 | 80.3 | 87.2 | 95.4 | 106.2 |
+  | Transport | legacy | 53.0 | 57.3 | 48.1 | 72.8 | 116.4 |
+  | Transport | v0.13 | 53.4 | 67.4 | 74.8 | 79.8 | 86.3 |
+
+  - Residential: legacy shows the same jump (+41% by 2024), and the trajectories coincide from 2024.
+  - Industry: legacy +17% by 2024; v0.13 +36%.
+  - Transport: legacy falls in 2024 and then rises steeply; v0.13 rises early and more slowly.
+  - Total energy CO2 incl. power: legacy +10% (210.9 to 232.3).
+- **Caveats:**
+  1. The legacy run used different price data (proprietary vintage; its 2023-2024 prices are not in the NoPropData file).
+  2. Sector groupings may differ: legacy industry may exclude fuel transformation; v0.13 industry includes it.
+  3. Legacy transport may include dynamics not modelled here.
+  4. To confirm in bucket 5 with the legacy price inputs.
