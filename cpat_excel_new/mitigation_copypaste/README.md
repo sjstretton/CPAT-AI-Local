@@ -10,11 +10,11 @@ Layout follows the legacy CPAT Mitigation sheet: numbered sections **1. Policies
 
 | Dimension | Axis | Nest |
 |---|---|---|
-| Scenario | columns | outer: one group per scenario (output-code column, base year 2022 - column L for scenario 1 as in legacy - and 2023-2035) |
+| Scenario | columns | outer: one group per scenario (output-code column, base year 2022 - column L for scenario 1 as in legacy - and 2023-2040, then a blank spacer column) |
 | Year | columns | inner |
 | Sector section | rows | outer (sections 5-8), each with a total fuel-use line |
 | Subsector | rows | heading line (its total fuel use), the 16 CPAT energy-use subsectors |
-| Variable | rows | `ctxnew` new carbon tax, `ets` new ETS permit cost, `ntx` new excise (fuel price reform), `nce` total new policy, `atp` after-tax price, `shp` shadow price on the efficiency margin, `ener` fuel use |
+| Variable | rows | `ctxnew` new carbon tax, `ets` new ETS (tax-equivalent, auctioned part), `ntx` new excise (fuel price reform), `nce` total new policy, `atp` after-tax price, `shp` shadow price on the efficiency margin, `ener` fuel use |
 | Fuel | rows | inner: coa nga gso die lpg ker oop bio |
 
 - **Section 1 (policies)** reads the scenario inputs from `MTInputs` (one *Used for calculation* column per scenario from column J; rows A:H = legacy template) by MTInputs row (hidden column D) and scenario number (row 5): carbon tax (`CPIntro`..`CPOutro`, `ExtendCarbonPriceBeyondOutro`), carbon-tax coverage by fuel and sector (`MCov*`), fuel price reform (rows 140-169), feebates (rows 53-64, coverage 66-82). It computes the carbon price (legacy rule), the fuel price reform paths (14 price fuels) and the feebate rate paths (power, transport, residential, industry). One default for all paths: 0 before the start year, linear to the target, continuing linearly afterwards (the carbon price keeps its MTInputs switch). Shadow prices: by sector ($/tCO2, legacy rows 2345-2349) = feebate path (later + non-auctioned ETS, regulations); share impacting efficiency by subsector (`ssc`, legacy rows 2403-2419) = feebate coverage x adjustment (1.0 for feebates).
@@ -39,6 +39,7 @@ Layout follows the legacy CPAT Mitigation sheet: numbered sections **1. Policies
 | `CPAT-AI-Mitigation-MVP-v1.02.xlsx` | Workbook (formulas only; recalculates on open) |
 | `build_v1_02.py` | Builder (reads `templates/MTInputs_template.xlsx`) (openpyxl; no Excel COM needed); fills the baseline CO2 data rows from a LibreOffice recalculation of scenario 1 |
 | `ets_goalseek_v0_1.py` | ETS goal seek (replaces legacy VBA OverrideETSFast): iterates the override row until covered emissions meet the cap; writes `ets_override_s<scenario>.csv` |
+| `CPAT-AI-Mitigation-MVP_Documentation_v1.02.docx`, `make_docs_v1_02.py` | Word documentation (overview, price method, ETS method), assembled from the Markdown notes with pandoc |
 | `ETS_Method_v0_1.md` | New ETS method as implemented (cap, fast estimate, benchmarks, split, volatility, goal seek) |
 | `extract_data_v0_2.py` | Writes `data/*.csv` from the legacy workbook, the price-module data and kernel v1.6 (needs `pyxlsb`); v0.2 adds international prices by source, US CPI and GDP deflator, regional price assumptions |
 | `update_prices_egypt_v0_1.py` | Applies the corrected Egypt price block (`data/source/Egypt_Price_Data_2026-10-09.xlsx`, user) to `data/prices_dom.csv` (Egypt rows only; 2019-2020 added) and lists every changed cell in `data/prices_dom_changes.csv` (marked bright yellow in the workbook) |
