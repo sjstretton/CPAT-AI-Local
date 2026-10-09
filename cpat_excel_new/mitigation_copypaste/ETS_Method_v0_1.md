@@ -52,7 +52,7 @@ The fast estimate uses one semi-elasticity, so the full model does not hit the c
 To meet the cap, either:
 
 - paste `ets.next` into `ets.ovr` (with the override switch on) and repeat; or
-- run `python ets_goalseek_v0_1.py WORKBOOK.xlsx <scenario>`. It iterates with legacy's damped log-space step (mixing, smoothing, adaptive step) until the worst yearly gap is below 0.5%, and writes the prices to `ets_override_s<scenario>.csv` for pasting into `ets.ovr`.
+- run `python ets_goalseek_v0_2.py WORKBOOK.xlsx <scenario>`. It iterates with legacy's damped log-space step (mixing, smoothing, adaptive step) until the worst yearly gap is below 0.5%, and writes the prices to `ets_override_s<scenario>.csv` for pasting into `ets.ovr`.
 
 ## Limits
 

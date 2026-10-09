@@ -777,3 +777,33 @@ Earlier work was logged in the task documents themselves; they remain the detail
   - The `bco2` data must be refreshed (rebuild, or paste scenario 1's `co2.sec`) when the baseline changes; `bco2.chk` shows it.
   - Goal-seek convergence is slow (about 12% error reduction per iteration), as with legacy's damping.
   - MTInputs rows 90-92 (auction proportion) are no longer read.
+
+## 2026-10-09 - CPAT-AI-Mitigation-MVP v1.03: multiple scenarios (definitions, VBA batch run, stored results, comparison)
+- **Task (user):**
+  - Store results as values so multiple scenarios can be kept: the baseline, which should not change, and the scenarios.
+  - Put a table of scenario definitions in MTInputs, one column per scenario, and add combined packages. No High/Low international price sensitivity, because it deviates from legacy.
+  - Write a VBA macro that cycles through the definitions, runs the ETS goal seek when the ETS is on, and stores the results as values.
+  - Add a comparison tab for one year.
+  - The user chose an embedded .xlsm.
+- **Built** (`cpat_excel_new/mitigation_copypaste/build_v1_03.py`, `Scenarios_Method_v0_1.md`):
+  - **MTInputs:** J = baseline, K = live policy scenario, L-N = definitions with a Run? flag in row 4:
+    - 3: $20 carbon price;
+    - 4: Package A, carbon tax $10 → $50 by 2030 + feebates on transport and industry;
+    - 5: Package B, ETS on power and industry (cap −5% → −20% by 2035) + carbon tax $25 elsewhere.
+  - **VBA module CPATScenarios** (`CPATScenarios_v0_1.bas`): RunAllScenarios, StoreBaseline, StoreLiveScenario, SolveETSLive, ClearStoredScenarios. The ETS goal seek ports `ets_goalseek_v0_2.py`.
+  - **StoredResults:** values only, 25 MTOutputs rows per scenario ID.
+  - **ScenarioCompare:** one year, baseline + 8 scenario slots; levels, differences and % differences.
+  - **`vba_project_v0_1.py`** writes the VBA project without Excel: MS-OVBA compression, dir/PROJECT/PROJECTwm streams, encrypted protection fields (checked by decrypting legacy's), and a compound file writer. It embeds the project as an .xlsm.
+  - StoredResults ships filled by a Python emulation of the macro.
+- **Checks** (`check_report_v1.03.md`, PASS):
+  - Mitigation is unchanged against v1.02.
+  - Stored baseline and definition 3 equal the recalculated MTOutputs blocks.
+  - Definitions 4 and 5 equal the independent Python recomputation (5 at its stored ETS prices). Package B meets its cap within 0.49%: ETS price $41 (2030), $77 (2035), $147 (2040).
+  - ScenarioCompare equals StoredResults.
+  - **The embedded macro runs in LibreOffice:** RunAll stored the same four blocks as the emulation (max relative difference 8e-15) in 27 s, and restored column K and the override row.
+- **Caveats:**
+  - **The VBA project has not been opened in Excel.** It is tested only with oletools and LibreOffice. If Excel rejects it or shows an empty project, import `CPATScenarios_v0_1.bas` and save as .xlsm.
+  - The macro needs macros enabled. Excel may warn about files from the internet (unblock in file Properties).
+  - The batch runs one policy scenario at a time through Mitigation group 2. Stored indicators are the MTOutputs rows.
+  - The Package A result is driven by assumptions: the carbon price continues linearly after 2030 (template switch) and feebates continue linearly. CO2 is −31% vs baseline in 2030.
+  - LibreOffice saves booleans as `=TRUE()` in .xlsx, which affects only the test's comparison.

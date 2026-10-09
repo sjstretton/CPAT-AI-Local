@@ -1,6 +1,6 @@
-"""Word documentation of CPAT-AI-Mitigation-MVP v1.02, assembled from the Markdown notes (pandoc).
+"""Word documentation of CPAT-AI-Mitigation-MVP v1.03, assembled from the Markdown notes (pandoc).
 
-    python make_docs_v1_02.py  ->  CPAT-AI-Mitigation-MVP_Documentation_v1.02.docx
+    python make_docs_v1_03.py  ->  CPAT-AI-Mitigation-MVP_Documentation_v1.03.docx
 """
 import os
 import re
@@ -8,10 +8,11 @@ import subprocess
 import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP_Documentation_v1.02.docx')
+OUT = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP_Documentation_v1.03.docx')
 PARTS = [('Model overview, layout and files', 'README.md'),
          ('Domestic energy prices', 'PriceProjection_Method_v0.4.md'),
-         ('New ETS', 'ETS_Method_v0_1.md')]
+         ('New ETS', 'ETS_Method_v0_1.md'),
+         ('Multiple scenarios and stored results', 'Scenarios_Method_v0_1.md')]
 
 
 def part(title, name):
@@ -22,11 +23,11 @@ def part(title, name):
 
 
 def main():
-    head = ('---\ntitle: "CPAT-AI-Mitigation-MVP v1.02: documentation"\n'
+    head = ('---\ntitle: "CPAT-AI-Mitigation-MVP v1.03: documentation"\n'
             'subtitle: "AI-generated, copy-pasteable replacement of the CPAT mitigation module (Egypt data)"\n'
             'date: "2026-10-09"\n---\n\n'
-            '# About this document\n\nWorkbook: `CPAT-AI-Mitigation-MVP-v1.02.xlsx` (built by `build_v1_02.py`, '
-            'checked by `check_v1_02.py`, report `check_report_v1.02.md`: PASS). This document collects the '
+            '# About this document\n\nWorkbook: `CPAT-AI-Mitigation-MVP-v1.03.xlsm` (macro-enabled) (built by `build_v1_03.py`, '
+            'checked by `check_v1_03.py`, report `check_report_v1.03.md`: PASS). This document collects the '
             'model overview and the method notes. Differences with legacy CPAT are listed in the workbook sheet '
             '`LegacyDiff`; the version log is on the `Settings` sheet; caveats per task are in `CAVEATS.md`.\n\n')
     md = head + '\n'.join(part(t, n) for t, n in PARTS)
