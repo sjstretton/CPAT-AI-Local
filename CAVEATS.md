@@ -659,3 +659,18 @@ Earlier work was logged in the task documents themselves; they remain the detail
   1. Grouping I:K also hides scenario 1's output-code column (K) when rolled up. Scenario 2's code column (Z) stays visible.
   2. With the + buttons below, a subsector's variables expand from the button on the next subsector's heading line (Excel convention for summary rows below).
   3. Not yet opened in Excel.
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.16: layout)
+- **Task (user):**
+  - One level of column grouping, not nested; combine the early column groups.
+  - Group 2030-2039 for both scenarios.
+  - Two beiges: the darker one for the base year; a lighter one for areas that are copy-pasteable within themselves but not draggable to white or the other beige. Apply the lighter one to the LAMBDA formulae and the historical price range.
+  - A blank column between scenarios.
+- **Changes:**
+  - Column groups at one level, all rolled up: B:G (fuel, sector, parameters), I:K, and 2030-2039 in each scenario group.
+  - Light beige `EEECE1` (Excel tan, lighter than the base-year `DDD9C4`) on the right-column LAMBDA cells of every calculated row (dark red text kept) and on the 2023-2024 history block of `sp` and `txo`.
+  - Each scenario group now ends with a blank spacer column (group width 21). Scenario 2 is `AF:AZ`; copy a whole group, spacer included, to add a scenario.
+  - ReadMe colours and roll-up text, README "Add a scenario" and the version log updated.
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.16.xlsx`, `build_v0_16.py`, `check_v0_16.py`, `check_report_v0.16.md`, README. v0.15 files moved to `Old/`.
+- **Checks:** PASS, including the scenario-copy tests with the spacer column (groups 3-9). Regression vs v0.15: 3,484 codes diff 0. New layout checks: one outline level; the 20 grouped year columns; spacer columns empty; light-beige LAMBDA and history blocks (base year darker, projection white).
+- **Caveat:** Not yet opened in Excel.
