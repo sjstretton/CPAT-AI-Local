@@ -560,3 +560,31 @@ Earlier work was logged in the task documents themselves; they remain the detail
   2. Excludes power and electricity, including gas to power. Gas for power has a subsidy of 6.2 $/GJ but no power fuel use yet.
   3. No producer subsidies, no GDP feedback, and existing taxes on fuels only.
   4. Revenue in years after 2030 is not a legacy target.
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.13: CO2 emissions)
+- **Task (user):** Emissions next, CO2 first.
+- **Changes:**
+  - New variable `co2` per subsector and fuel = fuel use (ktoe) x 0.041868 PJ/ktoe x EF (tCO2/GJ, IIASA, `EF_GHG`; biomass 0), in MtCO2. It has a plain block and the 2040 LAMBDA `EMISSIONS`.
+  - Section 13: total, by sector section, by fuel, scenario 1 reference, and change vs scenario 1 in MtCO2 and %.
+  - LegacyDiff gains an emissions row (23 rows).
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.13.xlsx`, `build_v0_13.py`, `check_v0_13.py`, `check_report_v0.13.md`, README. v0.12 files moved to `Old/`.
+- **Checks:** PASS.
+  - `co2`: one formula per block, with a LAMBDA in 2040.
+  - Per-row CO2 and the section-13 total match the independent Python recomputation (5e-15) in all variants and test scenarios.
+  - Sectors and fuels sum to the total; biomass is 0; there is no change vs scenario 1 before 2027.
+  - Regression vs v0.12: 3,196 shared codes diff 0.
+- **Results (Egypt, MtCO2, fuel combustion excluding power):**
+
+  | Year | Baseline | $20/t from 2027 |
+  |---|---|---|
+  | 2022 | 134.8 | 134.8 |
+  | 2024 | 188.9 | 188.9 |
+  | 2027 | 203.5 | 172.5 (-15.2%) |
+  | 2030 | 222.3 | 188.6 (-15.2%) |
+  | 2040 | 287.5 | 244.0 (-15.1%) |
+- **Caveats:**
+  1. 2022-2024 rises +40%. Fuel use in 2023-2024 is modelled from the 2022 base with the large real price falls in the data (devaluation; gasoline -44% real), not taken from energy balances. This is likely too high against observed emissions. Options: use observed energy use for 2023-2024 when available, or start the response from the last price year.
+  2. No inventory adjustment of EFs.
+  3. No power sector (gas and oil to power are a large share of Egypt's CO2).
+  4. No process emissions, CH4, N2O or local pollutants yet.
+  5. The ETS price is still not cap-based. Emissions now exist, so a cap can be added next.
