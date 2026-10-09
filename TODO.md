@@ -18,7 +18,7 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 
 ## 3. Mitigation copy-paste prototype (`cpat_excel_new/mitigation_copypaste/`)
 
-- ☐ Next (mitigation): 2023-2024 fuel-use jump persists with the corrected Egypt prices; legacy run shows it for residential only (industry and transport differ): investigate (bucket 5). Then cap-based ETS price; CH4, N2O and local pollutants; power sector.
+- ☐ Decide (mitigation): (1) price vintage / last historical price year: legacy cached run has no devaluation drop, and holding prices from 2022 cuts the gap to legacy from 45.6% to 17.3% (`legacy_comparison_v0_1.md`); (2) add legacy's 2023 calibration to emission estimates?; (3) ETS cap option (`ETS_Cap_Design_Options_v0_1.md`, recommended A). Then cap-based ETS price; CH4, N2O and local pollutants; power sector.
 - ◐ Review CPAT-AI-Mitigation-MVP v1.01 in Excel (incl. MTOutputs and Charts) and the overview deck (presentation/) (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
 
 ## Conventions for every kernel task

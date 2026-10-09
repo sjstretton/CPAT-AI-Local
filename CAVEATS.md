@@ -718,3 +718,18 @@ Earlier work was logged in the task documents themselves; they remain the detail
   2. MTOutputs search area on Mitigation is A1:ZZ5000 (room for about 30 scenario groups).
   3. The overview deck still shows v1.00 screenshots (no MTOutputs slide).
   4. Not yet opened in Excel.
+
+## 2026-10-09 - Legacy cached baseline vs MVP; ETS cap design options (no model change)
+- **Task:** User offline, "press on". Investigate the 2022-2024 fuel-use jump against legacy, and plan the cap-based ETS price.
+- **Finding:** `CPAT 1.0pre_456_NoPropData.xlsb` keeps the cached results of its last full run with real data. That gives fuel use and after-tax prices for all 16 subsectors x 8 fuels, and CO2 by subsector. `legacy_compare_v0_1.py` extracts them (`data/legacy_cached_baseline.csv`) and compares them with MVP v1.01 scenario 1 in `legacy_comparison_v0_1.md`.
+- **Results:**
+  1. The 2022 base year matches exactly (fuel use, e.g. road gasoline 7,577.3 ktoe).
+  2. Legacy prices show no devaluation drop: road gasoline 0.612 / 0.612 / 0.604 $/liter in 2022-2024 against the corrected data's 0.600 / 0.411 / 0.335. So the legacy run used an older price vintage.
+  3. With the last historical price year set to 2022 (prices held), the mean absolute gap in fuel use by subsector and fuel for 2023-2030 falls from 45.6% to 17.3%, and the 2030 total from +41.3% to +8.0%.
+  4. Legacy has a 2023 dip of about -20% in every sector, which matches its note "sets baseline 2022 and 2023 emissions to equal estimates" (legacy Mitigation row 475). The MVP has no such calibration.
+  5. Remaining price differences: legacy residential gas 5.5-6.2 vs 2.3-4.6 $/GJ; coal; legacy other oil products 15 $/bbl from 2025.
+- **ETS cap:** `ETS_Cap_Design_Options_v0_1.md`. The legacy method is semi-elasticity based with iteration. In the MVP it would create a circular reference through scenario 1. Four options; recommended A: baseline covered emissions as a refreshed data row, with the current rule kept as override.
+- **Decisions for the user:**
+  1. Which price vintage and last historical year to use. The corrected data imply the jump is a real consequence of the devaluation under CPAT's method.
+  2. Whether to add legacy's 2023 calibration to emission estimates.
+  3. Which ETS option to build.
