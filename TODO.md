@@ -18,8 +18,8 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 
 ## 3. Mitigation copy-paste prototype (`cpat_excel_new/mitigation_copypaste/`)
 
-- ☐ Next (mitigation): revenues (section 12 prepared: existing taxes, subsidies, new policies, ETS auction share); then emissions (needed for a cap-based ETS price).
-- ◐ Review v0.11 in Excel (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
+- ☐ Next (mitigation): emissions (also needed for a cap-based ETS price), then the power sector (gas to power carries most of the missing subsidy).
+- ◐ Review v0.12 in Excel (no repair prompt, LAMBDA column 2035 calculates, hidden columns D:G, copy a scenario group); then bucket 3 (stress test: add a fuel, a subsector and a scenario by dragging) and bucket 4 (numerical check against legacy CPAT for Egypt). Open assumptions are in the `CAVEATS.md` entry of 2026-10-08.
 
 ## Conventions for every kernel task
 

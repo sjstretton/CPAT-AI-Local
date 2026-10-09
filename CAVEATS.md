@@ -530,3 +530,33 @@ Earlier work was logged in the task documents themselves; they remain the detail
   4. Changing the last historical year (Settings C10) now also needs the history/projection blocks re-dragged; the LAMBDA column adapts by itself.
   5. 2031-2040 compute but are not a legacy target.
   6. Feebates are revenue-neutral; revenue is not yet calculated.
+
+## 2026-10-09 - Mitigation copy-paste prototype (v0.12: revenues)
+- **Task (user):** Revenues, with existing taxes and subsidies and new revenues as separate calculations.
+- **Changes:** Three new variables per subsector and fuel, in USD million real 2026 (Settings C13 = 0.041868 PJ/ktoe):
+  - `rtx` = fuel use x PJ/ktoe x (existing tax `etx` + VAT `vat` of the price fuel);
+  - `rsub` = fuel use x PJ/ktoe x existing subsidy `esub` (cost, positive);
+  - `rnew` = fuel use x PJ/ktoe x (`ctxnew` + `ntx` + `ets` x auctioned share + `nce` x VAT rate). Feebates are revenue-neutral.
+
+  Each has a plain block plus a 2040 LAMBDA (`REVENUE`, `NEWREVRATE`). Section 12 shows totals and splits by sector section for each, `rnet` = rtx - rsub, `rtot` = rnet + rnew, `rtot.ref` (scenario 1) and `rtot.chg` (fiscal effect). LegacyDiff gains a revenue-structure row (22 rows).
+- **Outputs:** `CPAT_Mitigation_CopyPaste_v0.12.xlsx`, `build_v0_12.py`, `check_v0_12.py`, `check_report_v0.12.md`, README. v0.11 files moved to `Old/`.
+- **Checks:** PASS.
+  - Revenue rows: one formula per block, with a LAMBDA in 2040.
+  - Per-row revenues and section-12 totals match the independent Python recomputation (5e-15) in all variants and test scenarios, including ETS auction shares in scenario 9.
+  - Sector splits sum to totals; no new revenue in scenario 1.
+  - Regression vs v0.11: 2,390 shared codes diff 0.
+- **Results (Egypt, USD million real 2026):**
+
+  | | Existing taxes | Existing subsidies | New revenue | Fiscal effect vs baseline |
+  |---|---|---|---|---|
+  | Baseline 2022 | 1,952 | 27,875 | - | - |
+  | Baseline 2030 | 1,919 | 29,036 | - | - |
+  | $20/t, 2027 | 1,529 | 26,058 | 3,818 | +8,533 |
+  | $20/t, 2030 | 1,656 | 24,372 | 4,168 | +8,568 |
+
+  The $20/t effect is mostly subsidy savings from lower use of subsidised fuels.
+- **Caveats:**
+  1. Subsidies are price-gap subsidies against supply cost (IMF method), not budget outlays.
+  2. Excludes power and electricity, including gas to power. Gas for power has a subsidy of 6.2 $/GJ but no power fuel use yet.
+  3. No producer subsidies, no GDP feedback, and existing taxes on fuels only.
+  4. Revenue in years after 2030 is not a legacy target.
