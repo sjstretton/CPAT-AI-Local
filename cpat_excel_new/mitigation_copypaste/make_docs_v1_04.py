@@ -1,8 +1,8 @@
-"""Word documentation of CPAT-AI-Mitigation-MVP v1.03, assembled from the Markdown notes (pandoc), with appendices
+"""Word documentation of CPAT-AI-Mitigation-MVP v1.04, assembled from the Markdown notes (pandoc), with appendices
 read from the shipped workbook (differences with legacy CPAT from sheet LegacyDiff, version log from Settings) and
 from the check report (verification summary).
 
-    python make_docs_v1_03.py  ->  CPAT-AI-Mitigation-MVP_Documentation_v1.03.docx
+    python make_docs_v1_04.py  ->  CPAT-AI-Mitigation-MVP_Documentation_v1.04.docx
 """
 import os
 import re
@@ -12,9 +12,9 @@ import tempfile
 import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP_Documentation_v1.03.docx')
-WORKBOOK = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP-v1.03.xlsm')
-REPORT = os.path.join(HERE, 'check_report_v1.03.md')
+OUT = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP_Documentation_v1.04.docx')
+WORKBOOK = os.path.join(HERE, 'CPAT-AI-Mitigation-MVP-v1.04.xlsm')
+REPORT = os.path.join(HERE, 'check_report_v1.04.md')
 PARTS = [('Model overview, layout and files', 'README.md'),
          ('Domestic energy prices', 'PriceProjection_Method_v0.4.md'),
          ('New ETS', 'ETS_Method_v0_1.md'),
@@ -51,7 +51,7 @@ def appendices():
             '# Appendix B. Version log', '', '*Source: workbook sheet `Settings`.*', '',
             table(['Version', 'Date', 'Description', 'Max abs regression diff'], log, [2, 3, 12, 5]),
             '# Appendix C. Verification', '',
-            '*Source: `check_report_v1.03.md` (`python check_v1_03.py`, LibreOffice recalculation). Every check '
+            '*Source: `check_report_v1.04.md` (`python check_v1_04.py`, LibreOffice recalculation). Every check '
             'section and its result:*', '']
     rep_lines = open(REPORT, encoding='utf-8').read().splitlines()
     sec, oks, fails, rows = None, 0, 0, []
@@ -72,17 +72,17 @@ def appendices():
              'and run the embedded VBA macro in LibreOffice against the Python emulation.', '',
              '# Appendix D. Presentations', '',
              '- `presentation/CPAT-AI-Mitigation-MVP_Overview_v1.0.pptx`: 7-slide pitch and user guide (v1.00).',
-             '- `presentation/CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.0.pptx`: 4 slides on v1.01-v1.03 (cap-based '
+             '- `presentation/CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.1.pptx`: 4 slides on v1.01-v1.04 (cap-based '
              'ETS, multiple scenarios with the batch macro, stored results and comparison).', '']
     return '\n'.join(text)
 
 
 def main():
-    head = ('---\ntitle: "CPAT-AI-Mitigation-MVP v1.03: documentation"\n'
+    head = ('---\ntitle: "CPAT-AI-Mitigation-MVP v1.04: documentation"\n'
             'subtitle: "AI-generated, copy-pasteable replacement of the CPAT mitigation module (Egypt data)"\n'
             'date: "2026-10-09"\n---\n\n'
-            '# About this document\n\nWorkbook: `CPAT-AI-Mitigation-MVP-v1.03.xlsm` (macro-enabled) (built by `build_v1_03.py`, '
-            'checked by `check_v1_03.py`, report `check_report_v1.03.md`: PASS). This document collects the '
+            '# About this document\n\nWorkbook: `CPAT-AI-Mitigation-MVP-v1.04.xlsm` (macro-enabled) (built by `build_v1_04.py`, '
+            'checked by `check_v1_04.py`, report `check_report_v1.04.md`: PASS). This document collects the '
             'model overview, the method notes, and appendices on the differences with legacy CPAT (sheet `LegacyDiff`), '
             'the version log (sheet `Settings`), the verification and the presentations. Caveats per task are in '
             '`CAVEATS.md` at the repository root.\n\n')

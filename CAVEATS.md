@@ -843,3 +843,23 @@ Earlier work was logged in the task documents themselves; they remain the detail
   - The decks' screenshots are LibreOffice renders, so fonts may differ slightly from Excel.
   - If a separate team deck on AI exists outside the repo, it was not updated. Share it to have the new slides merged in.
   - The VBA project still needs its first run in Excel (see the v1.03 entry).
+
+## 2026-10-10 - CPAT-AI-Mitigation-MVP v1.04: first-run test for Excel (CheckBatchRun, sheet MacroCheck)
+- **Task (user):** "Go for it", the open item being the macro's first run in Excel. Excel is not available in this Linux environment, so the run itself is left to the user. This version makes that run a one-click, self-reporting test.
+- **Built** (`build_v1_04.py`, module `CPATScenarios_v0_2.bas`):
+  - Macro **CheckBatchRun**:
+    1. checks the 12 lookups the macros rely on (MTInputs scenario columns and parameter rows, Mitigation rows by code and the scenario-2 columns, MTOutputs blocks);
+    2. compares the host's own recalculation of the baseline with the stored baseline. Excel evaluates the LAMBDA column natively; LibreOffice needed it expanded;
+    3. reruns RunAll, including the ETS goal seek, and compares every stored value with the value stored before.
+  - The report goes to the new sheet **MacroCheck** (Result PASS / CHECK / FAIL, 1e-6 relative tolerance). Its first-run checklist (unblock, enable macros, run, fallback import) is in `Scenarios_Method_v0_1.md`.
+  - The v0.1 macros are unchanged; Mitigation is unchanged.
+  - Deck updated to `CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.1.pptx` (the next step names the test).
+  - Word documentation `..._v1.04.docx`; `working_version/` refreshed (v1.03 files to `working_version/Old/`).
+- **Checks** (`check_report_v1.04.md`, PASS):
+  - Regression vs v1.03: 3,642 codes, difference 0.
+  - CheckBatch run in LibreOffice: Result PASS; 12 lookups found; baseline difference 4.4e-15; 1,900 stored cells after the batch rerun, largest relative difference 7.6e-15; 27 s.
+  - Negative test with the row code ets.ovr broken: Result FAIL naming exactly that lookup, returned −1, no run.
+- **Caveats:**
+  - Still not run in Excel. The MacroCheck report from that first run is the evidence to look for.
+  - LibreOffice's VBA layer reports itself as "Microsoft Excel 11.0" in the report's Started line, so that line names the host but does not prove Excel.
+  - In Excel, small differences against the LibreOffice-computed stored values are possible but expected below 1e-6. Anything larger shows as CHECK, with a count.

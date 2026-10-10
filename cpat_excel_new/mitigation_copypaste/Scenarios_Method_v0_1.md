@@ -11,7 +11,8 @@ How CPAT-AI-Mitigation-MVP runs many scenarios. Each run uses two calculated sce
 | MTInputs columns L onwards | **Scenario definitions**, one full MTInputs column each: row 4 Run? (Yes/No), row 5 number (previous + 1), row 6 name, rows 8-415 the inputs. Red cells differ from the template. To add one, copy the last definition one column to the right and edit it. |
 | StoredResults | Results as **values only**: one block of the 25 MTOutputs rows per scenario, under its ID. ID 1 is the baseline; a definition keeps its MTInputs number. Columns: ID, name, code stem, output code, description, unit, time stored, then 2022-2040. |
 | ScenarioCompare | Key results for **one year** (C4) of the baseline and up to 8 stored scenarios (IDs in row 6): levels, differences from the baseline, and % differences. Its formulas read StoredResults only. |
-| VBA module CPATScenarios | The macros below (Alt+F8). The workbook is an .xlsm; the source is also in `CPATScenarios_v0_1.bas`. |
+| VBA module CPATScenarios | The macros below (Alt+F8). The workbook is an .xlsm; the source is also in `CPATScenarios_v0_2.bas`. |
+| MacroCheck | Report of the first-run test macro CheckBatchRun: one row per check, Result in row 6. |
 
 ## Shipped definitions
 
@@ -37,12 +38,29 @@ Paths continue after their target year as set in the model: the carbon price fol
 - **StoreLiveScenario:** stores the live scenario 2 as it stands, under an ID you choose (the default is the next free ID from 100).
 - **SolveETSLive:** ETS goal seek for the live scenario only. It fills the override row `ets.ovr` and sets the override switch in column K.
 - **ClearStoredScenarios:** deletes every stored scenario except the baseline.
+- **CheckBatchRun:** the first-run test (see below). Reruns the batch, so the stored scenarios are recalculated by the application that runs it.
 
 The ETS goal seek is legacy's damped log-space iteration, as in `ets_goalseek_v0_2.py`:
 - It starts from the override row, or from the fast estimate if the row is empty.
 - Each step is p × (`ets.next` / p) ^ alpha, mixed 0.3 with the previous iterate, with 5% smoothing.
 - Alpha adapts: it halves when the error grows (minimum 0.0625) and rises ×1.2 when the error more than halves (maximum 1).
 - It stops when the worst |covered / cap − 1| is below 0.5%, or after 20 iterations.
+
+## First run in Excel
+
+The VBA project and the stored results were produced without Excel. They are tested in LibreOffice: the module loads, the macros reproduce the Python emulation, and CheckBatchRun passes. To confirm the same in Excel:
+
+1. If the file was downloaded, unblock it first (file Properties > Unblock), or Excel opens it with macros disabled.
+2. Open it and choose Enable Content.
+3. Run the macro **CheckBatchRun** (Alt+F8). It takes a minute or two. It:
+   - checks the 12 lookups the macros rely on (sheets, rows by code, scenario columns, MTOutputs blocks);
+   - compares Excel's own recalculation of the baseline with the stored baseline. Excel evaluates the LAMBDA column natively; LibreOffice needed it expanded;
+   - reruns RunAllScenarios, including the ETS goal seek, and compares every stored value with the value stored before the run.
+4. Sheet MacroCheck shows **Result PASS** when no value differs by more than 1e-6 (relative). CHECK lists how many values differ; FAIL names the lookup that was not found.
+5. If Excel reports that it cannot load the VBA project, or Alt+F8 lists no macros:
+   1. remove the project if one is listed;
+   2. import `CPATScenarios_v0_2.bas` (Alt+F11 > File > Import);
+   3. save as .xlsm and run CheckBatchRun again.
 
 ## Comparing scenarios
 
@@ -60,4 +78,4 @@ The ETS goal seek is legacy's damped log-space iteration, as in `ets_goalseek_v0
 
 - The batch run calculates one policy scenario at a time. Mitigation scenario groups 3+ (copied groups) are still possible, but the macros do not use them.
 - MTOutputs (25 indicators) defines what is stored. To store more, add rows to the MTOutputs blocks first.
-- The VBA project is written by `vba_project_v0_1.py` without Excel. It is tested in LibreOffice: the module loads and the macro reproduces the Python emulation. If Excel does not accept it, import `CPATScenarios_v0_1.bas` (Alt+F11 > File > Import) and save as .xlsm.
+- The VBA project is written by `vba_project_v0_1.py` without Excel. It is tested in LibreOffice: the module loads and the macro reproduces the Python emulation. CheckBatchRun is the test for its first run in Excel. If Excel does not accept the project, import `CPATScenarios_v0_2.bas` (Alt+F11 > File > Import) and save as .xlsm.

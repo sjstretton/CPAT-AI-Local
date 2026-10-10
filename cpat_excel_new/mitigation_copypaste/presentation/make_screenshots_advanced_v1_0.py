@@ -19,8 +19,8 @@ from openpyxl.utils import column_index_from_string as CI
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
-import build_v1_03 as B                      # noqa: E402
-import check_v1_03 as C                      # noqa: E402
+import build_v1_04 as B                      # noqa: E402
+import check_v1_04 as C                      # noqa: E402
 
 IMG = os.path.join(HERE, 'img')
 LO_PROFILE = 'file://' + os.path.join(tempfile.gettempdir(), 'lo_shots_profile')

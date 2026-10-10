@@ -1,8 +1,8 @@
-// Build CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.0.pptx: 4 slides on what v1.01-v1.03 added (cap-based ETS,
+// Build CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.1.pptx (v1.1: next step names the first-run test macro): 4 slides on what v1.01-v1.03 added (cap-based ETS,
 // multiple scenarios with a macro, stored results and comparison), in the style of the v1.0 overview deck.
 // Screenshots and chart data: presentation/img/1x_*.png and advanced_data.json from make_screenshots_advanced_v1_0.py.
 //
-//   PPTX_SKILL=<pptx skill dir> NODE_PATH=<node_modules with pptxgenjs, image-size> node presentation/build_deck_advanced_v1_0.js
+//   PPTX_SKILL=<pptx skill dir> NODE_PATH=<node_modules with pptxgenjs, image-size> node presentation/build_deck_advanced_v1_1.js
 const fs = require("fs");
 const path = require("path");
 const pptxgen = require("pptxgenjs");
@@ -11,7 +11,7 @@ const { applyTheme } = require(process.env.PPTX_SKILL + "/scripts/apply_theme.js
 
 const HERE = __dirname;
 const IMG = (f) => path.join(HERE, "img", f);
-const OUT = path.join(HERE, "CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.0.pptx");
+const OUT = path.join(HERE, "CPAT-AI-Mitigation-MVP_AdvancedFeatures_v1.1.pptx");
 const DATA = JSON.parse(fs.readFileSync(IMG("advanced_data.json"), "utf8"));
 
 const THEME = {
@@ -48,7 +48,7 @@ pres.defineSlideMaster({
       fontSize: 11, bold: true, color: TEAL, charSpacing: 2, margin: 0 }, text: "" } },
     { placeholder: { options: { name: "title", type: "title", x: 0.6, y: 0.62, w: 12.1, h: 0.7, fontFace: "Cambria",
       fontSize: 30, bold: true, color: NAVY, valign: "top", align: "left", margin: 0 }, text: "" } },
-    { text: { text: "CPAT-AI-Mitigation-MVP v1.03  ·  advanced features  ·  screenshots and numbers from the workbook",
+    { text: { text: "CPAT-AI-Mitigation-MVP v1.03-v1.04  ·  advanced features  ·  screenshots and numbers from the workbook",
       options: { x: 0.6, y: 7.05, w: 9.5, h: 0.25, fontSize: 9, color: GREY, margin: 0 } } },
   ],
   slideNumber: { x: 12.3, y: 7.05, w: 0.5, h: 0.25, fontSize: 9, color: GREY, align: "right" },
@@ -263,14 +263,15 @@ const AXIS = { catAxisLabelColor: GREY, valAxisLabelColor: GREY, catAxisLabelFon
     objectName: nm("nextCard") });
   s.addText([
     { text: "NEXT", options: { bold: true, fontSize: 11, color: GOLD, charSpacing: 2, breakLine: true } },
-    { text: "Run the macro in Excel (fallback: import the .bas file)", options: { bullet: true, breakLine: true } },
+    { text: "Run CheckBatchRun once in Excel (one-click test)", options: { bullet: true, breakLine: true } },
     { text: "Power sector, CH4 and N2O", options: { bullet: true, breakLine: true } },
     { text: "Partial adjustment of fuel use; review benchmarks", options: { bullet: true } },
   ], { x: 8.5, y: 5.15, w: 4.05, h: 1.55, fontSize: 13, color: "FFFFFF", valign: "top", margin: 0, paraSpaceAfter: 4,
     isTextBox: true, objectName: nm("nextText") });
   s.addNotes("ScenarioCompare reads only the stored values, so results from earlier runs or other files can be "
     + "compared too. AI wrote the VBA project from the file-format specification, without Excel; LibreOffice runs it "
-    + "and reproduces the Python emulation exactly. It still needs a first run in Excel.");
+    + "and reproduces the Python emulation exactly. Its first run in Excel is one click: the macro CheckBatchRun checks "
+    + "the lookups, compares Excel's recalculation with the stored results and reports PASS on sheet MacroCheck.");
 }
 
 (async () => {
