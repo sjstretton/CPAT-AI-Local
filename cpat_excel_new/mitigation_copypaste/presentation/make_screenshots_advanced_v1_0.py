@@ -19,6 +19,7 @@ from openpyxl.utils import column_index_from_string as CI
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
+sys.path.insert(1, os.path.join(os.path.dirname(HERE), "Old"))     # v1.04 builder archived in Old/
 import build_v1_04 as B                      # noqa: E402
 import check_v1_04 as C                      # noqa: E402
 

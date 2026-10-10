@@ -863,3 +863,42 @@ Earlier work was logged in the task documents themselves; they remain the detail
   - Still not run in Excel. The MacroCheck report from that first run is the evidence to look for.
   - LibreOffice's VBA layer reports itself as "Microsoft Excel 11.0" in the report's Started line, so that line names the host but does not prove Excel.
   - In Excel, small differences against the LibreOffice-computed stored values are possible but expected below 1e-6. Anything larger shows as CHECK, with a count.
+
+## 2026-10-10 - CPAT-AI-Mitigation-MVP v1.05: power generation costs and electricity prices (section 3)
+- **Task (user):** plan the prices part of power (generation costs and downstream electricity prices), with simplifications that match the existing model; lay out the interactions (generation mix, systemic cost of renewables); write a method note with pseudocode; then build it following the legacy outline and sub-table letters.
+- **Method note:** `PowerPrices_Method_v0_1.md`:
+  - interactions I1-I8 and simplifications S1-S7;
+  - method by legacy sub-table (A, B, C, D, E, F, G, J) with pseudocode;
+  - workbook layout, interim data, validation and open decisions.
+- **Data:** `extract_power_v0_1.py` reads legacy Mitigation rows 2950-3935, locating each row by table id and label. It writes `data/power_tech.csv`, `power_paths.csv`, `power_params.csv` and `legacy_power_reference.csv`.
+  - Correction found while validating: the legacy B2 capital cost is the base-year cost. It already includes the capex time factor of 2022 (1.05 for wind and solar), so `cax0` is divided by that factor.
+- **Built** (`build_v1_05.py`):
+  - **Mitigation section 3**, with legacy sub-tables in legacy order:
+    - A: inputs;
+    - B: amortised fixed cost of the stock, with vintage averages;
+    - C: levelised fixed cost of new plants;
+    - D: variable cost and new policy cost per kWh;
+    - E: generation cost by type and the averages;
+    - G: residential and industrial electricity prices, subsidy gap and revenues;
+    - J: storage cost of variable renewables.
+  - Sheet `Inputs_power` (one row per type, with derived constants; one row per end-user group) and data sheets `PowerTech`, `PowerPaths`, `PowerParams`.
+  - 14 new LAMBDAs, 44 in all.
+  - 3 new MTOutputs indicators: residential and industrial price, and the average generation cost.
+  - 7 new LegacyDiff rows; the version log is updated.
+- **Checks** (`check_report_v1.05.md`, PASS):
+  - **Method = legacy:** the Python reference, fed with legacy inputs, reproduces 80 cached legacy rows (A13, B2, B6, B8, C3, C7, D4, E3, J, G1/G2 supply cost and price), 2022-2040. Largest relative difference: 5.6e-17.
+  - **Workbook = Python** for all 28 power variables in every scenario test (carbon tax, ETS, fuel price reform, price source, price controls), and in the stored packages (ID 5 is the ETS on power).
+  - One formula per power block; the right column calls a LAMBDA (1,669 rows).
+  - Regression vs v1.04: 3,642 codes, difference 0. The macro tests still pass.
+- **Results (Egypt, real 2026 $/kWh):**
+  - The average generation cost is about 0.069.
+  - Residential price before policy: 0.061 (2022) and 0.042 (2030). Industrial: 0.064 and 0.049.
+  - A $20 carbon price adds about 0.009 $/kWh in 2027 and raises about USD 1.8 bn a year.
+  - The VRE share rises from 5% to 28% by 2040. Storage then adds about 0.011 $/kWh to wind and solar.
+- **Caveats:**
+  - Generation shares, investment shares and consumption are **interim data** from the legacy baseline run. A policy scenario therefore changes power prices only through fuel and carbon costs, not through its own generation mix, until the engineer model exists. Power emissions are still 0, so a cap that covers power cannot be met by power.
+  - Fuel prices are spot prices from section 2. Legacy uses a 5-year moving average.
+  - Historical electricity prices come from the corrected Egypt block: 0.054 $/kWh nominal residential in 2022, VAT 0. Legacy used 0.112 including 15.6% VAT.
+  - Power revenues value the ETS at the tax-equivalent price. They are not yet in the section 12 totals.
+  - The coal implicit cost and the extra shadow price are not built (both are 0 for Egypt).
+  - Open decisions are in section 8 of the method note.

@@ -1,0 +1,10 @@
+key,value,unit,description,legacy_row
+tmc|res,0.04,$/kWh,"transmission and distribution, residential (G1)",3599
+tmc|ind,0.015,$/kWh,"transmission and distribution, industrial (G2)",3628
+pass,1.0,share,pass-through of supply-cost changes to end users (G1),3596
+gen_per_cons,1.221168676519317,ratio,"generation / final consumption (H2, base year)",3723
+dlf_ren,8.435036725735763,years,discounted lifetime of renewables (J2),3883
+st_alloc,1.0,share,allocation of short-term storage cost to VRE (J1),3871
+st_marg_hours,18.0,hours,marginal hours of short-term storage per unit VRE (J1),3873
+st_ratio,2.0,hours,kWh storage per kW interface (J1),3874
+lt_start,0.75,share,VRE share where long-term storage starts (J1),3877
