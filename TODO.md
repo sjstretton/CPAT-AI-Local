@@ -16,6 +16,12 @@ Status key: ☐ not started · ◐ in progress. Done work is logged in [`CAVEATS
 - ☐ Fuel-CO₂ reconciliation (cement block fuel 19.05 Mt against CPAT sector 10.91 Mt in 2030; Egypt clinker fuel factor 0.314).
 - ☐ Keep under review: β set (IPCC central), shadow price σ = 20 $/t, output elasticities (judgements, Low–Medium confidence), the 3C fund outlay bound (0.2 $bn) against the budget, and the text of `Manual inputs` F66:F68 (says steel pass-through about 0.5; the evidence note says 0.55–0.85).
 
+## 3. Shared country data (`country_data/`)
+
+- ☐ Upload `country_data/cpat_country_data.xlsx` to the CPAT SharePoint drive, folder `CountryData`; set read access for the team and edit access for data owners; test the Python loader and the Power Query steps on a WB laptop (`country_data/README.md`).
+- ☐ Add the all-country energy balances (licensed IEA, not in this repo) to the file in the `bal.<flow>.<fuel>` format, and base-year energy use for countries other than Egypt.
+- ☐ Point the Mitigation MVP (`Prices_dom`, `EnergyCons`) and `cpat_coded` (`prices_dom.csv`, `energy_consumption.csv` loaders) at the shared file instead of their own copies (next MVP version / a coded-loader change).
+
 ## Conventions for every kernel task
 
 See `NORMS.md` and `egypt/instructions/instructions-egypt.yaml`.

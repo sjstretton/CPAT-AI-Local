@@ -17,6 +17,7 @@ cpat_excel_new/        Excel-AI: new Excel prototypes replicating legacy CPAT mo
 egypt/                 Egypt case (single root): final/ deliverables, supporting/ work, archive/ superseded versions, instructions/ task inventory and context (see egypt/README.md)
 egypt-final/           Simplified, version-free hand-over of the final Egypt results: 2-page summary, results table, methodology, and the two supporting Excel files
 templates/             Master templates (MTInputs_template.xlsx)
+country_data/          Shared country data on the CPAT SharePoint drive: seed file, Python loader, Excel Power Query how-to (see country_data/README.md)
 _research/             Source literature: IPCC AR6 WGIII Ch11/Ch12, CBAM regulation and guidance, sector roadmaps (PDF + extracted text)
 NORMS.md               Excel column, colour, input and versioning norms; task-completion process (section 6)
 CAVEATS.md             Append-only log of completed tasks: task, inputs, outputs, caveats
